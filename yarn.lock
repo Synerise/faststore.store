@@ -2138,10 +2138,10 @@
   dependencies:
     tslib "^2.4.0"
 
-"@synerise/faststore-api@0.0.3":
-  version "0.0.3"
-  resolved "http://localhost:4873/@synerise/faststore-api/-/faststore-api-0.0.3.tgz#b3a013bee4ec52b1865662aa15647f79aa268ed0"
-  integrity sha512-d7t+ssxWRet3tRl3ImRqx1ZJLSUzd1CIYwJjiKAv6VqauSiuZsSvmOSWsM2NJrY/Mxc7cv0CTRqnXJOcPmivaw==
+"@synerise/faststore-api@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@synerise/faststore-api/-/faststore-api-0.0.2.tgz#1faff86c9285723d3717c91cefb89cb4fb2a17c4"
+  integrity sha512-Z58z/2P3WcQofrbnyxTPAPsBV+LJUxI6mV8Zev/5M4NNzu/M84MKWQsGJcaa/5j9ZZkYM/KFORk67o9Y0lHOVw==
   dependencies:
     encoding "^0.1.0"
     isomorphic-unfetch "^3.1.0"
