@@ -1,0 +1,6 @@
+type Query {
+    syneriseAISearch(indexId: String apiHost: String trackerKey: String): SyneriseSearchResult!
+    syneriseAIRecommendations(campaignId: String, apiHost: String, trackerKey: String): SyneriseRecommendationsResult!
+}
+
+scalar JSONObject

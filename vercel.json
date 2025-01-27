@@ -1,0 +1,10 @@
+{
+  "outputDirectory": ".faststore/.next",
+  "env": {
+    "NEXT_PUBLIC_API_KEY": "@next_public_api_key",
+    "DATABASE_URL": "@database_url",
+    "SYNERISE_API_URL": "@synerise_api_host",
+    "SYNERISE_API_TRACKER": "@synerise_api_tracker",
+    "SYNERISE_SEARCH_INDEX": "@synerise_search_index"
+  }
+}

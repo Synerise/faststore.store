@@ -1,0 +1,40 @@
+type SyneriseStoreCollectionResult {
+    listing: SyneriseSearchResponse
+}
+
+enum PageType {
+    Brand,
+    Category,
+    Department,
+    SubCategory,
+    Product,
+    Collection,
+    Cluster
+}
+
+type PageInfo {
+    pageType: PageType
+    brand: PageInfoBrand
+    category: PageInfoCategory
+    collection: PageInfoCollection
+}
+
+type PageInfoCollection {
+    name: String
+    id: Int
+}
+
+type PageInfoCategory {
+    id: Int
+    name: String
+    tree: String
+}
+
+type PageInfoBrand {
+    id: Int
+    name: String
+}
+
+extend type StoreCollection {
+    pageInfo: PageInfo
+}
