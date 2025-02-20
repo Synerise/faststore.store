@@ -1,7 +1,4 @@
-import {useSearchParams} from "next/navigation";
-
-function getSelectedFacets() {
-    const searchParams = useSearchParams();
+function getSelectedFacets(searchParams: URLSearchParams) {
 
     const textFacets = searchParams.get("sFacets");
     const rangeFacets = searchParams.get("rangeFacets");

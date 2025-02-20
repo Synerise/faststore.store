@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "next/navigation";
-import {usePage, usePLP, useSearchPage, isPLP, isSearchPage} from "@faststore/core";
+import {isPLP, isSearchPage, usePage, usePLP, useSearchPage} from "@faststore/core";
 
 import {SearchProvider, SyneriseSearchStateProps, useSearchContext} from "./SearchProvider";
 import {ProductGallery} from "./ProductGallery";
@@ -21,13 +21,13 @@ export type SyneriseProductGalleryProps = {
 }
 
 export const ProductGallerySection = ({
-    itemsPerPage,
-    sort = [],
-    filters = [],
-    indexId,
-    apiHost,
-    trackerKey
-}: SyneriseProductGalleryProps) => {
+                                          itemsPerPage,
+                                          sort = [],
+                                          filters = [],
+                                          indexId,
+                                          apiHost,
+                                          trackerKey
+                                      }: SyneriseProductGalleryProps) => {
     const context = usePage();
     const searchParams = useSearchParams();
 
@@ -39,7 +39,7 @@ export const ProductGallerySection = ({
         const correlationId = searchParams.get("correlationId") || undefined;
         const pageParam = searchParams.get("page") || 0;
         const page = Number(pageParam);
-        const selectedFacets = getSelectedFacets();
+        const selectedFacets = getSelectedFacets(searchParams);
         const selectedSort = searchParams.get("sort") || undefined;
 
         let sorting = sort.find(item => item.key === selectedSort)
@@ -64,7 +64,7 @@ export const ProductGallerySection = ({
     }, [searchParams, context, itemsPerPage, apiHost, trackerKey, filters, sort]);
 
     const onChangeFunction = async (url: URL) => {
-        if(typeof window !== "undefined") {
+        if (typeof window !== "undefined") {
             window.history.pushState(null, "", url)
         }
         return true;
@@ -81,7 +81,7 @@ export const ProductGallerySection = ({
 
 const SyneriseProductGalleryContent = () => {
     const context = usePage();
-    const { state: { filters } } = useSearchContext();
+    const {state: {filters}} = useSearchContext();
     const searchPageContext = useSearchPage();
     const plpContext = usePLP();
 
