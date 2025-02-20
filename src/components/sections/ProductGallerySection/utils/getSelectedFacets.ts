@@ -1,8 +1,10 @@
-function getSelectedFacets() {
-    const url = new URL(window.location.href);
+import {useSearchParams} from "next/navigation";
 
-    const textFacets = url.searchParams.get("sFacets");
-    const rangeFacets = url.searchParams.get("rangeFacets");
+function getSelectedFacets() {
+    const searchParams = useSearchParams();
+
+    const textFacets = searchParams.get("sFacets");
+    const rangeFacets = searchParams.get("rangeFacets");
 
     const textFacetsNames = textFacets ? textFacets.split(",") : []
     const rangeFacetsNames = rangeFacets ? rangeFacets.split(",") : []
@@ -17,11 +19,11 @@ function getSelectedFacets() {
     }
 
     textFacetsNames.forEach((facetName) => {
-        facets.text[facetName] = url.searchParams.getAll(facetName)
+        facets.text[facetName] = searchParams.getAll(facetName)
     })
 
     rangeFacetsNames.forEach((facetName) => {
-        const rangeFacetValue = url.searchParams.get(facetName);
+        const rangeFacetValue = searchParams.get(facetName);
         if (rangeFacetValue) {
             const [min, max] = rangeFacetValue.split(";");
             if (min && max) {

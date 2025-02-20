@@ -1,10 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "next/navigation";
-import {usePage, usePLP, useSearchPage} from "@faststore/core";
-
-import {isPLP, isSearchPage} from "src/sdk/overrides/PageProvider";
-import Section from "src/components/sections/Section";
-import EmptyGallery from "src/components/sections/ProductGallery/EmptyGallery";
+import {usePage, usePLP, useSearchPage, isPLP, isSearchPage} from "@faststore/core";
 
 import {SearchProvider, SyneriseSearchStateProps, useSearchContext} from "./SearchProvider";
 import {ProductGallery} from "./ProductGallery";
@@ -68,7 +64,9 @@ export const ProductGallerySection = ({
     }, [searchParams, context, itemsPerPage, apiHost, trackerKey, filters, sort]);
 
     const onChangeFunction = async (url: URL) => {
-        window.history.pushState(null, "", url)
+        if(typeof window !== "undefined") {
+            window.history.pushState(null, "", url)
+        }
         return true;
     }
 

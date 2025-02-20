@@ -1,9 +1,7 @@
-import { StoreCollection } from "./collection";
+import { default as StoreCollectionResolver } from "./collection";
 
 const resolvers = {
-    StoreCollection: {
-        ...StoreCollection
-    },
+    ...StoreCollectionResolver
 };
 
 export default resolvers;
