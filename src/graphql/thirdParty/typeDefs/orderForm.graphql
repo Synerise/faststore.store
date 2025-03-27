@@ -1,0 +1,10 @@
+input AddOrderFormCustomDataInput {
+    orderFormId: String
+    appId: String!
+    field: String!
+    value: String!
+}
+
+type Mutation {
+    addOrderFormCustomData(input: AddOrderFormCustomDataInput!): Boolean
+}

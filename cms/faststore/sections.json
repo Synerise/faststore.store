@@ -89,5 +89,12 @@
         }
       }
     }
+  },
+  {
+    "name": "GlobalTracker",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Global Tracker"
+    }
   }
 ]
