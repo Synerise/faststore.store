@@ -1876,10 +1876,10 @@
   dependencies:
     tslib "^2.4.0"
 
-"@synerise/faststore-api@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/@synerise/faststore-api/-/faststore-api-0.0.2.tgz"
-  integrity sha512-Z58z/2P3WcQofrbnyxTPAPsBV+LJUxI6mV8Zev/5M4NNzu/M84MKWQsGJcaa/5j9ZZkYM/KFORk67o9Y0lHOVw==
+"@synerise/faststore-api@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@synerise/faststore-api/-/faststore-api-0.0.3.tgz#8dae3809a8cfe0d5ba3796f030c4c5893aaf0b5b"
+  integrity sha512-e/0IFl/kDqkiaMk0a5eeSFv+TjQojm9QpqzGMXJNNGja74LnhyA4dAGrRPkgtwbmtOOqFSXipYSpGSsWOC9xxw==
   dependencies:
     encoding "^0.1.0"
     isomorphic-unfetch "^3.1.0"
@@ -4601,6 +4601,11 @@ is-lower-case@^2.0.2:
   integrity sha512-bVcMJy4X5Og6VZfdOZstSexlEy20Sr0k/p/b2IlQJlfdKAQuMpiv5w2Ccxb8sKdRUNAG1PnHVHjFSdRDVS6NlQ==
   dependencies:
     tslib "^2.0.3"
+
+is-mobile@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-5.0.0.tgz#1e08a0ef2c38a67bff84a52af68d67bcef445333"
+  integrity sha512-Tz/yndySvLAEXh+Uk8liFCxOwVH6YutuR74utvOcu7I9Di+DwM0mtdPVZNaVvvBUM2OXxne/NhOs1zAO7riusQ==
 
 is-npm@^3.0.0:
   version "3.0.0"
