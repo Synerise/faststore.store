@@ -1,4 +1,4 @@
-import {SyneriseSearchStateProps} from "../ProductGallerySearchProvider";
+import {SyneriseSearchStateProps} from "../SearchProvider";
 
 const prepareUrl = ({ page, selectedFacets, query, correlationId, sortKey }: SyneriseSearchStateProps, base?: string): URL => {
     const isBrowser = typeof window !== 'undefined';
