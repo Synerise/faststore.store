@@ -15,8 +15,16 @@
         "apiHost": {
           "title": "Synerise api host",
           "type": "string",
-          "enumNames": ["https://api.synerise.com", "https://api.geb.synerise.com"],
-          "enum": ["https://api.synerise.com", "https://api.geb.synerise.com"],
+          "enumNames": [
+            "https://api.synerise.com",
+            "https://api.geb.synerise.com",
+            "https://api.azu.synerise.com"
+          ],
+          "enum": [
+            "https://api.synerise.com",
+            "https://api.geb.synerise.com",
+            "https://api.azu.synerise.com"
+          ],
           "default": "https://api.synerise.com"
         },
         "trackerKey": {
@@ -30,7 +38,7 @@
             "title": "Filter",
             "type": "object",
             "required": ["facetName", "label"],
-            "properties":{
+            "properties": {
               "label": {
                 "title": "Label",
                 "type": "string"
@@ -86,6 +94,241 @@
           "title": "Items per page",
           "type": "number",
           "default": 12
+        }
+      }
+    }
+  },
+  {
+    "name": "SyneriseNavbarSection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Synerise Navbar Section",
+      "description": "Synerise Navbar Section - powered by Synerise",
+      "type": "object",
+      "required": ["searchInput"],
+      "properties": {
+        "logo": {
+          "title": "Logo",
+          "type": "object",
+          "properties": {
+            "src": {
+              "title": "Source",
+              "type": "string",
+              "widget": {
+                "ui:widget": "media-gallery"
+              }
+            },
+            "alt": {
+              "title": "Alternative label",
+              "type": "string",
+              "default": "Store logo"
+            },
+            "link": {
+              "title": "Link",
+              "type": "object",
+              "properties": {
+                "url": {
+                  "title": "Link URL",
+                  "type": "string",
+                  "default": "/"
+                },
+                "title": {
+                  "title": "Link title",
+                  "type": "string",
+                  "default": "Go To Home"
+                }
+              }
+            }
+          }
+        },
+        "searchInput": {
+          "title": "Search input",
+          "type": "object",
+          "required": ["apiHost", "trackerKey", "productsIndex"],
+          "properties": {
+            "placeholder": {
+              "title": "Placeholder for search bar",
+              "type": "string",
+              "default": "Search everything at the store"
+            },
+            "apiHost": {
+              "title": "Synerise api host",
+              "type": "string",
+              "enumNames": [
+                "https://api.synerise.com",
+                "https://api.geb.synerise.com",
+                "https://api.azu.synerise.com"
+              ],
+              "enum": [
+                "https://api.synerise.com",
+                "https://api.geb.synerise.com",
+                "https://api.azu.synerise.com"
+              ],
+              "default": "https://api.synerise.com"
+            },
+            "trackerKey": {
+              "title": "Tracker Key",
+              "type": "string"
+            },
+            "productsIndex": {
+              "title": "Search index",
+              "type": "string"
+            },
+            "suggestionsIndex": {
+              "title": "Suggestions index",
+              "type": "string"
+            },
+            "articlesIndex": {
+              "title": "Articles index",
+              "type": "string"
+            }
+          }
+        },
+        "signInButton": {
+          "title": "Sign in button",
+          "type": "object",
+          "properties": {
+            "icon": {
+              "title": "Icon",
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "title": "Image source",
+                  "type": "string",
+                  "enumNames": ["User"],
+                  "enum": ["User"],
+                  "default": "User"
+                },
+                "alt": {
+                  "title": "Image alternative text",
+                  "type": "string",
+                  "default": "User"
+                }
+              }
+            },
+            "label": {
+              "title": "Call to action",
+              "type": "string",
+              "default": "Sign In"
+            },
+            "myAccountLabel": {
+              "title": "My account label",
+              "type": "string",
+              "default": "My Account"
+            }
+          }
+        },
+        "cartIcon": {
+          "title": "Cart icon",
+          "type": "object",
+          "properties": {
+            "icon": {
+              "title": "Image source",
+              "type": "string",
+              "enumNames": ["Shopping Cart"],
+              "enum": ["ShoppingCart"],
+              "default": "ShoppingCart"
+            },
+            "alt": {
+              "title": "Image alternative text",
+              "type": "string",
+              "default": "Shopping Cart"
+            }
+          }
+        },
+        "navigation": {
+          "title": "Navigation",
+          "type": "object",
+          "properties": {
+            "regionalization": {
+              "title": "Regionalization",
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "title": "Use regionalization?",
+                  "type": "boolean",
+                  "default": true
+                },
+                "icon": {
+                  "title": "Icon",
+                  "type": "object",
+                  "properties": {
+                    "icon": {
+                      "title": "Icon",
+                      "type": "string",
+                      "enumNames": ["Map Pin"],
+                      "enum": ["MapPin"],
+                      "default": "MapPin"
+                    },
+                    "alt": {
+                      "title": "Alternative label",
+                      "type": "string",
+                      "default": "Map Pin"
+                    }
+                  }
+                },
+                "label": {
+                  "title": "Call to action",
+                  "type": "string",
+                  "default": "Set your location"
+                }
+              }
+            },
+            "pageLinks": {
+              "title": "Links",
+              "type": "array",
+              "items": {
+                "title": "Link",
+                "type": "object",
+                "required": ["url", "text"],
+                "properties": {
+                  "text": {
+                    "title": "Link text",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Link URL",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "menu": {
+              "title": "Menu",
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "title": "Icon",
+                  "type": "object",
+                  "properties": {
+                    "icon": {
+                      "title": "Icon",
+                      "type": "string",
+                      "enumNames": ["List"],
+                      "enum": ["List"],
+                      "default": "List"
+                    },
+                    "alt": {
+                      "title": "Image alternative text",
+                      "type": "string",
+                      "default": "List"
+                    }
+                  }
+                }
+              }
+            },
+            "home": {
+              "title": "Home",
+              "type": "object",
+              "properties": {
+                "label": {
+                  "title": "Go to Home label",
+                  "type": "string",
+                  "default": "Go to Home"
+                }
+              }
+            }
+          }
         }
       }
     }
