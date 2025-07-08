@@ -1,7 +1,9 @@
 import { ProductGallerySection } from "./sections/ProductGallerySection";
-import { GlobalTracker } from './sections/GlobalTracker'
+import { SyneriseNavbarSection } from "./sections/SyneriseNavbarSection";
+import { GlobalTracker } from "./sections/GlobalTracker";
 
 export default {
   SyneriseProductGallery: ProductGallerySection,
-  GlobalTracker
+  SyneriseNavbarSection,
+  GlobalTracker,
 };
