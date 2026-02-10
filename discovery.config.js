@@ -1,23 +1,22 @@
-
 module.exports = {
   seo: {
-  "title": "FastStore",
-  "description": "A fast and performant store framework",
-  "titleTemplate": "%s | FastStore",
-  "author": "FastStore"
-},
+    title: "FastStore",
+    description: "A fast and performant store framework",
+    titleTemplate: "%s | FastStore",
+    author: "FastStore",
+  },
 
   // Theming
-  theme: 'custom-theme',
+  theme: "custom-theme",
 
   // Ecommerce Platform
-  platform: 'vtex',
+  platform: "vtex",
 
   // Platform specific configs for API
   api: {
-    storeId: "synerisepartnerar",
-    workspace: 'master',
-    environment: 'vtexcommercestable',
+    storeId: "synerisedemofaststore",
+    workspace: "master",
+    environment: "vtexcommercestable",
     hideUnavailableItems: false,
     incrementAddress: false,
   },
@@ -39,7 +38,7 @@ module.exports = {
   },
 
   cart: {
-    id: '',
+    id: "",
     items: [],
     messages: [],
     shouldSplitItem: true,
@@ -53,7 +52,7 @@ module.exports = {
   accountUrl: "https://secure.faststore-demo.stage.snrstage.com/api/io/account",
 
   previewRedirects: {
-    home: '/',
+    home: "/",
     plp: "/women",
     search: "/s?q=Stylinger",
     pdp: "/stylinger-kemiah-top-qoj/p",
@@ -61,9 +60,9 @@ module.exports = {
 
   // Lighthouse CI
   lighthouse: {
-    server: process.env.BASE_SITE_URL || 'https://localhost',
+    server: process.env.BASE_SITE_URL || "https://localhost",
     pages: {
-      home: '/',
+      home: "/",
       pdp: "/stylinger-kemiah-top-qoj/p",
       collection: "/women",
     },
@@ -72,13 +71,14 @@ module.exports = {
   // E2E CI
   cypress: {
     pages: {
-      home: '/',
+      home: "/",
       pdp: "/stylinger-kemiah-top-qoj/p",
       collection: "/women",
-      collection_filtered: "/women/?category-1=women&brand=Stylinger&facets=category-1%2Cbrand%27",
+      collection_filtered:
+        "/women/?category-1=women&brand=Stylinger&facets=category-1%2Cbrand%27",
       search: "/s?q=Stylinger",
     },
-    browser: 'electron',
+    browser: "electron",
   },
 
   analytics: {
@@ -93,7 +93,7 @@ module.exports = {
 
   vtexHeadlessCms: {
     webhookUrls: [
-      "https://synerisepartnerar.myvtex.com/cms-releases/webhook-releases",
+      "https://synerisedemofaststore.myvtex.com/cms-releases/webhook-releases",
     ],
   },
-}
+};
