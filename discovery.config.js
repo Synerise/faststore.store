@@ -14,22 +14,22 @@ module.exports = {
 
   // Platform specific configs for API
   api: {
-    storeId: "synerisedemofaststore",
+    storeId: process.env.NEXT_PUBLIC_STORE_ID || "synerisedemofaststore",
     workspace: "master",
     environment: "vtexcommercestable",
-    hideUnavailableItems: false,
+    hideUnavailableItems: true,
     incrementAddress: false,
   },
 
   // Default session
   session: {
     currency: {
-      code: "PLN",
-      symbol: "zł",
+      code: "USD",
+      symbol: "$",
     },
-    locale: "pl-PL",
+    locale: "en-US",
     channel: '{"salesChannel":1,"regionId":""}',
-    country: "POL",
+    country: "USA",
     deliveryMode: null,
     addressType: null,
     postalCode: null,
@@ -45,26 +45,26 @@ module.exports = {
   },
 
   // Production URLs
-  storeUrl: "https://www.faststore-demo.stage.snrstage.com",
-  secureSubdomain: "https://secure.faststore-demo.stage.snrstage.com",
-  checkoutUrl: "https://secure.faststore-demo.stage.snrstage.com/checkout",
-  loginUrl: "https://secure.faststore-demo.stage.snrstage.com/api/io/login",
-  accountUrl: "https://secure.faststore-demo.stage.snrstage.com/api/io/account",
+  storeUrl: "https://synerisedemofaststore.vtex.app",
+  secureSubdomain: "https://secure.vtexfaststore.com/",
+  checkoutUrl: "https://secure.vtexfaststore.com/checkout",
+  loginUrl: "https://secure.vtexfaststore.com/api/io/login",
+  accountUrl: "https://secure.vtexfaststore.com/api/io/account",
 
   previewRedirects: {
     home: "/",
-    plp: "/women",
-    search: "/s?q=Stylinger",
-    pdp: "/stylinger-kemiah-top-qoj/p",
+    plp: "/grocery",
+    search: "/s?q=Veja",
+    pdp: "/limpador-perfumado-veja-flores-do-mediterraneo--1l-8853860/p",
   },
 
   // Lighthouse CI
   lighthouse: {
-    server: process.env.BASE_SITE_URL || "https://localhost",
+    server: process.env.BASE_SITE_URL || "http://localhost:3000",
     pages: {
       home: "/",
-      pdp: "/stylinger-kemiah-top-qoj/p",
-      collection: "/women",
+      pdp: "/limpador-perfumado-veja-flores-do-mediterraneo--1l-8853860/p",
+      collection: "/grocery",
     },
   },
 
@@ -72,18 +72,18 @@ module.exports = {
   cypress: {
     pages: {
       home: "/",
-      pdp: "/stylinger-kemiah-top-qoj/p",
-      collection: "/women",
+      pdp: "/limpador-perfumado-veja-flores-do-mediterraneo--1l-8853860/p",
+      collection: "/grocery",
       collection_filtered:
-        "/women/?category-1=women&brand=Stylinger&facets=category-1%2Cbrand%27",
-      search: "/s?q=Stylinger",
+        "/grocery/?category-1=grocery&brand=Veja&facets=category-1%2Cbrand%27",
+      search: "/s?q=Veja",
     },
     browser: "electron",
   },
 
   analytics: {
     // https://developers.google.com/tag-platform/tag-manager/web#standard_web_page_installation,
-    gtmContainerId: "GTM-1234567",
+    gtmContainerId: "",
   },
 
   experimental: {
