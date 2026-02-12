@@ -14,7 +14,7 @@ module.exports = {
 
   // Platform specific configs for API
   api: {
-    storeId: process.env.NEXT_PUBLIC_STORE_ID || "synerisedemofaststore",
+    storeId: "synerisedemofaststore",
     workspace: "master",
     environment: "vtexcommercestable",
     hideUnavailableItems: true,
