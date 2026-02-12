@@ -11,7 +11,7 @@
     "test": "faststore test"
   },
   "dependencies": {
-    "@faststore/cli": "^3.97.0",
+    "@faststore/cli": "3.60.3",
     "@synerise/faststore-api": "0.0.3",
     "cookie": "^1.0.2",
     "is-mobile": "^5.0.0",
