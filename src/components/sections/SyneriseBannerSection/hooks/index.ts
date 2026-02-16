@@ -1,0 +1,1 @@
+export { useSyneriseBanner } from "./useSyneriseBanner";
