@@ -8,14 +8,14 @@ import { StoreProduct } from "@generated/graphql";
 
 import ProductShelfSkeleton from "src/components/skeletons/ProductShelfSkeleton";
 
-import {
-  RecommendationShelfProps,
-  RecommendationViewEvent,
-  RecommendationClickEvent,
-} from "./RecommendationShelf.types";
+import { RecommendationShelfProps } from "./RecommendationShelf.types";
 import styles from "./RecommendationShelf.module.scss";
 import { useRecommendations } from "./hooks";
 import { RecommendationItem } from "./RecommendationItem";
+import {
+  RecommendationClickEvent,
+  RecommendationViewEvent,
+} from "../../../types";
 
 const RecommendationShelf = ({
   title,
