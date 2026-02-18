@@ -64,13 +64,19 @@ export function useBannerSubCategories({
         setError(true);
         setItems([]);
       } else {
-        const mapped: BannerItem[] = (data as SubCategoryItem[]).map((item) => ({
-          firstCategory: item.firstCategory ?? "",
-          secondCategory: item.secondCategory ?? "",
-          image: item.subCategoryImage ?? "",
-          link: `/${item.firstCategory ?? ""}/${item.secondCategory ?? ""}`.replace(/\/+/g, "/"),
-          itemId: item.itemId ?? "",
-        }));
+        const slug = (s: string) => (s ?? "").trim().replace(/\s+/g, "-");
+        const mapped: BannerItem[] = (data as SubCategoryItem[]).map((item) => {
+          const first = slug(item.firstCategory ?? "");
+          const second = slug(item.secondCategory ?? "");
+          const path = `/${first}/${second}`.replace(/\/+/g, "/");
+          return {
+            firstCategory: item.firstCategory ?? "",
+            secondCategory: item.secondCategory ?? "",
+            image: item.subCategoryImage ?? "",
+            link: path,
+            itemId: item.itemId ?? "",
+          };
+        });
         setItems(mapped);
         setError(false);
       }
