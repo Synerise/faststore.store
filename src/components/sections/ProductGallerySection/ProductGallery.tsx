@@ -181,7 +181,7 @@ export const ProductGallery = ({
                                 }}
                                 href={prepareUrl({...state, page: next.cursor}).toString()}
                             >
-                                Próxima página
+                                Next Page
                             </UILinkButton>
                         </div>
                     )}

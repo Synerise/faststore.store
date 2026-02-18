@@ -157,6 +157,10 @@
           background-color: #fff;
           border-radius: 0;
           overflow: hidden;
+          &:hover {
+            border-color: #e3e6e8 !important;
+          }
+          
         }
       }
 
@@ -165,6 +169,8 @@
 
         [data-fs-button-wrapper] {
           background-color: #000 !important;
+          border-color: transparent !important;
+          color: #fff !important;
           
           &:hover {
             background-color: #151515 !important;
@@ -185,6 +191,7 @@
           font-size: 0.875rem;
           letter-spacing: 0.04em;
           text-transform: uppercase;
+          border-color: transparent !important;
 
           &:hover {
             background-color: #151515 !important;
