@@ -1,5 +1,7 @@
 @layer components {
   .productGallery {
+    background-color: #f5f5f5;
+
     @include media("<notebook") {
       margin-top: 0;
       &:last-child { margin-bottom: 0; }
@@ -38,5 +40,152 @@
     @import "@faststore/ui/src/components/organisms/PriceRange/styles.scss";
     @import "@faststore/ui/src/components/organisms/ProductGrid/styles.scss";
     @import "@faststore/ui/src/components/organisms/ProductGallery/styles.scss";
+
+    // Layout: filtros no topo (full width), produtos abaixo em 4 colunas fullscreen
+    [data-fs-product-listing] {
+      background-color: #f5f5f5;
+      width: 100%;
+      max-width: 100%;
+
+      [data-fs-product-listing-search-term] {
+        padding: var(--fs-spacing-4) var(--fs-spacing-4) var(--fs-spacing-5);
+        padding-bottom: var(--fs-spacing-4);
+
+        h1 {
+          font-size: 1.75rem;
+          font-weight: 700;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+
+          @include media(">=tablet") {
+            font-size: 2rem;
+          }
+
+          span {
+            font-weight: 700;
+          }
+        }
+      }
+
+      [data-fs-product-listing-content-grid] {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 var(--fs-spacing-4) var(--fs-spacing-6);
+
+        @include media(">=notebook") {
+          display: flex !important;
+          flex-direction: column !important;
+          grid-template-rows: unset;
+          grid-template-columns: unset;
+        }
+      }
+
+      [data-fs-product-listing-filters] {
+        width: 100%;
+        order: 1;
+
+        @include media(">=notebook") {
+          position: static !important;
+          grid-row: unset;
+          grid-column: unset;
+          align-self: stretch;
+        }
+      }
+
+      [data-fs-product-listing-toolbar] {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--fs-spacing-3);
+        order: 2;
+        width: 100%;
+        min-height: 3.5rem;
+        padding: var(--fs-spacing-2) 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        margin-bottom: var(--fs-spacing-3);
+      }
+
+      [data-fs-product-listing-results-count] {
+        order: unset;
+        padding: 0;
+        min-height: initial;
+        background-color: transparent;
+
+        @include media(">=notebook") {
+          justify-content: flex-start;
+        }
+      }
+
+      [data-fs-product-listing-sort] {
+        order: unset;
+        min-height: initial;
+        padding: 0;
+        width: auto;
+        justify-content: flex-end;
+
+        @include media(">=notebook") {
+          [data-fs-button] {
+            display: flex !important;
+          }
+        }
+      }
+
+      [data-fs-product-listing-results] {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        background-color: #f5f5f5;
+        padding: var(--fs-spacing-4) 0;
+        border-top: none;
+
+        @include media(">=notebook") {
+          grid-column: unset;
+        }
+
+        [data-fs-product-grid] {
+          --fs-product-grid-columns-mobile: 2;
+          --fs-product-grid-columns-tablet: 4;
+          --fs-product-grid-columns-desktop: 4;
+          --fs-product-grid-gap-mobile: var(--fs-spacing-4);
+          --fs-product-grid-gap-tablet: var(--fs-spacing-4);
+          --fs-product-grid-gap-desktop: var(--fs-spacing-5);
+          min-height: rem(320px);
+          width: 100%;
+        }
+
+        [data-fs-product-card] {
+          background-color: #fff;
+          border-radius: 0;
+          overflow: hidden;
+        }
+      }
+
+      [data-fs-product-listing-pagination] {
+        padding: var(--fs-spacing-5) 0;
+
+        [data-fs-button],
+        [data-fs-link-button] {
+          width: 100%;
+          max-width: 100%;
+          justify-content: center;
+          padding: var(--fs-spacing-3) var(--fs-spacing-5);
+          background-color: #000 !important;
+          color: #fff !important;
+          border: none;
+          font-weight: 600;
+          font-size: 0.875rem;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+
+          &:hover {
+            background-color: #333 !important;
+            color: #fff !important;
+          }
+        }
+      }
+    }
   }
 }
