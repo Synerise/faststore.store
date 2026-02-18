@@ -46,8 +46,8 @@ module.exports = {
 
   // Production URLs
   storeUrl: "https://synerisedemofaststore.vtex.app",
-  secureSubdomain: "https://secure.vtexfaststore.com/",
-  checkoutUrl: "https://synerisedemofaststore.myvtex.com/",
+  secureSubdomain: "https://synerisedemofaststore.myvtex.com/",
+  checkoutUrl: "https://synerisedemofaststore.myvtex.com/checkout",
   loginUrl: "https://synerisedemofaststore.myvtex.com/login",
   accountUrl: "https://synerisedemofaststore.myvtex.com/account",
 
