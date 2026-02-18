@@ -4,6 +4,7 @@ import { GlobalTracker } from "./sections/GlobalTracker";
 import { RecommendationShelf } from "./sections/RecommendationShelf";
 import { SyneriseBannerSection } from "./sections/SyneriseBannerSection";
 import { BannerSubCategoriesSection } from "./sections/BannerSubCategoriesSection";
+import { MenuCategoriesSection } from "./sections/MenuCategoriesSection";
 
 export default {
   SyneriseProductGallery: ProductGallerySection,
@@ -11,5 +12,6 @@ export default {
   SyneriseNavbarSection,
   SyneriseBannerSection,
   BannerSubCategoriesSection,
+  MenuCategoriesSection,
   GlobalTracker,
 };

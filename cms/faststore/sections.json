@@ -498,6 +498,52 @@
     }
   },
   {
+    "name": "MenuCategoriesSection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Menu - Categories",
+      "description": "Menu horizontal de categorias. Itens cadastrados no CMS (sem API).",
+      "type": "object",
+      "required": ["backgroundColor", "textColor", "menu"],
+      "properties": {
+        "backgroundColor": {
+          "type": "string",
+          "title": "Cor do fundo",
+          "default": "#ffffff",
+          "description": "Cor de fundo do menu (ex: #ffffff)"
+        },
+        "textColor": {
+          "type": "string",
+          "title": "Cor do Texto",
+          "default": "#444444",
+          "description": "Cor do texto dos itens (ex: #444444)"
+        },
+        "menu": {
+          "type": "array",
+          "title": "Menu",
+          "default": [],
+          "description": "Itens do menu (Texto + Link)",
+          "items": {
+            "title": "Item do menu",
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "title": "Texto",
+                "default": ""
+              },
+              "link": {
+                "type": "string",
+                "title": "Link",
+                "default": ""
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
     "name": "GlobalTracker",
     "requiredScopes": [],
     "schema": {
