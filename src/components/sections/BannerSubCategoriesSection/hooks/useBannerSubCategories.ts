@@ -31,8 +31,17 @@ export function useBannerSubCategories({
 
   const fetchItems = useCallback(async () => {
     if (typeof window === "undefined") return;
-    const clientUUID = (window as unknown as { SyneriseTC?: { uuid?: string } })
-      ?.SyneriseTC?.uuid;
+    const getClientUUID = () =>
+      (window as unknown as { SyneriseTC?: { uuid?: string } })?.SyneriseTC?.uuid;
+
+    let clientUUID = getClientUUID();
+
+    // Se o clientUUID ainda não estiver disponível, aguardamos até 2s antes de cair em fallback
+    if (!clientUUID) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      clientUUID = getClientUUID();
+    }
+
     if (!clientUUID) {
       setError(true);
       setLoading(false);
