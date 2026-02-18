@@ -48,8 +48,8 @@ module.exports = {
   storeUrl: "https://synerisedemofaststore.vtex.app",
   secureSubdomain: "https://secure.vtexfaststore.com/",
   checkoutUrl: "https://synerisedemofaststore.myvtex.com/",
-  loginUrl: "https://synerisedemofaststore.myvtex.com/api/io/login",
-  accountUrl: "https://synerisedemofaststore.myvtex.com/api/io/account",
+  loginUrl: "https://synerisedemofaststore.myvtex.com/login",
+  accountUrl: "https://synerisedemofaststore.myvtex.com/account",
 
   previewRedirects: {
     home: "/",
