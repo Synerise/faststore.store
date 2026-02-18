@@ -383,6 +383,121 @@
     }
   },
   {
+    "name": "SyneriseBannerSection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Synerise Banner",
+      "description": "Faixa horizontal no topo com textos rotativos da campanha Synerise",
+      "type": "object",
+      "required": ["fallbackText", "backgroundColor", "campaignId", "token"],
+      "properties": {
+        "fallbackText": {
+          "type": "string",
+          "title": "Texto de fallback",
+          "description": "Exibido quando a API falha ou clientUUID não está disponível"
+        },
+        "backgroundColor": {
+          "type": "string",
+          "title": "Cor de fundo",
+          "default": "#1a1a1a",
+          "description": "Ex: #1a1a1a ou rgb(26,26,26)"
+        },
+        "textColor": {
+          "type": "string",
+          "title": "Cor do texto",
+          "default": "#ffffff",
+          "description": "Cor do texto da faixa"
+        },
+        "campaignId": {
+          "type": "string",
+          "title": "Campaign ID",
+          "description": "ID da campanha (ex: O5x2fJb60Omz)"
+        },
+        "token": {
+          "type": "string",
+          "title": "Token API",
+          "description": "Token de autenticação da API Synerise"
+        },
+        "apiHost": {
+          "type": "string",
+          "title": "API Host",
+          "default": "https://api.azu.synerise.com",
+          "description": "Host base da API"
+        },
+        "rotationIntervalSeconds": {
+          "type": "integer",
+          "title": "Intervalo de rotação (segundos)",
+          "default": 4,
+          "minimum": 3,
+          "maximum": 5,
+          "description": "Intervalo entre troca de textos (3 a 5 segundos)"
+        }
+      }
+    }
+  },
+  {
+    "name": "BannerSubCategoriesSection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Banner SubCategories - Synerise",
+      "description": "Carrossel horizontal de banners de subcategorias (API Synerise). 4 no desktop, 2 no tablet, 1 no mobile.",
+      "type": "object",
+      "required": ["token", "campaignId"],
+      "properties": {
+        "token": {
+          "type": "string",
+          "title": "Token API",
+          "description": "Token de autenticação da API Synerise"
+        },
+        "campaignId": {
+          "type": "string",
+          "title": "ID da recomendação",
+          "description": "ID da campanha (ex: ugXXWxq3Wpwi)"
+        },
+        "autoplay": {
+          "type": "boolean",
+          "title": "Autoplay",
+          "default": true,
+          "description": "Ativar rotação automática"
+        },
+        "interval": {
+          "type": "integer",
+          "title": "Intervalo (segundos)",
+          "default": 5,
+          "minimum": 4,
+          "maximum": 6,
+          "description": "Intervalo entre slides (4 a 6 segundos)"
+        },
+        "showArrows": {
+          "type": "boolean",
+          "title": "Exibir setas",
+          "default": true,
+          "description": "Exibir setas de navegação"
+        },
+        "showDots": {
+          "type": "boolean",
+          "title": "Exibir dots",
+          "default": true,
+          "description": "Exibir indicadores (dots)"
+        },
+        "fallbackImages": {
+          "type": "array",
+          "title": "Imagens de fallback",
+          "description": "URLs de imagens exibidas quando a API falha ou não retorna dados",
+          "items": {
+            "type": "string"
+          }
+        },
+        "apiHost": {
+          "type": "string",
+          "title": "API Host",
+          "default": "https://api.azu.synerise.com",
+          "description": "Host base da API"
+        }
+      }
+    }
+  },
+  {
     "name": "GlobalTracker",
     "requiredScopes": [],
     "schema": {
