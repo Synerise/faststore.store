@@ -34,6 +34,7 @@ type ProductGalleryProps = {
 
 export const ProductGallery = ({
    isLoading,
+   title,
    searchTerm,
    searchTermLabel,
    totalCount,
@@ -63,9 +64,15 @@ export const ProductGallery = ({
 
     return (
         <section data-testid="product-gallery" data-fs-product-listing>
-            {searchTerm && (
+            {(title || searchTerm) && (
                 <header data-fs-product-listing-search-term data-fs-content="product-gallery">
-                    <h1>{searchTermLabel} <span>{searchTerm}</span></h1>
+                    <h1>
+                        {searchTerm ? (
+                            <>{searchTermLabel} <span>{searchTerm}</span></>
+                        ) : (
+                            <span>{title}</span>
+                        )}
+                    </h1>
                 </header>
             )}
             <div data-fs-product-listing-content-grid data-fs-content="product-gallery">
@@ -92,49 +99,51 @@ export const ProductGallery = ({
                         />
                     </div>
                 )}
-                <div data-fs-product-listing-results-count data-count={totalCount}>
-                    <UISkeleton
-                        data-fs-product-listing-results-count-skeleton
-                        size={{ width: '100%', height: '1.5rem' }}
-                        loading={isLoading || typeof totalCount === 'undefined'}
-                    >
-                        <h2 data-testid="total-product-count">
-                            {totalCount} {totalCountLabel}
-                        </h2>
-                    </UISkeleton>
-                </div>
-                <div data-fs-product-listing-sort>
-                    <UISkeleton
-                        data-fs-product-listing-sort-skeleton
-                        size={{ width: 'auto', height: '1.5rem' }}
-                        loading={isLoading || !state.sort}
-                    >
-                        {state.sort.length > 0 && <ProductGallerySort options={state.sort} />}
-                    </UISkeleton>
+                <div data-fs-product-listing-toolbar>
+                    <div data-fs-product-listing-results-count data-count={totalCount}>
+                        <UISkeleton
+                            data-fs-product-listing-results-count-skeleton
+                            size={{ width: '100%', height: '1.5rem' }}
+                            loading={isLoading || typeof totalCount === 'undefined'}
+                        >
+                            <h2 data-testid="total-product-count">
+                                {totalCount} {totalCountLabel}
+                            </h2>
+                        </UISkeleton>
+                    </div>
+                    <div data-fs-product-listing-sort>
+                        <UISkeleton
+                            data-fs-product-listing-sort-skeleton
+                            size={{ width: 'auto', height: '1.5rem' }}
+                            loading={isLoading || !state.sort}
+                        >
+                            {state.sort.length > 0 && <ProductGallerySort options={state.sort} />}
+                        </UISkeleton>
 
-                    <UISkeleton
-                        data-fs-product-listing-filter-button-skeleton
-                        size={{width: '6rem', height: '1.5rem'}}
-                        loading={isLoading || !hasFacetsLoaded}
-                    >
-                        {hasFacetsLoaded && state.filters?.length > 0 && (
-                            <UIButton
-                                variant="tertiary"
-                                data-testid="open-filter-button"
-                                icon={
-                                    <UIIcon
-                                        width={16}
-                                        height={16}
-                                        name="FadersHorizontal"
-                                    />
-                                }
-                                iconPosition="left"
-                                onClick={openFilter}
-                            >
-                                Open Filters
-                            </UIButton>
-                        )}
-                    </UISkeleton>
+                        <UISkeleton
+                            data-fs-product-listing-filter-button-skeleton
+                            size={{width: '6rem', height: '1.5rem'}}
+                            loading={isLoading || !hasFacetsLoaded}
+                        >
+                            {hasFacetsLoaded && state.filters?.length > 0 && (
+                                <UIButton
+                                    variant="tertiary"
+                                    data-testid="open-filter-button"
+                                    icon={
+                                        <UIIcon
+                                            width={16}
+                                            height={16}
+                                            name="FadersHorizontal"
+                                        />
+                                    }
+                                    iconPosition="left"
+                                    onClick={openFilter}
+                                >
+                                    Filtros
+                                </UIButton>
+                            )}
+                        </UISkeleton>
+                    </div>
                 </div>
                 <div data-fs-product-listing-results>
                     {prev ? (
@@ -164,7 +173,7 @@ export const ProductGallery = ({
                             <UILinkButton
                                 testId="show-more"
                                 rel="next"
-                                variant="secondary"
+                                variant="primary"
                                 onClick={(e) => {
                                     e.currentTarget.blur()
                                     e.preventDefault()
@@ -172,7 +181,7 @@ export const ProductGallery = ({
                                 }}
                                 href={prepareUrl({...state, page: next.cursor}).toString()}
                             >
-                                Load more products
+                                Next Page
                             </UILinkButton>
                         </div>
                     )}
