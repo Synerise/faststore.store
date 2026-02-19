@@ -383,7 +383,6 @@
     }
   },
   {
-<<<<<<< feature/CSID-30014
     "name": "SectionRecommendation",
     "requiredScopes": [],
     "schema": {
@@ -416,7 +415,14 @@
               "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
-=======
+
+            }
+          }
+        }
+      }
+    }
+  },
+  {
     "name": "SyneriseBannerSection",
     "requiredScopes": [],
     "schema": {
@@ -532,6 +538,44 @@
     }
   },
   {
+    "name": "BannerCategorySection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Banner Category - Synerise",
+      "description": "Banner with last visited category based on recommendation (API Synerise).",
+      "type": "object",
+      "required": ["token", "campaignId"],
+      "properties": {
+        "token": {
+          "type": "string",
+          "title": "Token API",
+          "description": "Token for Synerise API authentication"
+        },
+        "campaignId": {
+          "type": "string",
+          "title": "ID of campaign",
+          "description": "ID of campaign (ex: ugXXWxq3Wpwi)"
+        },
+          "fallbackImage": {
+            "type": "string",
+            "title": "Fallback image",
+            "description": "Image displayed when the API fails or does not return data"
+          },
+          "fallbackImageAPP": {
+            "type": "string",
+            "title": "Fallback image for app",
+            "description": "Image displayed when the API fails or does not return data"
+          },
+        "apiHost": {
+          "type": "string",
+          "title": "API Host",
+          "default": "https://api.azu.synerise.com",
+          "description": "Base API host"
+        }
+      }
+    }
+  },
+  {
     "name": "MenuCategoriesSection",
     "requiredScopes": [],
     "schema": {
@@ -571,7 +615,6 @@
                 "title": "Link",
                 "default": ""
               }
->>>>>>> main
             }
           }
         }
