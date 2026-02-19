@@ -91,6 +91,17 @@ const query = gql(`query SyneriseRecommendationsQuery(
             error
             message
           }
+          rows {
+            attributeValue
+            itemIds
+            metadata {
+              category
+              firstCategory
+              itemId
+              secondCategory
+              sectionImage
+            }
+          }
         }
       }
     }

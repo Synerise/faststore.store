@@ -383,6 +383,40 @@
     }
   },
   {
+<<<<<<< feature/CSID-30014
+    "name": "SectionRecommendation",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Section Recommendations",
+      "description": "Section Recommendations - powered by Synerise",
+      "type": "object",
+      "required": ["campaignId", "itemsPerPage"],
+      "properties": {
+        "campaignId": {
+          "type": "string",
+          "title": "Campaign ID",
+          "description": "AI Recommendation Campaign ID"
+        },
+        "itemsPerPage": {
+          "type": "integer",
+          "title": "Number of items per page",
+          "default": 5,
+          "description": "Number of items to display per page in carousel"
+        },
+        "productCardConfiguration": {
+          "title": "Product Card Configuration",
+          "type": "object",
+          "properties": {
+            "showDiscountBadge": {
+              "title": "Show discount badge?",
+              "type": "boolean",
+              "default": true
+            },
+            "bordered": {
+              "title": "Cards should be bordered?",
+              "type": "boolean",
+              "default": true
+=======
     "name": "SyneriseBannerSection",
     "requiredScopes": [],
     "schema": {
@@ -537,6 +571,7 @@
                 "title": "Link",
                 "default": ""
               }
+>>>>>>> main
             }
           }
         }
