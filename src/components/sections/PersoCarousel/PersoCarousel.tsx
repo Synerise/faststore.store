@@ -18,11 +18,13 @@ import NavigationIconRight from "./NavigationIconRight";
 import styles from "./PersoCarousel.module.scss";
 import { PersoCarouselTypes } from "./PersoCarousel.types";
 import PersoCarouselItem from "./PersoCarouselItem";
+import { useFallback } from "../../../hooks";
 
 const PersoCarousel = ({
   title,
   itemsPerPage,
   campaignId,
+  clusterId,
   productCardConfiguration: { showDiscountBadge },
 }: PersoCarouselTypes) => {
   const id = useId();
@@ -38,6 +40,12 @@ const PersoCarousel = ({
   const correlationId =
     data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
 
+  const { products: fallbackProducts, loading: fallbackLoading } =
+    useFallback(clusterId);
+
+  const carouselItems =
+    items.length > 0 ? (items as unknown as StoreProduct[]) : fallbackProducts;
+
   useEffect(() => {
     if (inView && !viewedOnce.current && items.length) {
       sendAnalyticsEvent<RecommendationViewEvent>({
@@ -52,7 +60,9 @@ const PersoCarousel = ({
     }
   }, [inView, items, campaignId]);
 
-  if (!loading && items.length === 0) {
+  const isLoading = loading || (items.length === 0 && fallbackLoading);
+
+  if (!isLoading && carouselItems.length === 0) {
     return null;
   }
 
@@ -69,7 +79,7 @@ const PersoCarousel = ({
 
   return (
     <section ref={ref} className={`${styles.persoCarousel}`}>
-      <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
+      <ProductShelfSkeleton loading={isLoading} itemsPerPage={itemsPerPage}>
         <h2 className="persoCarouselTitle layout__content">{title}</h2>
         <ProductShelf>
           <Carousel
@@ -83,7 +93,7 @@ const PersoCarousel = ({
               right: <NavigationIconRight />,
             }}
           >
-            {items.map((item) => (
+            {carouselItems.map((item) => (
               <PersoCarouselItem
                 key={item.isVariantOf.productGroupID}
                 item={item as unknown as StoreProduct}
