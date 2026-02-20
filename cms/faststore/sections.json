@@ -407,6 +407,11 @@
           "title": "Campaign ID",
           "description": "AI Recommendation Campaign ID"
         },
+        "clusterId": {
+          "type": "string",
+          "title": "Cluster ID",
+          "description": "Cluster ID to fetch fallback products"
+        },
         "itemsPerPage": {
           "type": "integer",
           "title": "Number of items per page",
