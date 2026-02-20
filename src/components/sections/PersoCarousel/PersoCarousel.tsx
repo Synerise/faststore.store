@@ -60,7 +60,7 @@ const PersoCarousel = ({
     }
   }, [inView, items, campaignId]);
 
-  const isLoading = loading || fallbackLoading;
+  const isLoading = (loading && items.length > 0) || fallbackLoading;
 
   const handleItemClick = (sku: string) => {
     sendAnalyticsEvent<RecommendationClickEvent>({
