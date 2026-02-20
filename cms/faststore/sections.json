@@ -415,7 +415,6 @@
               "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
-
             }
           }
         }

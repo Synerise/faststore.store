@@ -44,22 +44,37 @@ const SectionRecommendation = ({
 
     const items = data?.syneriseAIRecommendations.recommendations?.data || [];
     const correlationId =
-        data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
-    const slots = data?.syneriseAIRecommendations.recommendations?.extras.slots;
+        data?.syneriseAIRecommendations.recommendations?.extras?.correlationId;
+    const slots = data?.syneriseAIRecommendations.recommendations?.extras?.slots || [];
+
+    // Match por id / productID / sku / productGroupID (payload: data[].itemId ↔ row.itemIds)
+    const getProductById = (itemId: string) =>
+        items.find(
+            (p: { id?: string; sku?: string; isVariantOf?: { productGroupID?: string } }) =>
+                String(p.id) === String(itemId) ||
+                String(p.sku) === String(itemId) ||
+                String(p.isVariantOf?.productGroupID) === String(itemId),
+        );
+
+    // Produtos por row preservando a ordem de row.itemIds
+    const getProductsForRow = (row: { itemIds?: string[] | null }) =>
+        (row?.itemIds || [])
+            .map((itemId) => getProductById(itemId))
+            .filter(Boolean) as typeof items;
 
     useEffect(() => {
         if (inView && !viewedOnce.current && items.length) {
-        sendAnalyticsEvent<RecommendationViewEvent>({
-            name: "recommendation_view",
-            params: {
-            campaignId,
-            correlationId,
-            items: items.map((item) => item.isVariantOf.productGroupID),
-            },
-        });
-        viewedOnce.current = true;
+            sendAnalyticsEvent<RecommendationViewEvent>({
+                name: "recommendation_view",
+                params: {
+                    campaignId,
+                    correlationId,
+                    items: items.map((item) => item.isVariantOf.productGroupID),
+                },
+            });
+            viewedOnce.current = true;
         }
-    }, [inView, items, campaignId]);
+    }, [inView, items, campaignId, correlationId]);
 
     if (!loading && items.length === 0) {
         return null;
@@ -67,73 +82,83 @@ const SectionRecommendation = ({
 
     const handleItemClick = (sku: string) => {
         sendAnalyticsEvent<RecommendationClickEvent>({
-        name: "recommendation_click",
-        params: {
-            campaignId,
-            correlationId,
-            item: sku,
-        },
+            name: "recommendation_click",
+            params: {
+                campaignId,
+                correlationId,
+                item: sku,
+            },
         });
     };
 
+    // 4 produtos por linha no desktop
+    const carouselItemsPerPage = isMobile ? 1 : 4;
+
     return (
         <>
-        {slots?.map((slot) => (
-            <>
-            {slot?.rows?.map((row) => (
-        <section
-            key={row?.attributeValue}
-            ref={ref}   
-            className={`${styles.sectionRecommendation} section-product-shelf layout__section section`}
-        >
-            <div className={styles.shelfWrapper}>
-                <div className={styles.categoryImage}>
-                    <SkeletonUI 
-                        loading={loading} 
-                        style={{ borderRadius: '10px' }}
-                        size={{ height: '100%', width: 'auto' }}    
-                    >
-                        <img 
-                            data-fs-image
-                            src={row?.metadata?.sectionImage || ""}
-                            alt={row?.metadata?.category || ""} />
-                    </SkeletonUI>
-                </div>
+            {slots.map((slot) =>
+                (slot?.rows || []).map((row) => {
+                    const rowProducts = getProductsForRow(row);
+                    if (rowProducts.length === 0) return null;
 
-                <div className={styles.carouselWrapper}>
-                    <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
-                        <ProductShelf>
-                            <Carousel
-                                id={id}
-                                itemsPerPage={isMobile ? 1 : itemsPerPage}
-                                variant="scroll"
-                                infiniteMode={false}
-                                controls={"navigationArrows"}
-                            >
-                                {row?.itemIds?.map((itemId) => {
-                                    const item = items.find((item) => item.id === itemId);
-
-                                    if (!item) return null;
-
-                                    return (
-                                        <RecommendationItem
-                                            key={item.isVariantOf.productGroupID}
-                                            item={item as unknown as StoreProduct}
-                                            bordered={bordered}
-                                            showDiscountBadge={showDiscountBadge}
-                                            onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
+                    return (
+                        <section
+                            key={`${slot?.id ?? "slot"}-${row?.attributeValue ?? "row"}`}
+                            ref={ref}
+                            className={`${styles.sectionRecommendation} section-product-shelf layout__section section`}
+                        >
+                            <div className={styles.shelfWrapper}>
+                                <div className={styles.categoryImage}>
+                                    <SkeletonUI
+                                        loading={loading}
+                                        style={{ borderRadius: "10px" }}
+                                        size={{ height: "100%", width: "auto" }}
+                                    >
+                                        <img
+                                            data-fs-image
+                                            src={row?.metadata?.sectionImage || ""}
+                                            alt={row?.metadata?.category ?? ""}
                                         />
-                                    )
-                                })}
-                            </Carousel>
-                        </ProductShelf>
-                    </ProductShelfSkeleton>
-                </div>
-            </div>
-        </section>
-        ))}
-        </>
-        ))}
+                                    </SkeletonUI>
+                                </div>
+
+                                <div className={styles.carouselWrapper}>
+                                    <ProductShelfSkeleton
+                                        loading={loading}
+                                        itemsPerPage={carouselItemsPerPage}
+                                    >
+                                        <ProductShelf>
+                                            <Carousel
+                                                id={`${id}-${row?.attributeValue ?? ""}`}
+                                                itemsPerPage={
+                                                    isMobile ? 1 : carouselItemsPerPage
+                                                }
+                                                variant="scroll"
+                                                infiniteMode={false}
+                                                controls="navigationArrows"
+                                            >
+                                                {rowProducts.map((item) => (
+                                                    <RecommendationItem
+                                                        key={item.isVariantOf.productGroupID}
+                                                        item={item as unknown as StoreProduct}
+                                                        bordered={bordered}
+                                                        showDiscountBadge={showDiscountBadge}
+                                                        onClick={() =>
+                                                            handleItemClick(
+                                                                item.isVariantOf.productGroupID,
+                                                            )
+                                                        }
+                                                    />
+                                                ))}
+                                            </Carousel>
+                                        </ProductShelf>
+                                    </ProductShelfSkeleton>
+                                </div>
+                            </div>
+                        </section>
+                    );
+                }),
+            )}
         </>
     );
 };
