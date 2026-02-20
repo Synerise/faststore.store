@@ -34,7 +34,7 @@ const QUERY = gql(`
   }
 `);
 
-export const useFallback = (clusterId?: string) => {
+export const useFallbackProducts = (clusterId?: string) => {
   const { data, error } = useQuery<any, { clusterId: string }>(
     QUERY as any,
     { clusterId: clusterId ?? "" },

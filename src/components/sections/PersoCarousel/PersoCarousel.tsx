@@ -18,7 +18,7 @@ import NavigationIconRight from "./NavigationIconRight";
 import styles from "./PersoCarousel.module.scss";
 import { PersoCarouselTypes } from "./PersoCarousel.types";
 import PersoCarouselItem from "./PersoCarouselItem";
-import { useFallback } from "../../../hooks";
+import { useFallbackProducts } from "../../../hooks";
 
 const PersoCarousel = ({
   title,
@@ -41,7 +41,7 @@ const PersoCarousel = ({
     data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
 
   const { products: fallbackProducts, loading: fallbackLoading } =
-    useFallback(clusterId);
+    useFallbackProducts(clusterId);
 
   const carouselItems =
     items.length > 0 ? (items as unknown as StoreProduct[]) : fallbackProducts;
