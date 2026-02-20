@@ -1,8 +1,8 @@
-export type RecommendationShelfProps = {
+export type PersoCarouselTypes = {
   title: string;
   campaignId: string;
+  clusterId?: string;
   itemsPerPage: number;
-  shouldFilterByCategory: boolean;
   productCardConfiguration: {
     showDiscountBadge: boolean;
     bordered: boolean;

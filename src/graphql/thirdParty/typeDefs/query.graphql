@@ -1,6 +1,7 @@
 type Query {
     syneriseAISearch(indexId: String apiHost: String trackerKey: String): SyneriseSearchResult!
     syneriseAIRecommendations(campaignId: String, apiHost: String, trackerKey: String): SyneriseRecommendationsResult!
+    productSearch(selectedFacets: [IStoreSelectedFacet!]!): ProductSearchResult!
 }
 
 scalar JSONObject

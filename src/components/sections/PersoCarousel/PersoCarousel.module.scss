@@ -1,0 +1,73 @@
+.persoCarousel {
+  [data-fs-product-shelf-skeleton] {
+    --fs-carousel-item-margin-right: var(--fs-spacing-3);
+
+    padding-bottom: var(--fs-spacing-5);
+
+    [data-fs-product-shelf-items] {
+      @include layout-content;
+    }
+
+    @include media("<tablet") {
+      [data-fs-product-shelf-item] {
+        &:not(:last-of-type) {
+          margin-right: var(--fs-carousel-item-margin-right);
+        }
+      }
+    }
+  }
+
+  h2 {
+    font-weight: 500 !important;
+  }
+
+  [data-fs-carousel-controls] [data-fs-button-wrapper] {
+    background: none !important;
+    box-shadow: none !important;
+    color: #000 !important;
+  }
+
+  [data-fs-product-card-image] {
+    border-radius: 5px !important;
+  }
+
+  [data-fs-product-card] {
+    transition: none !important;
+
+    &:hover {
+      border-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  [data-fs-product-card-prices] {
+    flex-direction: column;
+    align-items: start !important;
+  }
+
+  [data-fs-price-variant="listing"] {
+    margin-top: 10px;
+  }
+
+  [data-fs-button] {
+    &:disabled {
+      visibility: hidden;
+    }
+  }
+
+  @import "@faststore/ui/src/components/atoms/Badge/styles";
+  @import "@faststore/ui/src/components/atoms/Button/styles";
+  @import "@faststore/ui/src/components/atoms/Icon/styles";
+  @import "@faststore/ui/src/components/atoms/Link/styles";
+  @import "@faststore/ui/src/components/atoms/Price/styles";
+  @import "@faststore/ui/src/components/atoms/SROnly/styles";
+  @import "@faststore/ui/src/components/atoms/Skeleton/styles";
+  @import "@faststore/ui/src/components/molecules/Carousel/styles";
+  @import "@faststore/ui/src/components/molecules/DiscountBadge/styles";
+  @import "@faststore/ui/src/components/molecules/Rating/styles";
+  @import "@faststore/ui/src/components/molecules/ProductCard/styles";
+  @import "@faststore/ui/src/components/molecules/ProductCardSkeleton/styles";
+  @import "@faststore/ui/src/components/molecules/ProductPrice/styles";
+  @import "@faststore/ui/src/components/organisms/ProductShelf/styles";
+}
