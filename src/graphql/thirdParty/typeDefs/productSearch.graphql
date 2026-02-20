@@ -1,0 +1,34 @@
+type ProductSearchResult {
+    products: [ProductSearchProduct!]!
+}
+
+type ProductSearchProduct {
+    productId: String!
+    productName: String!
+    linkText: String!
+    brand: String!
+    items: [ProductSearchItem!]!
+}
+
+type ProductSearchItem {
+    itemId: String!
+    name: String!
+    images: [ProductSearchImage!]!
+    sellers: [ProductSearchSeller!]!
+}
+
+type ProductSearchImage {
+    imageUrl: String!
+    imageText: String
+}
+
+type ProductSearchSeller {
+    sellerId: String!
+    commertialOffer: ProductSearchCommercialOffer!
+}
+
+type ProductSearchCommercialOffer {
+    Price: Float!
+    ListPrice: Float!
+    AvailableQuantity: Int!
+}
