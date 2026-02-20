@@ -1,0 +1,28 @@
+# Promotion – get-for-client (with token)
+type PromotionItem {
+  title: String
+  name: String
+  code: String
+  headline: String
+  discountValue: Float
+  discountType: String
+  images: [PromotionImage]
+  params: JSONObject
+}
+
+type PromotionImage {
+  url: String
+  type: String
+}
+
+type SynerisePromotionsData {
+  data: [PromotionItem!]
+}
+
+type SynerisePromotionsResult {
+  promotions(clientUUID: String!): SynerisePromotionsData!
+}
+
+extend type Query {
+  synerisePromotions(apiHost: String, apiKey: String!): SynerisePromotionsResult!
+}

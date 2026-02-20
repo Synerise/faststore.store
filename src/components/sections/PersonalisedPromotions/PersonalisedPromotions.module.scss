@@ -1,0 +1,149 @@
+.personalisedPromotions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+
+  @import "@faststore/ui/src/components/molecules/Carousel/styles";
+  @import "@faststore/ui/src/components/organisms/ProductShelf/styles";
+}
+
+.promotionCard {
+  display: flex;
+  flex-direction: row;
+  background: #bcbcbc;
+  padding: 30px;
+  border-radius: 4px;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.5s ease;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 20px;
+  }
+}
+
+.promotionContent {
+  flex: 1;
+}
+
+.promotionTitle {
+  font-size: 28px;
+  margin: 0 0 20px;
+  white-space: normal;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+.promotionHeadline {
+  font-size: 16px;
+  margin-bottom: 20px;
+  white-space: normal;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+}
+
+.promotionActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 4px;
+    font-size: small;
+  }
+}
+
+.promotionButton {
+  display: inline-block;
+  padding: 12px 24px;
+  border: 1px solid #000;
+  text-decoration: none;
+  color: #000;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    margin-top: 10px;
+  }
+
+  &:hover:not(:disabled) {
+    background: #000;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.activated {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.promotionImage {
+  width: 100%;
+  max-width: 380px;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.promotionThumbnail {
+  width: 100%;
+  max-width: 240px;
+  border-radius: 8px;
+  display: block;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.promotionDots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #ccc;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s ease;
+
+  &.active {
+    background: #000;
+  }
+
+  &:hover {
+    background: #999;
+  }
+}
+
+.waitingMessage,
+.loadingMessage {
+  text-align: center;
+  padding: 20px;
+}

@@ -1,0 +1,71 @@
+@layer components {
+  .categoryBanner {
+    width: 100%;
+    padding: var(--fs-spacing-4) 0;
+    overflow: hidden;
+
+    .wrapper {
+      position: relative;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 var(--fs-spacing-4);
+    }
+
+    .bannerLink {
+      display: block;
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      text-decoration: none;
+      background: var(--fs-color-neutral-2, #f0f0f0);
+    }
+
+    .bannerImage {
+      width: 100%;
+      height: auto;
+      display: block;
+      vertical-align: middle;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .bannerImageMobile {
+      display: block;
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .bannerImageDesktop {
+      display: none;
+      @media (min-width: 768px) {
+        display: block;
+      }
+    }
+
+    .skeleton {
+      min-height: 454px;
+      background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.06) 25%,
+        rgba(0, 0, 0, 0.12) 50%,
+        rgba(48, 32, 32, 0.06) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 4s ease-in-out infinite;
+      @media (min-width: 768px) {
+        min-height: 573px;
+        animation: shimmer 2s ease-in-out infinite;
+      }
+    }
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
+  }
+}
