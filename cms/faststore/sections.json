@@ -622,6 +622,34 @@
     }
   },
   {
+    "name": "PersonalisedPromotions",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Personalised Promotions",
+      "description": "Personalised Promotions - powered by Synerise",
+      "type": "object",
+      "required": [],
+      "properties":{
+        "fallbackText": {
+          "type": "string",
+          "title": "Fallback text",
+          "description": "Displayed when the API fails or clientUUID is not available"
+        },
+        "apiHost": {
+          "type": "string",
+          "title": "API Host",
+          "default": "https://api.azu.synerise.com",
+          "description": "Base API host"
+        },
+        "token": {
+          "type": "string",
+          "title": "Token API",
+          "description": "Token for Synerise API authentication"
+        }
+      }
+    }
+  },
+  {
     "name": "GlobalTracker",
     "requiredScopes": [],
     "schema": {
