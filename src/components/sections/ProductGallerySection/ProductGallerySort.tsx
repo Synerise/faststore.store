@@ -8,7 +8,7 @@ type SortProps = {
     options: SortOption[];
 }
 
-function ProductGallerySort({label = 'Sort by', options}: SortProps) {
+function ProductGallerySort({label = 'Ordenar por', options}: SortProps) {
     const {state, setSortKey} = useSearchContext();
 
     const selectOptions: Record<string, string> = options.reduce((acc, item) => {

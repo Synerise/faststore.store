@@ -10,11 +10,26 @@ type ContextItem {
     additionalData: JSONObject
 }
 
+type Metadata {
+    category: String
+    firstCategory: String
+    itemId: String
+    secondCategory: String
+    sectionImage: String
+}
+
+type Row {
+    attributeValue: String
+    itemIds: [String]
+    metadata: Metadata
+}
+
 type Slot {
     id: Int!
     name: String!
-    itemIds: [String!]!
+    itemIds: [String]
     error: SlotError
+    rows: [Row]
 }
 
 type SlotError {
