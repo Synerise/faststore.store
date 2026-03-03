@@ -588,5 +588,48 @@
     "schema": {
       "title": "Global Tracker"
     }
+  },
+  {
+    "name": "PersoCarousel",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Personalized Carousel",
+      "description": "Recommended items – powered by Synerise",
+      "type": "object",
+      "required": ["title", "campaignId", "itemsPerPage"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "campaignId": {
+          "type": "string",
+          "title": "Campaign ID",
+          "description": "AI Recommendation Campaign ID"
+        },
+        "clusterId": {
+          "type": "string",
+          "title": "Cluster ID",
+          "description": "Cluster ID to fetch fallback products"
+        },
+        "itemsPerPage": {
+          "type": "integer",
+          "title": "Number of items per page",
+          "default": 5,
+          "description": "Number of items to display per page in carousel"
+        },
+        "productCardConfiguration": {
+          "title": "Product Card Configuration",
+          "type": "object",
+          "properties": {
+            "showDiscountBadge": {
+              "title": "Show discount badge?",
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
   }
 ]
