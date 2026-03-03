@@ -7,7 +7,8 @@ import { StoreProduct } from "@generated/graphql";
 
 import ProductShelfSkeleton from "src/components/skeletons/ProductShelfSkeleton";
 
-import useIsMobile from "../../../hooks/useIsMobile";
+import useScreenResize from "src/sdk/ui/useScreenResize";
+import { useFallbackProducts } from "../../../hooks";
 import {
   RecommendationClickEvent,
   RecommendationViewEvent,
@@ -18,7 +19,6 @@ import NavigationIconRight from "./icons/NavigationIconRight";
 import styles from "./PersoCarousel.module.scss";
 import { PersoCarouselTypes } from "./PersoCarousel.types";
 import PersoCarouselItem from "./PersoCarouselItem";
-import { useFallbackProducts } from "../../../hooks";
 
 const PersoCarousel = ({
   title,
@@ -30,7 +30,8 @@ const PersoCarousel = ({
   const id = useId();
   const viewedOnce = useRef(false);
   const { ref, inView } = useInView();
-  const isMobile = useIsMobile();
+  const windowSize = useScreenResize();
+  const isMobile = windowSize.isMobile;
 
   const { data, loading } = useRecommendations({
     campaignId,
