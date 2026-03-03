@@ -13,8 +13,8 @@ import {
   RecommendationViewEvent,
 } from "../../../types/recommendations";
 import { useRecommendations } from "../RecommendationShelf/hooks";
-import NavigationIconLeft from "./NavigationIconLeft";
-import NavigationIconRight from "./NavigationIconRight";
+import NavigationIconLeft from "./icons/NavigationIconLeft";
+import NavigationIconRight from "./icons/NavigationIconRight";
 import styles from "./PersoCarousel.module.scss";
 import { PersoCarouselTypes } from "./PersoCarousel.types";
 import PersoCarouselItem from "./PersoCarouselItem";
