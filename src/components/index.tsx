@@ -16,5 +16,6 @@ export default {
   BannerSubCategoriesSection,
   MenuCategoriesSection,
   GlobalTracker,
+  SectionRecommendation,
   PersoCarousel,
 };
