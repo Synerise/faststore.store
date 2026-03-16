@@ -19,10 +19,10 @@ type SynerisePromotionsData {
   data: [PromotionItem!]
 }
 
-type SynerisePromotionsResult {
-  promotions(clientUUID: String!): SynerisePromotionsData!
-}
-
 extend type Query {
-  synerisePromotions(apiHost: String, apiKey: String!): SynerisePromotionsResult!
+  synerisePromotions(
+    basicAuth: String!
+    clientUUID: String!
+    limit: Int
+  ): SynerisePromotionsData!
 }

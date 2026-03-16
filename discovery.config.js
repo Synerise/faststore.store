@@ -96,4 +96,8 @@ module.exports = {
       "https://synerisedemofaststore.myvtex.com/cms-releases/webhook-releases",
     ],
   },
+  synerise: {
+    apiHost: "https://api.azu.synerise.com",
+    trackerKey: "b8349350-8569-4232-99a8-0e08818c3b99",
+  }
 };

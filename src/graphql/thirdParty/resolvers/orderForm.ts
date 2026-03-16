@@ -1,6 +1,7 @@
 import {MutationAddOrderFormCustomDataArgs} from "@generated/graphql"
 import type {Resolver} from '@faststore/api'
 import {parse} from 'cookie'
+import storeConfig from "../../../../discovery.config"
 
 
 const getCookieCheckoutOrderNumber = (cookies: string) => {
@@ -38,20 +39,9 @@ const Mutation: Record<string, Resolver<unknown, any>> = {
         }
 
         try {
-            // Use VTEX Checkout API directly for marketing tags
-            // This matches the io implementation: POST /api/checkout/pub/orderForm/{orderFormId}/attachments/marketingData
-            // In server-side context, we need to use the full URL or ctx.clients if available
-            // const baseUrl = typeof window !== 'undefined' 
-            //     ? '' // Client-side: use relative URL
-            //     : process.env.STORE_URL || 'http://localhost:3000'; // Server-side: use full URL
-            
-            const url = `https://synerisedemofaststore.vtex.app/api/checkout/pub/orderForm/${checkoutOrderFormId}/attachments/marketingData`;
-            
-            console.log('[OrderForm Resolver] Adding marketing tags:', {
-                orderFormId: checkoutOrderFormId,
-                marketingTags: input.marketingTags,
-                url,
-            });
+            const secureSubdomain = storeConfig.secureSubdomain.replace(/\/$/, "");
+            const url = `${secureSubdomain}/api/checkout/pub/orderForm/${checkoutOrderFormId}/attachments/marketingData`;
+
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -72,11 +62,9 @@ const Mutation: Record<string, Resolver<unknown, any>> = {
                 return false;
             }
 
-            const result = await response.json();
-            console.log('[OrderForm Resolver] Marketing tags added successfully:', result);
+            await response.json();
             return true;
         } catch (error) {
-            console.error('[OrderForm Resolver] Error adding marketing tags:', error);
             return false;
         }
     }

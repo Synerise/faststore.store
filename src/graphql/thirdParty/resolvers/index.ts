@@ -12,9 +12,6 @@ const resolvers = {
     ...SyneriseResolvers.Query,
     ...promotionsResolver.Query,
   },
-  SynerisePromotionsResult: {
-    ...promotionsResolver.SynerisePromotionsResult,
-  },
 };
 
 export default resolvers;

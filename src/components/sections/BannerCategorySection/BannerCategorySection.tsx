@@ -19,7 +19,6 @@ const BannerCategorySection = ({
     apiHost,
   });
 
-console.log(apiItem, loading, error);
   const item: BannerItem | null = useMemo(() => {
     if (!error && apiItem != null) return apiItem;
     return {

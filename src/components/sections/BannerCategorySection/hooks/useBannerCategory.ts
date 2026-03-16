@@ -3,8 +3,7 @@ import type {
   BannerCategoryApiResponse,
   CategoryItem,
 } from "../BannerCategorySection.types";
-
-const DEFAULT_API_HOST = "https://api.azu.synerise.com";
+import storeConfig from "../../../../../discovery.config"
 
 export type BannerItem = {
   category: string;
@@ -23,7 +22,7 @@ type UseBannerCategoryParams = {
 export function useBannerCategory({
   campaignId,
   token,
-  apiHost = DEFAULT_API_HOST,
+  apiHost = storeConfig.synerise.apiHost,
 }: UseBannerCategoryParams) {
   const [item, setItem] = useState<BannerItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,16 +30,7 @@ export function useBannerCategory({
 
   const fetchItems = useCallback(async () => {
     if (typeof window === "undefined") return;
-    const getClientUUID = () =>
-      (window as unknown as { SyneriseTC?: { uuid?: string } })?.SyneriseTC?.uuid;
-
-    let clientUUID = getClientUUID();
-
-    // Se o clientUUID ainda não estiver disponível, aguardamos até 2s antes de cair em fallback
-    if (!clientUUID) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      clientUUID = getClientUUID();
-    }
+    const clientUUID = window.SyneriseTC?.uuid
 
     if (!clientUUID) {
       setError(true);

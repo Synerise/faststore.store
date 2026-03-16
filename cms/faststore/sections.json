@@ -564,13 +564,7 @@
             "type": "string",
             "title": "Fallback image for app",
             "description": "Image displayed when the API fails or does not return data"
-          },
-        "apiHost": {
-          "type": "string",
-          "title": "API Host",
-          "default": "https://api.azu.synerise.com",
-          "description": "Base API host"
-        }
+          }
       }
     }
   },
@@ -634,16 +628,17 @@
           "title": "Fallback text",
           "description": "Displayed when the API fails or clientUUID is not available"
         },
-        "apiHost": {
+        "basicAuth": {
           "type": "string",
-          "title": "API Host",
-          "default": "https://api.azu.synerise.com",
-          "description": "Base API host"
+          "title": "Basic auth",
+          "description": "Basic auth for promotions for Synerise API authentication"
         },
-        "token": {
-          "type": "string",
-          "title": "Token API",
-          "description": "Token for Synerise API authentication"
+        "limit": {
+          "type": "integer",
+          "title": "Promotions limit",
+          "description": "Token for Synerise API authentication",
+          "minimum": 1,
+          "default": 100
         }
       }
     }
