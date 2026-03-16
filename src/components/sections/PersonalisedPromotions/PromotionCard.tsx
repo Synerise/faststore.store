@@ -1,8 +1,11 @@
+import type { SynerisePromotionsQueryQuery } from "@generated/graphql";
 import styles from "./PersonalisedPromotions.module.scss";
-import { ImageType, type Promotion } from "../../../types";
+import { ImageType } from "../../../types";
+
+type PromotionItem = NonNullable<SynerisePromotionsQueryQuery['synerisePromotions']['data']>[number];
 
 type PromotionCardProps = {
-  promotion: Promotion;
+  promotion: PromotionItem;
   isActivating: boolean;
   activatedPromotion: string | null;
   errorPromotion: string | null;

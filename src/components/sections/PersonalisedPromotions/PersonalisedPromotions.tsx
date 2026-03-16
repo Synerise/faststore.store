@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useRef, useCallback, useId } from "react"
 import { Carousel, ProductShelf } from "@faststore/ui";
 import { usePersonalisedPromotions, useActivatePromotion } from "../../../hooks";
 import styles from "./PersonalisedPromotions.module.scss";
-import { ImageType, type Promotion } from "../../../types";
+import { ImageType } from "../../../types";
 import type { PersonalisedPromotionsProps } from "./PersonalisedPromotions.types";
 import { PromotionCard } from "./PromotionCard";
 import { orderFormId } from "../../../utils/orderForm";
@@ -25,8 +25,7 @@ export const PersonalisedPromotions = ({
   });
 
   const promotions = useMemo(() => {
-    const allPromotions = data?.synerisePromotions?.data as Promotion[] || [];
-    if (!Array.isArray(allPromotions)) return [];
+    const allPromotions = data?.synerisePromotions?.data ?? [];
     return allPromotions.filter((promotion) => {
       if (!promotion?.images || !Array.isArray(promotion.images)) return false;
       return promotion.images.some(
