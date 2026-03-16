@@ -18,5 +18,5 @@ export type Promotion = {
   discountValue?: number;
   discountType?: string;
   images?: PromotionImage[];
-  params?: Record<string, unknown>;
+  params?: { link?: string; [key: string]: unknown };
 };
