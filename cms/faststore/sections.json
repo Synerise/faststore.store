@@ -382,7 +382,7 @@
       }
     }
   },
-  {
+{
     "name": "SectionRecommendation",
     "requiredScopes": [],
     "schema": {
