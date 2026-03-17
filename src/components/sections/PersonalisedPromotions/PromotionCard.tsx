@@ -20,10 +20,10 @@ export function PromotionCard({
   onActivatePromotion,
 }: PromotionCardProps) {
   const mainImage = promotion.images?.find(
-    (img) => img.type === ImageType.IMAGE,
+    (img) => img?.type === ImageType.IMAGE,
   )?.url;
   const thumbnail = promotion.images?.find(
-    (img) => img.type === ImageType.THUMBNAIL,
+    (img) => img?.type === ImageType.THUMBNAIL,
   )?.url;
   const link = promotion.params?.link || "#";
   const promotionName = promotion.name || promotion.title || "";
