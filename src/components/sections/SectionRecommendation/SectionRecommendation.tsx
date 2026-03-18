@@ -2,21 +2,20 @@ import React, { useEffect, useRef, useId } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { usePDP, usePLP } from "@faststore/core";
+import useScreenResize from "src/sdk/ui/useScreenResize";
 import { sendAnalyticsEvent } from "@faststore/sdk";
-import { ProductShelf, Carousel, Skeleton as SkeletonUI } from "@faststore/ui";
 import { StoreProduct } from "@generated/graphql";
 import Cookies from 'js-cookie'
 
-import ProductShelfSkeleton from "src/components/skeletons/ProductShelfSkeleton";
-
+import { SectionRecommendationSlot } from './SectionRecommendationSlot'
 import {
   SectionRecommendationProps,
-  RecommendationViewEvent,
-  RecommendationClickEvent,
 } from "./SectionRecommendation.types";
-import styles from "./SectionRecommendation.module.scss";
+import {
+    RecommendationViewEvent,
+    RecommendationClickEvent
+} from '../../../types/recommendationEvents'
 import { useRecommendations } from "../RecommendationShelf/hooks";
-import { RecommendationItem } from "./RecommendationItem";
 
 const SectionRecommendation = ({
     itemsPerPage,
@@ -26,7 +25,8 @@ const SectionRecommendation = ({
     const id = useId();
     const viewedOnce = useRef(false);
     const { ref, inView } = useInView();
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+    const windowSize = useScreenResize()
+    const isMobile = windowSize.isMobile || false;  
 
     const { data: productDetailPage } = usePDP();
     const { data: productLandingPage } = usePLP();
@@ -42,7 +42,9 @@ const SectionRecommendation = ({
         ...(productContext ? { items: [productContext] } : {})
     });
 
-    const items = data?.syneriseAIRecommendations.recommendations?.data || [];
+    const items = data?.syneriseAIRecommendations.recommendations?.data.filter(
+        (item): item is NonNullable<typeof item> => item !== null
+    ) || [];
     const correlationId =
         data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
     const slots = data?.syneriseAIRecommendations.recommendations?.extras.slots;
@@ -78,62 +80,21 @@ const SectionRecommendation = ({
 
     return (
         <>
-        {slots?.map((slot) => (
-            <>
-            {slot?.rows?.map((row) => (
-        <section
-            key={row?.attributeValue}
-            ref={ref}   
-            className={`${styles.sectionRecommendation} section-product-shelf layout__section section`}
-        >
-            <div className={styles.shelfWrapper}>
-                <div className={styles.categoryImage}>
-                    <SkeletonUI 
-                        loading={loading} 
-                        style={{ borderRadius: '10px' }}
-                        size={{ height: '100%', width: 'auto' }}    
-                    >
-                        <img 
-                            data-fs-image
-                            src={row?.metadata?.sectionImage || ""}
-                            alt={row?.metadata?.category || ""} />
-                    </SkeletonUI>
-                </div>
-
-                <div className={styles.carouselWrapper}>
-                    <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
-                        <ProductShelf>
-                            <Carousel
-                                id={id}
-                                itemsPerPage={isMobile ? 1 : itemsPerPage}
-                                variant="scroll"
-                                infiniteMode={false}
-                                controls={"navigationArrows"}
-                            >
-                                {row?.itemIds?.map((itemId) => {
-                                    const item = items.find((item) => item.id === itemId);
-
-                                    if (!item) return null;
-
-                                    return (
-                                        <RecommendationItem
-                                            key={item.isVariantOf.productGroupID}
-                                            item={item as unknown as StoreProduct}
-                                            bordered={bordered}
-                                            showDiscountBadge={showDiscountBadge}
-                                            onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
-                                        />
-                                    )
-                                })}
-                            </Carousel>
-                        </ProductShelf>
-                    </ProductShelfSkeleton>
-                </div>
-            </div>
-        </section>
-        ))}
-        </>
-        ))}
+            {slots?.map((slot, idx) => (
+                <SectionRecommendationSlot
+                    key={idx}
+                    slot={slot}
+                    id={id}
+                    ref={ref}
+                    loading={loading}
+                    isMobile={isMobile}
+                    itemsPerPage={itemsPerPage}
+                    items={items as unknown as StoreProduct[]}
+                    bordered={bordered}
+                    showDiscountBadge={showDiscountBadge}
+                    onItemClick={handleItemClick}
+                />
+            ))}
         </>
     );
 };
