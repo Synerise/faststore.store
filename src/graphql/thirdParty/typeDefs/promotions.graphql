@@ -1,28 +1,27 @@
 # Promotion – get-for-client (with token)
 type PromotionItem {
-  title: String
-  name: String
-  code: String
-  headline: String
-  discountValue: Float
-  discountType: String
-  images: [PromotionImage]
-  params: JSONObject
+    title: String
+    name: String
+    code: String
+    headline: String
+    discountValue: Float
+    discountType: String
+    images: [PromotionImage]
+    params: JSONObject
 }
 
 type PromotionImage {
-  url: String
-  type: String
+    url: String
+    type: String
 }
 
 type SynerisePromotionsData {
-  data: [PromotionItem!]
+    data: [PromotionItem!]
 }
 
-extend type Query {
-  synerisePromotions(
-    basicAuth: String!
-    clientUUID: String!
-    limit: Int
-  ): SynerisePromotionsData!
+type SynerisePromotionsResult {
+    getForClient(
+        clientUUID: String!
+        limit: Int
+    ): SynerisePromotionsData
 }

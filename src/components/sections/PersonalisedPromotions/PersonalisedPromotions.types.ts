@@ -1,5 +1,5 @@
 export type PersonalisedPromotionsProps = {
   fallbackText: string;
-  basicAuth: string;
+  apiKey: string;
   limit?: number;
 };

@@ -628,10 +628,10 @@
           "title": "Fallback text",
           "description": "Displayed when the API fails or clientUUID is not available"
         },
-        "basicAuth": {
+        "apiKey": {
           "type": "string",
-          "title": "Basic auth",
-          "description": "Basic auth for promotions for Synerise API authentication"
+          "title": "API Key",
+          "description": "Synerise API key for JWT authentication"
         },
         "limit": {
           "type": "integer",

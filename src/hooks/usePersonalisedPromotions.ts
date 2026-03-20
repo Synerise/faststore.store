@@ -4,37 +4,39 @@ import { useQuery } from "src/sdk/graphql/useQuery";
 import Cookies from 'js-cookie'
 
 const query = gql(`query SynerisePromotionsQuery(
-  $basicAuth: String!
+  $apiKey: String!
   $clientUUID: String!
   $limit: Int
 ) {
-  synerisePromotions(basicAuth: $basicAuth, clientUUID: $clientUUID, limit: $limit) {
-    data {
-      title
-      name
-      code
-      headline
-      discountValue
-      discountType
-      images {
-        url
-        type
+  synerisePromotions(apiKey: $apiKey) {
+    getForClient(clientUUID: $clientUUID, limit: $limit) {
+      data {
+        title
+        name
+        code
+        headline
+        discountValue
+        discountType
+        images {
+          url
+          type
+        }
+        params
       }
-      params
     }
   }
 }`);
 
 export const usePersonalisedPromotions = (
   payload: {
-    basicAuth: string;
+    apiKey: string;
     limit?: number;
   },
 ) => {
   const clientUUID = Cookies.get('_snrs_uuid')!
 
   const variables = {
-    basicAuth: payload.basicAuth,
+    apiKey: payload.apiKey,
     clientUUID,
     limit: payload.limit ?? null,
   };
@@ -47,6 +49,6 @@ export const usePersonalisedPromotions = (
   return {
     data,
     error,
-    loading: !data?.synerisePromotions?.data && !error,
+    loading: !data?.synerisePromotions?.getForClient?.data && !error,
   };
 };

@@ -9,7 +9,7 @@ import { orderFormId } from "../../../utils/orderForm";
 
 export const PersonalisedPromotions = ({
   fallbackText,
-  basicAuth,
+  apiKey,
   limit,
 }: PersonalisedPromotionsProps) => {
   const id = useId();
@@ -20,12 +20,12 @@ export const PersonalisedPromotions = ({
   const { activatePromotion } = useActivatePromotion();
 
   const { data, loading, error } = usePersonalisedPromotions({
-    basicAuth,
+    apiKey,
     limit,
   });
 
   const promotions = useMemo(() => {
-    const allPromotions = data?.synerisePromotions?.data ?? [];
+    const allPromotions = data?.synerisePromotions?.getForClient?.data ?? [];
     return allPromotions.filter((promotion) => {
       if (!promotion?.images || !Array.isArray(promotion.images)) return false;
       return promotion.images.some(
@@ -39,7 +39,7 @@ export const PersonalisedPromotions = ({
       if (!promoCode) return;
       setActivatingPromotion(promoCode);
       setErrorPromotion(null);
-      
+
       // Clear any existing error timeout
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current);
@@ -104,7 +104,7 @@ export const PersonalisedPromotions = ({
     );
   }
 
-  
+
   return (
     <section
       className={`${styles.personalisedPromotions} section layout__section`}

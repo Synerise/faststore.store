@@ -1,10 +1,11 @@
 import { Resolvers as SyneriseResolvers } from "@synerise/faststore-api";
 
 import orderFormResolver from './orderForm'
-import promotionsResolver from './promotions'
+import promotionsResolver, { SynerisePromotionsResult } from './promotions'
 
 const resolvers = {
   ...SyneriseResolvers,
+  SynerisePromotionsResult,
   Mutation: {
     ...orderFormResolver.Mutation,
   },
