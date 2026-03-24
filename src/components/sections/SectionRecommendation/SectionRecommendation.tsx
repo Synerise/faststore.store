@@ -46,22 +46,37 @@ const SectionRecommendation = ({
         (item): item is NonNullable<typeof item> => item !== null
     ) || [];
     const correlationId =
-        data?.syneriseAIRecommendations.recommendations?.extras.correlationId;
-    const slots = data?.syneriseAIRecommendations.recommendations?.extras.slots;
+        data?.syneriseAIRecommendations.recommendations?.extras?.correlationId;
+    const slots = data?.syneriseAIRecommendations.recommendations?.extras?.slots || [];
+
+    // Match por id / productID / sku / productGroupID (payload: data[].itemId ↔ row.itemIds)
+    const getProductById = (itemId: string) =>
+        items.find(
+            (p: { id?: string; sku?: string; isVariantOf?: { productGroupID?: string } }) =>
+                String(p.id) === String(itemId) ||
+                String(p.sku) === String(itemId) ||
+                String(p.isVariantOf?.productGroupID) === String(itemId),
+        );
+
+    // Produtos por row preservando a ordem de row.itemIds
+    const getProductsForRow = (row: { itemIds?: string[] | null }) =>
+        (row?.itemIds || [])
+            .map((itemId) => getProductById(itemId))
+            .filter(Boolean) as typeof items;
 
     useEffect(() => {
         if (inView && !viewedOnce.current && items.length) {
-        sendAnalyticsEvent<RecommendationViewEvent>({
-            name: "recommendation_view",
-            params: {
-            campaignId,
-            correlationId,
-            items: items.map((item) => item.isVariantOf.productGroupID),
-            },
-        });
-        viewedOnce.current = true;
+            sendAnalyticsEvent<RecommendationViewEvent>({
+                name: "recommendation_view",
+                params: {
+                    campaignId,
+                    correlationId,
+                    items: items.map((item) => item.isVariantOf.productGroupID),
+                },
+            });
+            viewedOnce.current = true;
         }
-    }, [inView, items, campaignId]);
+    }, [inView, items, campaignId, correlationId]);
 
     if (!loading && items.length === 0) {
         return null;
@@ -69,14 +84,17 @@ const SectionRecommendation = ({
 
     const handleItemClick = (sku: string) => {
         sendAnalyticsEvent<RecommendationClickEvent>({
-        name: "recommendation_click",
-        params: {
-            campaignId,
-            correlationId,
-            item: sku,
-        },
+            name: "recommendation_click",
+            params: {
+                campaignId,
+                correlationId,
+                item: sku,
+            },
         });
     };
+
+    // 4 produtos por linha no desktop
+    const carouselItemsPerPage = isMobile ? 1 : 4;
 
     return (
         <>

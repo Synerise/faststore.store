@@ -382,8 +382,7 @@
       }
     }
   },
-  {
-<<<<<<< feature/CSID-30014
+{
     "name": "SectionRecommendation",
     "requiredScopes": [],
     "schema": {
@@ -416,7 +415,13 @@
               "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
-=======
+            }
+          }
+        }
+      }
+    }
+  },
+  {
     "name": "SyneriseBannerSection",
     "requiredScopes": [],
     "schema": {
@@ -571,7 +576,6 @@
                 "title": "Link",
                 "default": ""
               }
->>>>>>> main
             }
           }
         }
