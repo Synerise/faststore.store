@@ -6,6 +6,8 @@ import { SectionRecommendation } from "./sections/SectionRecommendation";
 import { SyneriseBannerSection } from "./sections/SyneriseBannerSection";
 import { BannerSubCategoriesSection } from "./sections/BannerSubCategoriesSection";
 import { MenuCategoriesSection } from "./sections/MenuCategoriesSection";
+import { ExclusiveCollection } from "./sections/ExclusiveCollection";
+import { ClientCard } from "./sections/ClientCard";
 
 export default {
   SyneriseProductGallery: ProductGallerySection,
@@ -16,4 +18,6 @@ export default {
   MenuCategoriesSection,
   GlobalTracker,
   SectionRecommendation,
+  ExclusiveCollection,
+  ClientCard,
 };
