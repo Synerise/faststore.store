@@ -2,6 +2,9 @@ type Query {
     syneriseAISearch(indexId: String apiHost: String trackerKey: String): SyneriseSearchResult!
     syneriseAIRecommendations(campaignId: String, apiHost: String, trackerKey: String): SyneriseRecommendationsResult!
     syneriseExpressionResult(expressionId: String, apiHost: String, identifierType: String, namespace: String, identifierValue: String): SyneriseExpressionResult
+    syneriseAggregateResult(aggregateId: String, apiHost: String, identifierType: String, namespace: String, identifierValue: String): SyneriseAggregateResult
+    synerisePromotionsResult(apiHost: String, identifierType: String, identifierValue: String): SynerisePromotionsResult
+    syneriseBrickworksResult(apiHost: String, schemaIdentifier: String, recordIdentifier: String, identifierType: String): SyneriseBrickworksResult
 }
 
 scalar JSONObject

@@ -644,6 +644,18 @@
       "type": "object",
       "required": [],
       "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "schemaIdentifier": {
+          "type": "string",
+          "title": "Brickworks schema identifier"
+        },
+        "recordIdentifier": {
+          "type": "string",
+          "title": "Brickworks record identifier"
+        }
       }
     }
   },

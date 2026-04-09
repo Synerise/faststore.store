@@ -1,0 +1,21 @@
+type SyneriseBrickworksResponse {
+    slug: String
+    recordVersion: Int
+    publishedAt: String
+    updatedAt: String
+    schemaId: String
+    id: String
+    schemaVersion: Int
+    createdAt: String
+    matchedAudience: Boolean
+    unmatchedAudienceRelations: [String]
+    data: JSON
+}
+
+type SyneriseBrickworksResult {
+    brickworks(
+        identifierValue: String!,
+        context: [String],
+        fieldContext: JSON
+    ): SyneriseBrickworksResponse
+}

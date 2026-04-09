@@ -1,0 +1,41 @@
+.overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fs-spacing-3);
+  margin-bottom: var(--fs-spacing-5);
+
+  @include media("<tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--fs-color-body-bkg);
+  border: 1px solid var(--fs-border-color-default);
+  border-radius: var(--fs-border-radius);
+  padding: var(--fs-spacing-3) var(--fs-spacing-3) var(--fs-spacing-3) 0;
+
+  h3 {
+    font-size: var(--fs-text-size-lead);
+    font-weight: var(--fs-text-weight-bold);
+    margin-bottom: var(--fs-spacing-2);
+  }
+}
+
+.tierBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fs-spacing-1);
+  padding: var(--fs-spacing-1) var(--fs-spacing-3);
+  border-radius: var(--fs-border-radius);
+  font-weight: var(--fs-text-weight-bold);
+  font-size: var(--fs-text-size-body);
+  color: #fff;
+  background-color: #aa0000;
+}
+
+.pointsBalance {
+  font-size: var(--fs-text-size-title-section);
+  font-weight: var(--fs-text-weight-bold);
+  color: var(--fs-color-main-2);
+}
