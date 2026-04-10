@@ -17,8 +17,7 @@ const ClientCard = ({
     schemaIdentifier,
     recordIdentifier,
     identifierType: "uuid",
-    // identifierValue: Cookies.get("_snrs_uuid")!,
-    identifierValue: "c2035a8e-1dac-4dfa-a823-f75e2b0f8267"
+    identifierValue: Cookies.get("_snrs_uuid")!
   });
 
   const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as Record<string, unknown> | undefined;
