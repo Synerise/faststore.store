@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@faststore/cli": "3.60.3",
+    "@faststore/core": "^3.97.1",
     "@synerise/faststore-api": "0.0.3",
     "cookie": "^1.0.2",
     "is-mobile": "^5.0.0",

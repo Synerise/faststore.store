@@ -10,12 +10,14 @@ import ProductShelfSkeleton from "src/components/skeletons/ProductShelfSkeleton"
 
 import {
   RecommendationShelfProps,
-  RecommendationViewEvent,
-  RecommendationClickEvent,
 } from "./RecommendationShelf.types";
+import {
+    RecommendationViewEvent,
+    RecommendationClickEvent
+} from '../../../types/recommendationEvents'
 import styles from "./RecommendationShelf.module.scss";
 import { useRecommendations } from "./hooks";
-import { RecommendationItem } from "./RecommendationItem";
+import { RecommendationItem } from "../../shared/RecommendationItem";
 
 const RecommendationShelf = ({
   title,

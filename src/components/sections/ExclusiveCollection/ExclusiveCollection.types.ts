@@ -1,8 +1,9 @@
-export type RecommendationShelfProps = {
-  title: string;
+export type ExclusiveCollectionProps = {
   campaignId: string;
+  expressionId: string;
+  title: string;
   itemsPerPage: number;
-  shouldFilterByCategory: boolean;
+  desiredValue: string;
   productCardConfiguration: {
     showDiscountBadge: boolean;
     bordered: boolean;
