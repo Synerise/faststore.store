@@ -87,7 +87,7 @@ const SyneriseProductGalleryContent = () => {
 
     const [title, searchTerm, collection] = isSearchPage(context)
         ? [searchPageContext?.data?.title, searchPageContext?.data?.searchTerm]
-        : isPLP(context) ? [plpContext?.data?.collection?.seo?.title, undefined, plpContext.data?.collection] : ['', undefined]
+        : isPLP(context) ? [plpContext?.data?.collection?.seo?.title, undefined, plpContext?.data?.collection] : ['', undefined]
 
     const [isLoading, setIsLoading] = useState(false);
     const {state, setCorrelationId} = useSearchContext()

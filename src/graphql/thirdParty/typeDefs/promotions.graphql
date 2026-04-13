@@ -1,0 +1,81 @@
+type SynerisePromotionImage {
+    url: String
+    type: String
+}
+
+type SynerisePromotionTag {
+    name: String
+    color: String
+    icon: String
+    priority: Int
+    directory: String
+}
+
+type SynerisePromotionItem {
+    vouchers: [String]
+    uuid: String!
+    code: String
+    status: String
+    type: String
+    redeemLimitPerClient: Int
+    redeemQuantityPerActivation: Int
+    currentRedeemedQuantity: Int
+    currentRedeemLimit: Int
+    activationCounter: Int
+    possibleRedeems: Int
+    details: JSON
+    discountType: String
+    discountMode: String
+    discountModeDetails: String
+    requireRedeemedPoints: Int
+    discountValue: Float
+    name: String
+    headline: String
+    description: String
+    images: [SynerisePromotionImage]
+    startAt: String
+    expireAt: String
+    displayFrom: String
+    displayTo: String
+    lastingTime: Int
+    lastingAt: String
+    params: JSON
+    catalogIndexItems: [String]
+    price: Float
+    priority: Int
+    itemScope: String
+    minBasketValue: String
+    maxBasketValue: String
+    tags: [SynerisePromotionTag]
+}
+
+type SynerisePromotionsMeta {
+    totalCount: Int
+    totalPages: Int
+    page: Int
+    limit: Int
+    code: Int
+}
+
+type SynerisePromotionsResponse {
+    meta: SynerisePromotionsMeta
+    data: [SynerisePromotionItem]
+}
+
+type SynerisePromotionsResult {
+    promotions(
+        sort: String,
+        status: [String],
+        presentOnly: Boolean,
+        displayableOnly: Boolean,
+        tagNames: [String],
+        limit: Int,
+        page: Int,
+        includeMeta: Boolean,
+        fields: [String],
+        promotionUuids: String,
+        checkGlobalActivationLimits: Boolean,
+        includeVouchers: Boolean,
+        storeIds: String
+    ): SynerisePromotionsResponse
+}

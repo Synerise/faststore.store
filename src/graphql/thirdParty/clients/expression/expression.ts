@@ -44,7 +44,7 @@ export const SyneriseExpressionClient = ({ host, namespace, expressionId, identi
             {
                 method: 'POST',
                 headers: {
-                    "Authorization": "Basic MDk5ODI5MGYtMDNiNS00NDExLWEyYmItNGQ3ODQzODY3NGRhOjJlN2Y3MTY5LWRkZTMtNDM1OS1hMzViLTk4MDk0OThjZTEwYQ=="
+                    "Authorization": `Basic ${process.env.SYNERISE_BASIC_AUTH}`
                 },
                 body: JSON.stringify({ ...expressionByCampaignArgs })
             }
