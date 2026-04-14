@@ -8,8 +8,15 @@ type BannerCategoryItem = {
     itemId?: string
 }
 
-interface BannerResponse {
-    data?: BannerCategoryItem[]
+type TextBannerItem = {
+    title?: string
+    category?: string
+    itemId?: string
+    thumbnail?: string
+}
+
+interface BannerResponse<T = BannerCategoryItem> {
+    data?: T[]
 }
 
 type GetCategoryArgs = {
@@ -36,7 +43,22 @@ const SyneriseBannerClient = () => {
         return { data: json?.data ?? [] }
     }
 
-    return { getCategory }
+    const getTitles = async ({ clientUUID, campaignId }: GetCategoryArgs): Promise<{ data: TextBannerItem[] }> => {
+        if (!clientUUID) {
+            return { data: [] }
+        }
+
+        const url = `${host.replace(/\/$/, '')}/recommendations/v2/recommend/campaigns?token=${encodeURIComponent(trackerKey)}`
+
+        const json = await fetchAPI<BannerResponse<TextBannerItem>>(url, {
+            method: 'POST',
+            body: JSON.stringify({ clientUUID, campaignId }),
+        })
+
+        return { data: json?.data ?? [] }
+    }
+
+    return { getCategory, getTitles }
 }
 
 type BannerRoot = {
@@ -61,6 +83,9 @@ const Query = {
 export const SyneriseBannerResult = {
     getCategory: async (root: BannerRoot, args: GetCategoryArgs) => {
         return root.bannerClient.getCategory(args)
+    },
+    getTitles: async (root: BannerRoot, args: GetCategoryArgs) => {
+        return root.bannerClient.getTitles(args)
     },
 }
 

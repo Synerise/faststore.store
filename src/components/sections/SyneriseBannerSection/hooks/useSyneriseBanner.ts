@@ -1,81 +1,48 @@
-import { useState, useEffect, useCallback } from "react";
-import type { SyneriseBannerApiResponse } from "../SyneriseBannerSection.types";
+import { gql } from "@generated/gql";
+import { SyneriseBannerTextQueryQuery } from "@generated/graphql";
+import { useQuery } from "src/sdk/graphql/useQuery";
+import Cookies from "js-cookie";
 
-const DEFAULT_API_HOST = "https://api.azu.synerise.com";
+const query = gql(`query SyneriseBannerTextQuery(
+  $campaignId: String!,
+  $clientUUID: String!
+) {
+  syneriseBanner {
+    getTitles(clientUUID: $clientUUID, campaignId: $campaignId) {
+      data {
+        title
+      }
+    }
+  }
+}`);
 
 type UseSyneriseBannerParams = {
   campaignId: string;
-  token: string;
-  apiHost?: string;
   fallbackText: string;
 };
 
 export function useSyneriseBanner({
   campaignId,
-  token,
-  apiHost = DEFAULT_API_HOST,
   fallbackText,
 }: UseSyneriseBannerParams) {
-  const [titles, setTitles] = useState<string[]>([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const clientUUID = Cookies.get("_snrs_uuid") ?? "";
 
-  const fetchTitles = useCallback(async () => {
-    if (typeof window === "undefined") return;
-    const getClientUUID = () =>
-      (window as unknown as { SyneriseTC?: { uuid?: string } })?.SyneriseTC?.uuid;
+  const { data, error } = useQuery<SyneriseBannerTextQueryQuery>(
+    query,
+    { campaignId, clientUUID },
+    { doNotRun: !clientUUID },
+  );
 
-    let clientUUID = getClientUUID();
+  const rawItems = data?.syneriseBanner?.getTitles?.data ?? [];
+  const titles = rawItems.map((item) => item.title).filter(Boolean) as string[];
 
-    // Se o clientUUID ainda não estiver disponível, aguardamos até 2s antes de cair em fallback
-    if (!clientUUID) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      clientUUID = getClientUUID();
-    }
-
-    if (!clientUUID) {
-      setError(true);
-      setLoading(false);
-      return;
-    }
-
-    const url = new URL(
-      `${apiHost.replace(/\/$/, "")}/recommendations/v2/recommend/campaigns/${campaignId}`,
-    );
-    url.searchParams.set("token", token);
-    url.searchParams.set("clientUUID", clientUUID);
-    url.searchParams.set("itemId", "null");
-
-    try {
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const json = (await res.json()) as SyneriseBannerApiResponse;
-      const items = json?.data ?? [];
-      if (Array.isArray(items) && items.length > 0) {
-        setTitles(items.map((item) => item.title).filter(Boolean));
-        setError(false);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [campaignId, token, apiHost]);
-
-  useEffect(() => {
-    fetchTitles();
-  }, [fetchTitles]);
-
-  const displayText = error || titles.length === 0 ? fallbackText : null;
-  const rotatingTitles = titles.length > 0 ? titles : [];
+  const useFallback = !!error || titles.length === 0;
 
   return {
-    loading,
+    loading: !data?.syneriseBanner && !error,
     error,
-    fallbackText: displayText ?? fallbackText,
-    titles: rotatingTitles,
-    useFallback: error || titles.length === 0,
+    titles,
+    useFallback,
+    fallbackText,
   };
 }

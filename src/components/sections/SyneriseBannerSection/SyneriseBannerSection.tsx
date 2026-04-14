@@ -10,8 +10,6 @@ const SyneriseBannerSection = ({
   backgroundColor,
   textColor = "#ffffff",
   campaignId,
-  token,
-  apiHost,
   rotationIntervalSeconds = DEFAULT_ROTATION_SECONDS,
 }: SyneriseBannerSectionProps) => {
   const {
@@ -21,8 +19,6 @@ const SyneriseBannerSection = ({
     fallbackText: resolvedFallback,
   } = useSyneriseBanner({
     campaignId,
-    token,
-    apiHost,
     fallbackText,
   });
 
@@ -34,7 +30,6 @@ const SyneriseBannerSection = ({
   const displayTitles = useFallback ? [] : titles;
   const singleDisplayText = useFallback ? resolvedFallback : titles[0] ?? resolvedFallback;
 
-  // Rotação automática apenas quando há múltiplos títulos
   useEffect(() => {
     if (!hasMultiple || displayTitles.length <= 1) {
       if (intervalRef.current) {
@@ -66,48 +61,34 @@ const SyneriseBannerSection = ({
     };
   }, [hasMultiple, displayTitles.length, rotationIntervalSeconds]);
 
-  // Reset index quando a lista de títulos muda
   useEffect(() => {
     setCurrentIndex(0);
   }, [titles.length]);
 
-  const style = {
+  const cardStyle = {
     backgroundColor,
     color: textColor,
   };
 
-  // SSR e loading: exibir texto fallback para evitar layout vazio
-  if (loading) {
-    return (
-      <section
-        className={styles.banner}
-        style={style}
-        data-fs-synerise-banner
-        data-fs-synerise-banner-loading
-      >
-        <div className={styles.textWrapper}>
-          <p className={styles.text}>{fallbackText}</p>
+  const renderText = (text: string, animation?: string) => (
+    <section className={styles.section} data-fs-synerise-banner>
+      <div className={styles.wrapper}>
+        <div className={styles.card} style={cardStyle}>
+          <p
+            key={animation ? currentIndex : "static"}
+            className={`${styles.text} ${animation ?? ""}`}
+          >
+            {text}
+          </p>
         </div>
-      </section>
-    );
+      </div>
+    </section>
+  );
+
+  if (loading || useFallback || displayTitles.length <= 1) {
+    return renderText(loading ? fallbackText : singleDisplayText);
   }
 
-  // Um único texto (fallback ou único título da API)
-  if (useFallback || displayTitles.length <= 1) {
-    return (
-      <section
-        className={styles.banner}
-        style={style}
-        data-fs-synerise-banner
-      >
-        <div className={styles.textWrapper}>
-          <p className={styles.text}>{singleDisplayText}</p>
-        </div>
-      </section>
-    );
-  }
-
-  // Múltiplos títulos com rotação
   const animationClass =
     animating === "enter"
       ? styles.slideEnter
@@ -115,22 +96,7 @@ const SyneriseBannerSection = ({
         ? styles.slideExit
         : styles.slideEnter;
 
-  return (
-    <section
-      className={styles.banner}
-      style={style}
-      data-fs-synerise-banner
-    >
-      <div className={styles.textWrapper}>
-        <p
-          key={currentIndex}
-          className={`${styles.text} ${animationClass}`}
-        >
-          {displayTitles[currentIndex]}
-        </p>
-      </div>
-    </section>
-  );
+  return renderText(displayTitles[currentIndex], animationClass);
 };
 
 export default SyneriseBannerSection;
