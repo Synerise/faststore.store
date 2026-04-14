@@ -17,7 +17,7 @@ export const PersonalisedPromotions = ({
   const [errorPromotion, setErrorPromotion] = useState<string | null>(null);
   const [activatingPromotion, setActivatingPromotion] = useState<string | null>(null);
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { activatePromotion } = useActivatePromotion();
+  const { activatePromotion } = useActivatePromotion(apiKey);
 
   const { data, loading, error } = usePersonalisedPromotions({
     apiKey,

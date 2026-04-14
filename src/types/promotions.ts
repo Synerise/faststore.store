@@ -17,6 +17,7 @@ export type Promotion = {
   headline?: string;
   discountValue?: number;
   discountType?: string;
+  status?: string;
   images?: PromotionImage[];
   params?: { link?: string; [key: string]: unknown };
 };

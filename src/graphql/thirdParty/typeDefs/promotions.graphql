@@ -6,6 +6,7 @@ type PromotionItem {
     headline: String
     discountValue: Float
     discountType: String
+    status: String
     images: [PromotionImage]
     params: JSONObject
 }
@@ -24,4 +25,13 @@ type SynerisePromotionsResult {
         clientUUID: String!
         limit: Int
     ): SynerisePromotionsData
+}
+
+extend type Mutation {
+    synerisePromotionActivate(
+        apiKey: String!
+        clientUUID: String!
+        code: String!
+        pointsToUse: Int
+    ): Boolean
 }

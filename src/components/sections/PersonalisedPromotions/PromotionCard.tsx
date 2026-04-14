@@ -2,7 +2,9 @@ import type { SynerisePromotionsQueryQuery } from "@generated/graphql";
 import styles from "./PersonalisedPromotions.module.scss";
 import { ImageType } from "../../../types";
 
-type PromotionItem = NonNullable<SynerisePromotionsQueryQuery['synerisePromotions']['data']>[number];
+type PromotionItem = NonNullable<
+  NonNullable<SynerisePromotionsQueryQuery['synerisePromotions']['getForClient']>['data']
+>[number];
 
 type PromotionCardProps = {
   promotion: PromotionItem;
@@ -31,10 +33,20 @@ export function PromotionCard({
 
   if (!mainImage) return null;
 
-  const isActivated = activatedPromotion === promotionCode;
+  const status = promotion.status?.toUpperCase();
+  const isPreActivated = status === "ACTIVE";
+  const isRedeemed = status === "REDEEMED";
+  const isActivated = isPreActivated || activatedPromotion === promotionCode;
   const isError = errorPromotion === promotionCode;
 
   const buttonState = (() => {
+    if (isRedeemed) {
+      return {
+        text: "PROMOTION USED",
+        className: styles.activated,
+        disabled: true,
+      };
+    }
     if (isActivating) {
       return {
         text: "ACTIVATING...",

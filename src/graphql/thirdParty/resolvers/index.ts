@@ -8,6 +8,7 @@ const resolvers = {
   SynerisePromotionsResult,
   Mutation: {
     ...orderFormResolver.Mutation,
+    ...promotionsResolver.Mutation,
   },
   Query: {
     ...SyneriseResolvers.Query,

@@ -17,6 +17,7 @@ const query = gql(`query SynerisePromotionsQuery(
         headline
         discountValue
         discountType
+        status
         images {
           url
           type
