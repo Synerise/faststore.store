@@ -479,27 +479,24 @@
     "requiredScopes": [],
     "schema": {
       "title": "Banner SubCategories - Synerise",
-      "description": "Carrossel horizontal de banners de subcategorias (API Synerise). 4 no desktop, 2 no tablet, 1 no mobile.",
+      "description": "Responsive grid of sub-category tiles (Synerise API). 6 columns on desktop, 3 on tablet, 2 on mobile.",
       "type": "object",
       "required": ["campaignId"],
       "properties": {
+        "title": {
+          "type": "string",
+          "title": "Section title",
+          "description": "Heading displayed above the grid (e.g., Browse by popular categories)"
+        },
         "campaignId": {
           "type": "string",
-          "title": "ID da recomendação",
-          "description": "ID da campanha (ex: ugXXWxq3Wpwi)"
-        },
-        "itemsPerPage": {
-          "type": "integer",
-          "title": "Items per page",
-          "default": 4,
-          "minimum": 1,
-          "maximum": 6,
-          "description": "Number of visible items in the carousel"
+          "title": "Campaign ID",
+          "description": "Synerise recommendation campaign ID (e.g., ugXXWxq3Wpwi)"
         },
         "fallbackImages": {
           "type": "array",
-          "title": "Imagens de fallback",
-          "description": "URLs de imagens exibidas quando a API falha ou não retorna dados",
+          "title": "Fallback images",
+          "description": "Image URLs displayed when the API fails or returns no data",
           "items": {
             "type": "string"
           }

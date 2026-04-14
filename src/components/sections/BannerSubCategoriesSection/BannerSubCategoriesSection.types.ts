@@ -7,10 +7,10 @@ export type BannerItem = {
 };
 
 export type BannerSubCategoriesSectionProps = {
+  /** Section title (e.g., "Browse by popular categories") */
+  title?: string;
   /** ID of recommendation campaign (ex: ugXXWxq3Wpwi) */
   campaignId: string;
-  /** Number of visible items. Default: 4 */
-  itemsPerPage?: number;
   /** Fallback image URLs when API fails or returns no data */
   fallbackImages?: string[];
 };

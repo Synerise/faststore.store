@@ -1,6 +1,6 @@
 # BannerSubCategoriesSection
 
-Displays a horizontal carousel of sub-category banner images, fetched from a Synerise recommendation campaign. Each banner links to its category page. Uses the native FastStore `<Carousel>` component for navigation, pagination, and swipe support.
+Displays a responsive grid of sub-category tiles, fetched from a Synerise recommendation campaign. Each tile shows a category image linking to its category page. Layout follows the foxshop "Browse by popular categories" pattern: 6 columns on desktop, 3 on tablet, 2 on mobile.
 
 ## How It Works
 
@@ -9,14 +9,14 @@ Displays a horizontal carousel of sub-category banner images, fetched from a Syn
 3. The GraphQL resolver reads `trackerKey` from `discovery.config`, then POSTs to `/recommendations/v2/recommend/campaigns?token={trackerKey}` with `{ clientUUID, campaignId }`
 4. The API returns sub-category metadata in `data[]` — each item has `firstCategory`, `secondCategory`, `subCategoryImage`, `itemId`
 5. The hook maps each item to a `BannerItem` — image URL, category link (slugified `/{firstCategory}/{secondCategory}`), and display names
-6. Items are rendered in a `<Carousel>` from `@faststore/ui` with configurable `itemsPerPage`
+6. Items are rendered in a responsive CSS grid (6 → 3 → 2 columns)
 
 ### Component States
 
 | State | Condition | What the user sees |
 |---|---|---|
-| **Loading** | `!data && !error` | Grid of skeleton shimmer placeholders |
-| **Success** | `data[]` has items | Horizontal carousel of banner images with navigation |
+| **Loading** | `!data && !error` | Grid of skeleton shimmer placeholders (6 tiles) |
+| **Success** | `data[]` has items | Responsive grid of category tiles with images |
 | **Fallback** | API error or empty `data`, but `fallbackImages` prop provided | Carousel of fallback images, links set to `#` |
 | **Empty** | API error or empty `data`, no fallback images | Component returns `null` (nothing rendered) |
 
@@ -32,8 +32,8 @@ That's why this component uses a custom `syneriseBanner` resolver that calls the
 
 | Prop | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `title` | `string` | no | — | Section heading displayed above the grid (e.g., "Browse by popular categories") |
 | `campaignId` | `string` | yes | — | Synerise recommendation campaign ID (e.g., `ugXXWxq3Wpwi`) |
-| `itemsPerPage` | `number` | no | `4` | Number of visible items in the carousel |
 | `fallbackImages` | `string[]` | no | `[]` | Fallback image URLs shown when the API fails or returns no data |
 
 Props are configured per-page in the VTEX CMS (Headless CMS).
@@ -44,7 +44,7 @@ Props are configured per-page in the VTEX CMS (Headless CMS).
 
 | Package | Usage |
 |---------|-------|
-| `@faststore/ui` | `Carousel`, `Link` components |
+| `@faststore/ui` | `Link` component |
 | `@synerise/faststore-api` | `fetchAPI` used by the resolver |
 | `js-cookie` | Reading `_snrs_uuid` cookie on the client |
 
@@ -186,7 +186,7 @@ The component must also be registered in:
 src/components/sections/BannerSubCategoriesSection/
 ├── BannerSubCategoriesSection.tsx          # Main component — Carousel with sub-category banners
 ├── BannerSubCategoriesSection.types.ts     # Props interface + BannerItem type
-├── BannerSubCategoriesSection.module.scss  # Styles (imports Carousel styles, skeleton grid)
+├── BannerSubCategoriesSection.module.scss  # Styles (responsive grid, skeleton, foxshop tile pattern)
 ├── hooks/
 │   ├── useBannerSubCategories.ts           # Hook — useQuery to syneriseBanner.getSubCategories
 │   └── index.ts                            # Barrel export

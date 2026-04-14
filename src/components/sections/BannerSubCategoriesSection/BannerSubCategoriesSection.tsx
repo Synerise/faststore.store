@@ -1,15 +1,14 @@
-import React, { useMemo, useId } from "react";
-import { Link, Carousel } from "@faststore/ui";
+import React, { useMemo } from "react";
+import { Link } from "@faststore/ui";
 import type { BannerSubCategoriesSectionProps, BannerItem } from "./BannerSubCategoriesSection.types";
 import { useBannerSubCategories } from "./hooks";
 import styles from "./BannerSubCategoriesSection.module.scss";
 
 const BannerSubCategoriesSection = ({
+  title,
   campaignId,
-  itemsPerPage = 4,
   fallbackImages = [],
 }: BannerSubCategoriesSectionProps) => {
-  const id = useId();
   const { items: apiItems, loading, error } = useBannerSubCategories({
     campaignId,
   });
@@ -29,9 +28,12 @@ const BannerSubCategoriesSection = ({
     return (
       <section className={styles.section} data-fs-banner-subcategories>
         <div className={styles.wrapper}>
-          <div className={styles.skeletonGrid}>
-            {Array.from({ length: itemsPerPage }, (_, i) => (
-              <div key={i} className={styles.skeleton} aria-hidden />
+          {title && <h2 className={styles.title}>{title}</h2>}
+          <div className={styles.grid}>
+            {Array.from({ length: 6 }, (_, i) => (
+              <div key={i} className={styles.skeletonTile} aria-hidden>
+                <div className={styles.skeletonImage} />
+              </div>
             ))}
           </div>
         </div>
@@ -49,27 +51,25 @@ const BannerSubCategoriesSection = ({
       data-fs-banner-subcategories
     >
       <div className={styles.wrapper}>
-        <Carousel
-          id={id}
-          itemsPerPage={itemsPerPage}
-          variant="scroll"
-          infiniteMode={false}
-        >
+        {title && <h2 className={styles.title}>{title}</h2>}
+        <div className={styles.grid}>
           {items.map((item) => (
             <Link
               key={item.itemId || item.link}
               href={item.link}
-              className={styles.bannerLink}
+              className={styles.tile}
             >
-              <img
-                src={item.image}
-                alt={`${item.firstCategory} ${item.secondCategory}`.trim() || "Banner"}
-                className={styles.bannerImage}
-                loading="lazy"
-              />
+              <div className={styles.tileImage}>
+                <img
+                  src={item.image}
+                  alt={`${item.firstCategory} ${item.secondCategory}`.trim() || "Category"}
+                  className={styles.image}
+                  loading="lazy"
+                />
+              </div>
             </Link>
           ))}
-        </Carousel>
+        </div>
       </div>
     </section>
   );
