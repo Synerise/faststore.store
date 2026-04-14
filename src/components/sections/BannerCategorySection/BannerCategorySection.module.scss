@@ -1,12 +1,12 @@
 @layer components {
   .categoryBanner {
     width: 100%;
-    padding: var(--fs-spacing-4) 0;
+    padding: var(--fs-spacing-4) 0 var(--fs-spacing-5);
     overflow: hidden;
 
     .wrapper {
       position: relative;
-      max-width: 100%;
+      max-width: var(--fs-grid-max-width);
       margin: 0 auto;
       padding: 0 var(--fs-spacing-4);
     }
@@ -14,23 +14,24 @@
     .bannerLink {
       display: block;
       width: 100%;
-      border-radius: 8px;
+      border-radius: var(--fs-border-radius-large);
       overflow: hidden;
       text-decoration: none;
-      background: var(--fs-color-neutral-2, #f0f0f0);
+      background: var(--fs-color-neutral-2);
     }
 
     .bannerImage {
       width: 100%;
-      height: auto;
       display: block;
-      vertical-align: middle;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center;
+      min-height: 501px;
     }
 
     .bannerImageMobile {
       display: block;
+      min-height: 320px;
+
       @media (min-width: 768px) {
         display: none;
       }
@@ -44,28 +45,29 @@
     }
 
     .skeleton {
-      min-height: 454px;
+      border-radius: var(--fs-border-radius-large);
+      min-height: 320px;
       background: linear-gradient(
         90deg,
-        rgba(0, 0, 0, 0.06) 25%,
-        rgba(0, 0, 0, 0.12) 50%,
-        rgba(48, 32, 32, 0.06) 75%
+        rgba(0, 0, 0, 0.06) 0%,
+        rgba(0, 0, 0, 0.03) 40%,
+        rgba(0, 0, 0, 0.06) 80%
       );
-      background-size: 200% 100%;
-      animation: shimmer 4s ease-in-out infinite;
+      background-size: 800px 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+
       @media (min-width: 768px) {
-        min-height: 573px;
-        animation: shimmer 2s ease-in-out infinite;
+        min-height: 501px;
       }
     }
+
     @keyframes shimmer {
       0% {
-        background-position: 200% 0;
+        background-position: -800px 0;
       }
       100% {
-        background-position: -200% 0;
+        background-position: 800px 0;
       }
     }
-    
   }
 }

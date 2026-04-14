@@ -42,5 +42,8 @@ lighthouserc.js
 #webstorm
 .idea/
 
-
+#private settings
 notes
+settings.local.json
+/.claude/settings.local.json
+/docs

@@ -2,21 +2,17 @@ import React, {
   useMemo
 } from "react";
 import { Link } from "@faststore/ui";
-import type { BannerCategorySectionProps } from "./BannerCategorySection.types";
-import { useBannerCategory, type BannerItem } from "./hooks";
+import type { BannerCategorySectionProps, BannerItem } from "./BannerCategorySection.types";
+import { useBannerCategory } from "./hooks";
 import styles from "./BannerCategorySection.module.scss";
 
 const BannerCategorySection = ({
-  token,
   campaignId,
   fallbackImage,
   fallbackImageAPP,
-  apiHost,
 }: BannerCategorySectionProps) => {
   const { item: apiItem, loading, error } = useBannerCategory({
     campaignId,
-    token,
-    apiHost,
   });
 
   const item: BannerItem | null = useMemo(() => {
