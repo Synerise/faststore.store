@@ -10,7 +10,7 @@ import { SectionRecommendationLoader } from './SectionRecommendationLoader';
 export type SectionRecommendationRowProps = {
     row: Row;
     id: string;
-    ref: React.Ref<HTMLElement>;
+    sectionRef: React.Ref<HTMLElement>;
     loading: boolean;
     isMobile: boolean;
     itemsPerPage: number;
@@ -23,7 +23,7 @@ export type SectionRecommendationRowProps = {
 export const SectionRecommendationRow = ({
     row,
     id,
-    ref,
+    sectionRef,
     loading,
     isMobile,
     itemsPerPage,
@@ -34,7 +34,7 @@ export const SectionRecommendationRow = ({
 }: SectionRecommendationRowProps) => (
     <section
         key={row?.attributeValue}
-        ref={ref}
+        ref={sectionRef}
         className={`${styles.sectionRecommendation} section-product-shelf layout__section section`}
     >
         <div className={styles.shelfWrapper}>
