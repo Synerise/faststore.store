@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: var(--fs-spacing-3);
     width: 100%;
   }
 
@@ -39,7 +39,7 @@
   }
 
   .categoryImage img {
-    border-radius: 10px;
+    border-radius: var(--fs-border-radius);
     width: auto;
     height: auto;
     max-width: 100%;

@@ -1,0 +1,15 @@
+.clientCard {
+  @include layout-content;
+
+  padding: var(--fs-spacing-5) 0;
+
+  .header {
+    margin-bottom: var(--fs-spacing-4);
+
+    h2 {
+      font-size: var(--fs-text-size-title-section);
+      font-weight: var(--fs-text-weight-bold);
+      margin-inline: 0;
+    }
+  }
+}

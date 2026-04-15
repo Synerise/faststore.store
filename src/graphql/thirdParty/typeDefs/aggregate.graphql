@@ -1,0 +1,16 @@
+type SyneriseAggregateResponse {
+    clientId: Int!
+    aggregateId: String!
+    name: String!
+    result: JSON
+}
+
+type SyneriseAggregateResult {
+    aggregate(
+        aggregateId: String,
+        apiHost: String,
+        namespace: String,
+        identifierType: String,
+        identifierValue: String
+    ): SyneriseAggregateResponse
+}

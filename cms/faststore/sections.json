@@ -631,9 +631,85 @@
         "limit": {
           "type": "integer",
           "title": "Promotions limit",
-          "description": "Token for Synerise API authentication",
+          "description": "Max number of promotions displayed to the user",
           "minimum": 1,
-          "default": 100
+          "default": 100}
+      }
+    }
+  },
+  {
+    "name": "ExclusiveCollection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Exclusive Collection",
+      "description": "Exclusive Collection - powered by Synerise",
+      "type": "object",
+      "required": ["campaignId", "expressionId", "desiredValue", "itemsPerPage"],
+      "properties": {
+        "campaignId": {
+          "type": "string",
+          "title": "Campaign ID",
+          "description": "AI Recommendation Campaign ID"
+        },
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "expressionId": {
+          "type": "string",
+          "title": "Expression ID",
+          "description": "Expression ID used to recognize premium user"
+        },
+        "desiredValue": {
+          "type": "string",
+          "title": "Target value",
+          "description": "Value of the expression result that will recognize premium user"
+        },
+        "itemsPerPage": {
+          "type": "integer",
+          "title": "Number of items per page",
+          "default": 5,
+          "description": "Number of items to display per page in carousel"
+        },
+        "productCardConfiguration": {
+          "title": "Product Card Configuration",
+          "type": "object",
+          "properties": {
+            "showDiscountBadge": {
+              "title": "Show discount badge?",
+              "type": "boolean",
+              "default": true
+            },
+            "bordered": {
+              "title": "Cards should be bordered?",
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "ClientCard",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Client Card",
+      "description": "Client Card - powered by Synerise",
+      "type": "object",
+      "required": [],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "schemaIdentifier": {
+          "type": "string",
+          "title": "Brickworks schema identifier"
+        },
+        "recordIdentifier": {
+          "type": "string",
+          "title": "Brickworks record identifier"
         }
       }
     }
