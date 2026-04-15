@@ -2,6 +2,7 @@ import { Resolvers as SyneriseResolvers } from "@synerise/faststore-api";
 
 import orderFormResolver from './orderForm'
 import promotionsResolver, { SynerisePromotionsResult } from './promotions'
+import bannerResolver, { SyneriseBannerResult } from './banner'
 
 import { SyneriseExpressionResult } from './expression'
 import { SyneriseAggregateResult } from './aggregate'
@@ -14,9 +15,11 @@ const resolvers = {
   SyneriseAggregateResult,
   SynerisePromotionsResult,
   SyneriseBrickworksResult,
+  SyneriseBannerResult,
   Query: {
     ...SyneriseResolvers.Query,
     ...promotionsResolver.Query,
+    ...bannerResolver.Query,
     syneriseExpressionResult: (_: unknown, { apiHost, namespace, expressionId, identifierType }: { apiHost?: string; namespace?: string; expressionId?: string; identifierType?: string }) => {
       const host = apiHost || process.env.SYNERISE_API_URL;
 

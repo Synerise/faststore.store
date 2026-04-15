@@ -543,13 +543,8 @@
       "title": "Banner Category - Synerise",
       "description": "Banner with last visited category based on recommendation (API Synerise).",
       "type": "object",
-      "required": ["token", "campaignId"],
+      "required": ["campaignId"],
       "properties": {
-        "token": {
-          "type": "string",
-          "title": "Token API",
-          "description": "Token for Synerise API authentication"
-        },
         "campaignId": {
           "type": "string",
           "title": "ID of campaign",
@@ -636,7 +631,7 @@
         "limit": {
           "type": "integer",
           "title": "Promotions limit",
-          "description": "Token for Synerise API authentication",
+          "description": "Max number of promotions displayed to the user",
           "minimum": 1,
           "default": 100}
       }

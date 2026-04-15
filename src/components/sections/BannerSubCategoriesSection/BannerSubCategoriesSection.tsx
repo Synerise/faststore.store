@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Link } from "@faststore/ui";
 import type { BannerSubCategoriesSectionProps } from "./BannerSubCategoriesSection.types";
-import { useBannerSubCategories, type BannerItem } from "./hooks";
+import { useBannerSubCategories, type SubCategoryBannerItem } from "./hooks";
 import styles from "./BannerSubCategoriesSection.module.scss";
 
 const DEFAULT_INTERVAL_SECONDS = 5;
@@ -49,7 +49,7 @@ const BannerSubCategoriesSection = ({
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const items: BannerItem[] = useMemo(() => {
+  const items: SubCategoryBannerItem[] = useMemo(() => {
     if (!error && apiItems.length > 0) return apiItems;
     return fallbackImages.map((image, i) => ({
       firstCategory: "",

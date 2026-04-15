@@ -1,0 +1,18 @@
+# Banner Category — raw recommendation campaign data (not product-enriched)
+type BannerCategoryItem {
+    banner_url: String
+    banner_app: String
+    category: String
+    itemId: String
+}
+
+type SyneriseBannerData {
+    data: [BannerCategoryItem!]
+}
+
+type SyneriseBannerResult {
+    getCategory(
+        clientUUID: String!
+        campaignId: String!
+    ): SyneriseBannerData
+}

@@ -1,6 +1,7 @@
 // ----------------------------------------------------------
 // GLOBAL TOKENS
-// Custom Theme
+// Custom Theme — based on foxshop reference
+// (https://kochman-k.github.io/foxshop/ecommerce/)
 // ----------------------------------------------------------
 
 @layer theme {
@@ -8,26 +9,149 @@
     // --------------------------------------------------------
     // Colors (Branding Core)
     // --------------------------------------------------------
-    --fs-color-main-0: #f1f2f3;
+    // Foxshop palette: slate-50 → slate-800
+
+    // Main (primary brand)
+    --fs-color-main-0: #f8fafc;   // slate-50  — lightest surface
+    --fs-color-main-1: #e2e8f0;   // slate-200 — light border/divider
+    --fs-color-main-2: #1d293d;   // slate-800 — primary brand (dark)
+    --fs-color-main-3: #314158;   // slate-700 — primary hover
+    --fs-color-main-4: #1d293d;   // slate-800 — primary active
+
+    // Neutral
+    --fs-color-neutral-0: #ffffff;
+    --fs-color-neutral-1: #f8fafc; // slate-50
+    --fs-color-neutral-2: #f1f5f9; // slate-100
+    --fs-color-neutral-3: #e2e8f0; // slate-200
+    --fs-color-neutral-4: #cad5e2; // slate-300
+    --fs-color-neutral-5: #90a1b9; // slate-400
+    --fs-color-neutral-6: #62748e; // slate-500
+    --fs-color-neutral-7: #1d293d; // slate-800
+
+    // Text
+    --fs-color-text: #1d293d;           // slate-800 — body text
+    --fs-color-text-light: #62748e;     // slate-500
+    --fs-color-text-inverse: #f8fafc;   // slate-50
+    --fs-color-text-display: #1d293d;   // slate-800
+
+    // Links
+    --fs-color-link: #1d293d;
+    --fs-color-link-hover: #314158;
+    --fs-color-link-active: #1d293d;
+    --fs-color-link-inverse: #f8fafc;
+
+    // Body
+    --fs-color-body-bkg: #ffffff;
+
+    // Borders
+    --fs-border-color: #e2e8f0;         // slate-200
+    --fs-border-color-hover: #cad5e2;   // slate-300
+    --fs-border-color-active: #1d293d;  // slate-800
+    --fs-border-color-light: #f1f5f9;   // slate-100
+    --fs-border-color-light-hover: #e2e8f0;
+    --fs-border-color-light-active: #e2e8f0;
+
+    // Primary hierarchy
+    --fs-color-primary-text: #f8fafc;
+    --fs-color-primary-bkg: #1d293d;
+    --fs-color-primary-bkg-hover: #314158;
+    --fs-color-primary-bkg-active: #1d293d;
+    --fs-color-primary-bkg-light: #f8fafc;
+    --fs-color-primary-bkg-light-active: #e2e8f0;
+
+    // Secondary hierarchy
+    --fs-color-secondary-text: #1d293d;
+    --fs-color-secondary-bkg: transparent;
+    --fs-color-secondary-bkg-hover: #1d293d;
+    --fs-color-secondary-bkg-active: #314158;
+
+    // Action / accent (lime from foxshop)
+    --fs-color-action-text: #35530e;    // lime-900
+    --fs-color-action-bkg: #9ae600;     // lime-400
+    --fs-color-action-bkg-hover: #8dd100;
+    --fs-color-action-bkg-active: #7fbc00;
+
+    // Situations
+    --fs-color-success-text: #35530e;
+    --fs-color-success-bkg: #f7fee7;    // lime-50
+    --fs-color-success-border: #35530e;
+
     // --------------------------------------------------------
     // Typography (Branding Core)
     // --------------------------------------------------------
+    // Foxshop uses Figtree 400/500/600/700
+
+    --fs-text-face-body: 'Figtree', -apple-system, system-ui, BlinkMacSystemFont, sans-serif;
+    --fs-text-face-title: var(--fs-text-face-body);
+
+    --fs-text-weight-light: 400;
+    --fs-text-weight-regular: 400;
+    --fs-text-weight-medium: 500;
+    --fs-text-weight-semibold: 600;
+    --fs-text-weight-bold: 700;
+
+    // Scale matches foxshop: 12, 14, 16(base), 18, 24, 32, 48, 72
+    --fs-text-size-0: 12px;
+    --fs-text-size-1: 14px;
+    --fs-text-size-base: 16px;
+    --fs-text-size-2: var(--fs-text-size-base);
+    --fs-text-size-3: 18px;
+    --fs-text-size-4: 24px;
+    --fs-text-size-5: 24px;
+    --fs-text-size-6: 32px;
+    --fs-text-size-7: 48px;
+    --fs-text-size-8: 72px;
+
+    // Semantic sizes
+    --fs-text-size-title-huge: var(--fs-text-size-8);     // 72px — hero
+    --fs-text-size-title-page: var(--fs-text-size-7);     // 48px
+    --fs-text-size-title-section: var(--fs-text-size-4);  // 24px — section headings
+    --fs-text-size-title-product: var(--fs-text-size-2);  // 16px — card titles
+    --fs-text-size-body: var(--fs-text-size-base);        // 16px
+    --fs-text-size-legend: var(--fs-text-size-1);         // 14px
+    --fs-text-size-tiny: var(--fs-text-size-0);           // 12px
 
     // --------------------------------------------------------
     // Spacing (UI Essentials)
     // --------------------------------------------------------
+    // Keeping FastStore's rem-based scale — it aligns well with
+    // foxshop's 4/8/12/16/24/32/48px spacing
 
     // --------------------------------------------------------
     // Grid & Layout (UI Essentials)
     // --------------------------------------------------------
+    --fs-grid-max-width: 1320px;
+    --fs-grid-padding: var(--fs-spacing-4); // 24px (matches foxshop mobile padding)
 
     // --------------------------------------------------------
     // Interactive Controls (UI Essentials)
     // --------------------------------------------------------
+    --fs-control-tap-size: 40px;  // foxshop .btn height
+    --fs-control-min-height: 40px;
 
     // --------------------------------------------------------
     // Refinements
     // --------------------------------------------------------
+
+    // Borders — foxshop uses 4/8/12/16/24/32/54px radii
+    --fs-border-radius-small: 4px;
+    --fs-border-radius: 8px;
+    --fs-border-radius-medium: 16px;   // cards, product images
+    --fs-border-radius-large: 24px;    // hero banners, containers, sections
+    --fs-border-radius-pill: 32px;     // buttons, chips
+
+    --fs-border-width: 1px;
+    --fs-border-width-thick: 2px;
+
+    // Transitions — foxshop uses .2s ease as the baseline
+    --fs-transition-timing: .2s;
+    --fs-transition-property: all;
+    --fs-transition-function: ease;
+
+    // Shadows
+    --fs-shadow: none;
+    --fs-shadow-darker: 0 4px 30px rgba(0, 0, 0, .08), 0 1px 3px rgba(0, 0, 0, .04);
+    --fs-shadow-hover: 0 4px 30px rgba(0, 0, 0, .25), 0 1px 3px rgba(0, 0, 0, .15);
 
     // --------------------------------------------------------
     // FS UI Components
