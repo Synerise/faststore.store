@@ -8,7 +8,7 @@ Displays a full-width hero banner based on the user's last visited category, fet
 2. The `useBannerCategory` hook sends a GraphQL query with `campaignId` and the user's `clientUUID` (from `_snrs_uuid` cookie)
 3. The GraphQL resolver reads `trackerKey` from `discovery.config` (same global key used by all Synerise recommendation components), then POSTs to `/recommendations/v2/recommend/campaigns?token={trackerKey}` with `{ clientUUID, campaignId }`
 4. The API returns banner metadata in `data[0]` (`banner_url`, `banner_app`, `category`, `itemId`)
-5. The hook maps `data[0]` to a `BannerItem` — desktop image, mobile image, category link
+5. The hook maps `data[0]` to a `CategoryBannerItem` — desktop image, mobile image, category link
 6. If the API fails or returns no data, fallback images from CMS props are used
 
 ### Why a custom resolver (not the SDK)
@@ -43,7 +43,7 @@ Props are configured per-page in the VTEX CMS (Headless CMS).
 
 | Hook | File | Purpose |
 |------|------|---------|
-| `useBannerCategory` | `hooks/useBannerCategory.ts` | GraphQL query — fetches banner data for the current user via `syneriseBanner` resolver, maps `data[0]` to a `BannerItem` |
+| `useBannerCategory` | `hooks/useBannerCategory.ts` | GraphQL query — fetches banner data for the current user via `syneriseBanner` resolver, maps `data[0]` to a `CategoryBannerItem` |
 
 ### GraphQL — Query
 
@@ -51,7 +51,7 @@ Props are configured per-page in the VTEX CMS (Headless CMS).
 |------|---------|
 | `src/graphql/thirdParty/resolvers/banner.ts` | Resolver: creates `SyneriseBannerClient` factory; nested `SyneriseBannerResult.getCategory` POSTs to the campaigns endpoint |
 | `src/graphql/thirdParty/typeDefs/banner.graphql` | Schema: `SyneriseBannerResult`, `SyneriseBannerData`, `BannerCategoryItem` |
-| `src/graphql/thirdParty/typeDefs/query.graphql` | Root query: `syneriseBanner(trackerKey: String!): SyneriseBannerResult!` |
+| `src/graphql/thirdParty/typeDefs/query.graphql` | Root query: `syneriseBanner: SyneriseBannerResult!` (no args — resolver reads `trackerKey` from `discovery.config`) |
 
 ## GraphQL Operations
 
@@ -120,7 +120,7 @@ Key points:
 
 *This mapping reflects the current implementation. When adapting for a different campaign or store, update the hook and component to match your campaign's response fields and your design requirements.*
 
-| API field (`data[0]`) | Hook property (`BannerItem`) | Rendered as |
+| API field (`data[0]`) | Hook property (`CategoryBannerItem`) | Rendered as |
 |---|---|---|
 | `banner_url` | `image` | `<img>` desktop (hidden on mobile) |
 | `banner_app` | `imageApp` | `<img>` mobile (hidden on desktop) |
@@ -175,7 +175,7 @@ The component must also be registered in:
 ```
 src/components/sections/BannerCategorySection/
 ├── BannerCategorySection.tsx          # Main component — responsive banner with fallback
-├── BannerCategorySection.types.ts     # Props interface + BannerItem type
+├── BannerCategorySection.types.ts     # Props interface + CategoryBannerItem type
 ├── BannerCategorySection.module.scss  # Styles (skeleton, responsive images, 24px radius)
 ├── hooks/
 │   ├── useBannerCategory.ts           # Hook — useQuery to syneriseBanner resolver
@@ -215,8 +215,10 @@ const resolvers = {
 Update `typeDefs/query.graphql` to add:
 
 ```graphql
-syneriseBanner(trackerKey: String!): SyneriseBannerResult!
+syneriseBanner: SyneriseBannerResult!
 ```
+
+The resolver reads `trackerKey` from `discovery.config` globally, so no query argument is needed.
 
 ### 3. Add the component
 

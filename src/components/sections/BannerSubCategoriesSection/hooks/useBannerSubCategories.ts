@@ -6,7 +6,7 @@ import type {
 
 const DEFAULT_API_HOST = "https://api.azu.synerise.com";
 
-export type BannerItem = {
+export type SubCategoryBannerItem = {
   firstCategory: string;
   secondCategory: string;
   image: string;
@@ -25,7 +25,7 @@ export function useBannerSubCategories({
   token,
   apiHost = DEFAULT_API_HOST,
 }: UseBannerSubCategoriesParams) {
-  const [items, setItems] = useState<BannerItem[]>([]);
+  const [items, setItems] = useState<SubCategoryBannerItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -65,7 +65,7 @@ export function useBannerSubCategories({
         setItems([]);
       } else {
         const slug = (s: string) => (s ?? "").trim().replace(/\s+/g, "-");
-        const mapped: BannerItem[] = (data as SubCategoryItem[]).map((item) => {
+        const mapped: SubCategoryBannerItem[] = (data as SubCategoryItem[]).map((item) => {
           const first = slug(item.firstCategory ?? "");
           const second = slug(item.secondCategory ?? "");
           const path = `/${first}/${second}`.replace(/\/+/g, "/");

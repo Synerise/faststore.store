@@ -15,6 +15,7 @@ const resolvers = {
   SyneriseAggregateResult,
   SynerisePromotionsResult,
   SyneriseBrickworksResult,
+  SyneriseBannerResult,
   Query: {
     ...SyneriseResolvers.Query,
     ...promotionsResolver.Query,
