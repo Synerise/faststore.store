@@ -1,0 +1,52 @@
+.section {
+  margin-bottom: var(--fs-spacing-5);
+
+  h3 {
+    font-size: var(--fs-text-size-lead);
+    font-weight: var(--fs-text-weight-bold);
+    margin-bottom: var(--fs-spacing-3);
+  }
+}
+
+.promotionsList, .couponsList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fs-spacing-3);
+
+  @include media("<tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promotionItem, .couponItem {
+  background: var(--fs-color-body-bkg);
+  border: 1px solid var(--fs-border-color-default);
+  border-radius: var(--fs-border-radius);
+  padding: var(--fs-spacing-3);
+
+  h4 {
+    font-weight: var(--fs-text-weight-bold);
+    margin-bottom: var(--fs-spacing-1);
+  }
+
+  p {
+    font-size: var(--fs-text-size-body);
+    color: var(--fs-color-text-light);
+    margin-bottom: var(--fs-spacing-1);
+  }
+
+  .validUntil {
+    font-size: var(--fs-text-size-tiny);
+    color: var(--fs-color-text-light);
+  }
+}
+
+.couponCode {
+  display: inline-block;
+  background: var(--fs-color-neutral-bkg);
+  padding: var(--fs-spacing-0) var(--fs-spacing-2);
+  border-radius: var(--fs-border-radius);
+  font-family: var(--fs-text-face-body);
+  font-weight: var(--fs-text-weight-bold);
+  margin-bottom: var(--fs-spacing-1);
+}

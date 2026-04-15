@@ -8,17 +8,3 @@ export type RecommendationShelfProps = {
     bordered: boolean;
   };
 };
-
-export type RecommendationViewEvent = {
-  name: "recommendation_view";
-  params: {
-    campaignId: string;
-    correlationId?: string;
-    items: string[];
-  };
-};
-
-export type RecommendationClickEvent = {
-  name: "recommendation_click";
-  params: { campaignId: string; correlationId?: string; item: string };
-};
