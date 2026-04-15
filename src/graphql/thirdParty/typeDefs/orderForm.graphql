@@ -5,6 +5,12 @@ input AddOrderFormCustomDataInput {
     value: String!
 }
 
+input AddOrderFormMarketingTagsInput {
+    orderFormId: String
+    marketingTags: [String!]!
+}
+
 type Mutation {
     addOrderFormCustomData(input: AddOrderFormCustomDataInput!): Boolean
+    addOrderFormMarketingTags(input: AddOrderFormMarketingTagsInput!): Boolean
 }

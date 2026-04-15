@@ -1,0 +1,144 @@
+@layer components {
+  .personalisedPromotions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fs-spacing-4);
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+
+    @import "@faststore/ui/src/components/molecules/Carousel/styles";
+    @import "@faststore/ui/src/components/organisms/ProductShelf/styles";
+    @import "@faststore/ui/src/components/atoms/Button/styles";
+  }
+
+  .promotionCard {
+    display: flex;
+    flex-direction: row;
+    background: var(--fs-color-neutral-bkg);
+    padding: var(--fs-spacing-5);
+    border-radius: var(--fs-border-radius-medium);
+    gap: var(--fs-spacing-4);
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--fs-transition-property) var(--fs-transition-timing) var(--fs-transition-function);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      padding: var(--fs-spacing-4);
+    }
+  }
+
+  .promotionContent {
+    flex: 1;
+  }
+
+  .promotionTitle {
+    font-size: var(--fs-text-size-6);
+    font-family: var(--fs-text-face-title);
+    color: var(--fs-color-text-display);
+    margin: 0 0 var(--fs-spacing-4);
+    white-space: normal;
+
+    @media (max-width: 768px) {
+      font-size: var(--fs-text-size-3);
+    }
+  }
+
+  .promotionHeadline {
+    font-size: var(--fs-text-size-body);
+    color: var(--fs-color-text);
+    margin-bottom: var(--fs-spacing-4);
+    white-space: normal;
+
+    @media (max-width: 768px) {
+      font-size: var(--fs-text-size-1);
+    }
+  }
+
+  .promotionActions {
+    display: flex;
+    gap: var(--fs-spacing-1);
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      gap: var(--fs-spacing-0);
+      font-size: var(--fs-text-size-legend);
+    }
+  }
+
+  .promotionButton {
+    display: inline-block;
+    padding: var(--fs-spacing-2) var(--fs-spacing-4);
+    border: var(--fs-border-width) solid var(--fs-color-text);
+    text-decoration: none;
+    color: var(--fs-color-text);
+    border-radius: var(--fs-border-radius-medium);
+    font-weight: var(--fs-text-weight-bold);
+    cursor: pointer;
+    background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    text-transform: uppercase;
+    transition: var(--fs-transition-property) var(--fs-transition-timing) var(--fs-transition-function);
+
+    @media (max-width: 768px) {
+      margin-top: var(--fs-spacing-1);
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--fs-color-text);
+      color: var(--fs-color-text-inverse);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &.activating {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    &.activated {
+      background: var(--fs-color-success-bkg);
+      color: var(--fs-color-success-text);
+      border-color: var(--fs-color-success-border);
+    }
+
+    &.error {
+      background: var(--fs-color-danger-bkg);
+      color: var(--fs-color-danger-text);
+      border-color: var(--fs-color-danger-border);
+    }
+  }
+
+  .promotionImage {
+    width: 100%;
+    max-width: 380px;
+    border-radius: var(--fs-border-radius-medium);
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+    }
+  }
+
+  .promotionThumbnail {
+    width: 100%;
+    max-width: 240px;
+    border-radius: var(--fs-border-radius-medium);
+    display: block;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .waitingMessage,
+  .loadingMessage {
+    text-align: center;
+    padding: var(--fs-spacing-4);
+    color: var(--fs-color-text);
+  }
+}
