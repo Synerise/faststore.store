@@ -21,7 +21,7 @@ const ClientCard = ({
   });
 
   const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as Record<string, unknown> | undefined;
-  console.log(brickworksData);
+
   return (
     <section className={`${styles.clientCard} section layout__section`}>
       <div className={styles.header}>

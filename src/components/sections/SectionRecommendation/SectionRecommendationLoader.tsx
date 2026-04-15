@@ -17,7 +17,7 @@ export const SectionRecommendationLoader = ({
     <div className={styles.categoryImage}>
         <SkeletonUI
             loading={loading}
-            style={{ borderRadius: "10px" }}
+            style={{ borderRadius: "var(--fs-border-radius)" }}
             size={{ height: "100%", width: "auto" }}
         >
             <img
