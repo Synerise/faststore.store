@@ -19,17 +19,27 @@ import styles from "./RecommendationShelf.module.scss";
 import { useRecommendations } from "./hooks";
 import { RecommendationItem } from "../../shared/RecommendationItem";
 
+const BREAKPOINT_TABLET = 768;
+const BREAKPOINT_DESKTOP = 1024;
+
+function getResponsiveItemsPerPage(): 2 | 3 | 4 {
+  if (typeof window === "undefined") return 4;
+  const w = window.innerWidth;
+  if (w < BREAKPOINT_TABLET) return 2;
+  if (w < BREAKPOINT_DESKTOP) return 3;
+  return 4;
+}
+
 const RecommendationShelf = ({
   title,
-  itemsPerPage,
   campaignId,
   shouldFilterByCategory,
-  productCardConfiguration: { bordered, showDiscountBadge },
+  productCardConfiguration: { showDiscountBadge },
 }: RecommendationShelfProps) => {
   const id = useId();
   const viewedOnce = useRef(false);
   const { ref, inView } = useInView();
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+  const itemsPerPage = getResponsiveItemsPerPage();
 
   const { data: productDetailPage } = usePDP();
   const { data: productLandingPage } = usePLP();
@@ -93,7 +103,7 @@ const RecommendationShelf = ({
         <ProductShelf>
           <Carousel
             id={id}
-            itemsPerPage={isMobile ? 1 : itemsPerPage}
+            itemsPerPage={itemsPerPage}
             variant="scroll"
             infiniteMode={false}
           >
@@ -101,7 +111,6 @@ const RecommendationShelf = ({
               <RecommendationItem
                 key={item.isVariantOf.productGroupID}
                 item={item as unknown as StoreProduct}
-                bordered={bordered}
                 showDiscountBadge={showDiscountBadge}
                 onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
               />

@@ -340,7 +340,7 @@
       "title": "Recommendation shelf",
       "description": "Recommended items – powered by Synerise",
       "type": "object",
-      "required": ["title", "campaignId", "itemsPerPage"],
+      "required": ["title", "campaignId"],
       "properties": {
         "title": {
           "type": "string",
@@ -350,12 +350,6 @@
           "type": "string",
           "title": "Campaign ID",
           "description": "AI Recommendation Campaign ID"
-        },
-        "itemsPerPage": {
-          "type": "integer",
-          "title": "Number of items per page",
-          "default": 5,
-          "description": "Number of items to display per page in carousel"
         },
         "shouldFilterByCategory": {
           "title": "Filter by category",
@@ -369,11 +363,6 @@
           "properties": {
             "showDiscountBadge": {
               "title": "Show discount badge?",
-              "type": "boolean",
-              "default": true
-            },
-            "bordered": {
-              "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
             }
