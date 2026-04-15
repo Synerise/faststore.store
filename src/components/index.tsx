@@ -20,6 +20,6 @@ export default {
   GlobalTracker,
   SectionRecommendation,
   BannerCategorySection,
-  PersonalisedPromotions
+  PersonalisedPromotions,
   ExclusiveCollection,
 };
