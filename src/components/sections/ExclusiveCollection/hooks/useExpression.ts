@@ -1,7 +1,6 @@
 import { gql } from "@generated/gql";
 import {
   SyneriseExpressionQueryQuery,
-  SyneriseExpressionQueryQueryVariables
 } from "@generated/graphql";
 import { ExpressionByCampaignArgs } from "../../../../graphql/thirdParty";
 import { useQuery } from "src/sdk/graphql/useQuery";

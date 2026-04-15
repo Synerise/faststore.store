@@ -46,7 +46,7 @@
   background: var(--fs-color-neutral-bkg);
   padding: var(--fs-spacing-0) var(--fs-spacing-2);
   border-radius: var(--fs-border-radius);
-  font-family: monospace;
+  font-family: var(--fs-text-face-body);
   font-weight: var(--fs-text-weight-bold);
   margin-bottom: var(--fs-spacing-1);
 }

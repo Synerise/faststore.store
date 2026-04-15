@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useId } from "react";
 import { useInView } from "react-intersection-observer";
 
-import { usePDP, usePLP } from "@faststore/core";
+import { usePDP } from "@faststore/core";
 import useScreenResize from "src/sdk/ui/useScreenResize";
 import { sendAnalyticsEvent } from "@faststore/sdk";
 import { StoreProduct } from "@generated/graphql";
@@ -29,12 +29,9 @@ const SectionRecommendation = ({
     const isMobile = windowSize.isMobile || false;  
 
     const { data: productDetailPage } = usePDP();
-    const { data: productLandingPage } = usePLP();
 
     const productContext =
         productDetailPage?.product?.isVariantOf?.productGroupID;
-    const landingContext =
-        productLandingPage?.collection?.meta?.selectedFacets[0]?.value;
 
     const { data, loading } = useRecommendations({
         campaignId: campaignId,
@@ -48,21 +45,6 @@ const SectionRecommendation = ({
     const correlationId =
         data?.syneriseAIRecommendations.recommendations?.extras?.correlationId;
     const slots = data?.syneriseAIRecommendations.recommendations?.extras?.slots || [];
-
-    // Match por id / productID / sku / productGroupID (payload: data[].itemId ↔ row.itemIds)
-    const getProductById = (itemId: string) =>
-        items.find(
-            (p: { id?: string; sku?: string; isVariantOf?: { productGroupID?: string } }) =>
-                String(p.id) === String(itemId) ||
-                String(p.sku) === String(itemId) ||
-                String(p.isVariantOf?.productGroupID) === String(itemId),
-        );
-
-    // Produtos por row preservando a ordem de row.itemIds
-    const getProductsForRow = (row: { itemIds?: string[] | null }) =>
-        (row?.itemIds || [])
-            .map((itemId) => getProductById(itemId))
-            .filter(Boolean) as typeof items;
 
     useEffect(() => {
         if (inView && !viewedOnce.current && items.length) {
@@ -92,9 +74,6 @@ const SectionRecommendation = ({
             },
         });
     };
-
-    // 4 produtos por linha no desktop
-    const carouselItemsPerPage = isMobile ? 1 : 4;
 
     return (
         <>

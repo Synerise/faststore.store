@@ -30,8 +30,8 @@
   border-radius: var(--fs-border-radius);
   font-weight: var(--fs-text-weight-bold);
   font-size: var(--fs-text-size-body);
-  color: #fff;
-  background-color: #aa0000;
+  color: var(--fs-color-text-inverse);
+  background-color: var(--fs-color-danger-bkg);
 }
 
 .pointsBalance {
