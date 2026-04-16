@@ -1,97 +1,107 @@
-.sectionRecommendation {
-  [data-fs-product-shelf-skeleton] {
-    --fs-carousel-item-margin-right: var(--fs-spacing-3);
+@layer components {
+  .sectionRecommendation {
+    padding: var(--fs-spacing-9) 0;
 
-    padding-bottom: var(--fs-spacing-5);
+    @import "@faststore/ui/src/components/atoms/Badge/styles";
+    @import "@faststore/ui/src/components/atoms/Button/styles";
+    @import "@faststore/ui/src/components/atoms/Icon/styles";
+    @import "@faststore/ui/src/components/atoms/Link/styles";
+    @import "@faststore/ui/src/components/atoms/Price/styles";
+    @import "@faststore/ui/src/components/atoms/SROnly/styles";
+    @import "@faststore/ui/src/components/atoms/Skeleton/styles";
+    @import "@faststore/ui/src/components/molecules/Carousel/styles";
+    @import "@faststore/ui/src/components/molecules/DiscountBadge/styles";
+    @import "@faststore/ui/src/components/molecules/Rating/styles";
+    @import "@faststore/ui/src/components/molecules/ProductCard/styles";
+    @import "@faststore/ui/src/components/molecules/ProductCardSkeleton/styles";
+    @import "@faststore/ui/src/components/molecules/ProductPrice/styles";
+    @import "@faststore/ui/src/components/organisms/ProductShelf/styles";
+  }
 
-    [data-fs-product-shelf-items] {
-      @include layout-content;
+  .wrapper {
+    max-width: var(--fs-grid-max-width);
+    margin: 0 auto;
+    padding: 0 var(--fs-spacing-4);
+  }
+
+  // foxshop: .section__title--large — 48px bold, centered, 16px margin-bottom
+  .title {
+    font-size: var(--fs-text-size-7);
+    font-weight: var(--fs-text-weight-bold);
+    color: var(--fs-color-text-display);
+    text-align: center;
+    margin: 0 0 var(--fs-spacing-3);
+
+    @media (max-width: 768px) {
+      font-size: var(--fs-text-size-6);
+    }
+  }
+
+  // foxshop: .chip-row — centered flex, 8px gap, 32px margin-bottom, wraps
+  .chipRow {
+    display: flex;
+    gap: var(--fs-spacing-1);
+    justify-content: center;
+    margin-bottom: var(--fs-spacing-5);
+    flex-wrap: wrap;
+  }
+
+  // foxshop: .chip — 40px height, 24px padding, 24px radius, 16px bold
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    height: var(--fs-control-tap-size);
+    padding: 0 var(--fs-spacing-4);
+    border-radius: var(--fs-border-radius-large);
+    font-family: inherit;
+    font-size: var(--fs-text-size-body);
+    font-weight: var(--fs-text-weight-bold);
+    border: none;
+    cursor: pointer;
+    background: var(--fs-color-neutral-1);
+    color: var(--fs-color-text);
+    transition: background var(--fs-transition-timing) var(--fs-transition-function);
+
+    &:hover {
+      background: var(--fs-color-neutral-3);
+    }
+  }
+
+  // foxshop: .chip--active — dark bg, light text
+  .chipActive {
+    background: var(--fs-color-text);
+    color: var(--fs-color-text-inverse);
+
+    &:hover {
+      background: var(--fs-color-text);
+    }
+  }
+
+  .wrapper {
+    // Hide carousel pagination bullets
+    [data-fs-carousel-bullets] {
+      display: none;
     }
 
-    @include media("<tablet") {
-      [data-fs-product-shelf-item] {
-        &:not(:last-of-type) {
-          margin-right: var(--fs-carousel-item-margin-right);
+    // Carousel item spacing — foxshop: 24px gap
+    [data-fs-carousel] {
+      --fs-carousel-item-margin-right: var(--fs-spacing-4);
+    }
+
+    [data-fs-product-shelf-skeleton] {
+      --fs-carousel-item-margin-right: var(--fs-spacing-4);
+
+      [data-fs-product-shelf-items] {
+        @include layout-content;
+      }
+
+      @include media("<tablet") {
+        [data-fs-product-shelf-item] {
+          &:not(:last-of-type) {
+            margin-right: var(--fs-carousel-item-margin-right);
+          }
         }
       }
     }
   }
-
-  @media (min-width: 1281px) {
-    [data-fs-carousel-controls] {
-      width: calc(85% + 2 * var(--fs-control-tap-size) + 2 * var(--fs-spacing-1)) !important;
-    }
-  }
-
-  .shelfWrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--fs-spacing-3);
-    width: 100%;
-  }
-
-  .categoryImage {
-    display: flex;
-    align-self: stretch;
-    width: 20%;
-    min-height: 0;
-  }
-
-  .categoryImage img {
-    border-radius: var(--fs-border-radius);
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: center;
-  }
-
-  .carouselWrapper {
-    min-width: 0;
-    width: 55%;
-  }
-
-  @media (max-width: 1280px) {
-    .categoryImage {
-      width: 25%;
-    }
-
-    .carouselWrapper {
-      width: 70%;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .shelfWrapper {
-      flex-direction: column;
-    }
-
-    .categoryImage {
-      width: 95%;
-      justify-content: center;
-      align-items: center;
-      align-self: center;
-    }
-
-    .carouselWrapper {
-      width: 100%;
-    }
-  }
-  
-  @import "@faststore/ui/src/components/atoms/Badge/styles";
-  @import "@faststore/ui/src/components/atoms/Button/styles";
-  @import "@faststore/ui/src/components/atoms/Icon/styles";
-  @import "@faststore/ui/src/components/atoms/Link/styles";
-  @import "@faststore/ui/src/components/atoms/Price/styles";
-  @import "@faststore/ui/src/components/atoms/SROnly/styles";
-  @import "@faststore/ui/src/components/atoms/Skeleton/styles";
-  @import "@faststore/ui/src/components/molecules/Carousel/styles";
-  @import "@faststore/ui/src/components/molecules/DiscountBadge/styles";
-  @import "@faststore/ui/src/components/molecules/Rating/styles";
-  @import "@faststore/ui/src/components/molecules/ProductCard/styles";
-  @import "@faststore/ui/src/components/molecules/ProductCardSkeleton/styles";
-  @import "@faststore/ui/src/components/molecules/ProductPrice/styles";
-  @import "@faststore/ui/src/components/organisms/ProductShelf/styles";
 }

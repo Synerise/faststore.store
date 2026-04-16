@@ -10,6 +10,7 @@ const BannerCategorySection = ({
   campaignId,
   fallbackImage,
   fallbackImageAPP,
+  fallbackLink = "/",
 }: BannerCategorySectionProps) => {
   const { data: apiItem, loading, error } = useBannerCategory({
     campaignId,
@@ -21,10 +22,10 @@ const BannerCategorySection = ({
       category: "",
       image: fallbackImage ?? "",
       imageApp: fallbackImageAPP ?? "",
-      link: "#",
+      link: fallbackLink,
       itemId: `fallback-image`,
     };
-  }, [error, apiItem, fallbackImage, fallbackImageAPP]);
+  }, [error, apiItem, fallbackImage, fallbackImageAPP, fallbackLink]);
 
 
   if (loading) {

@@ -1,46 +1,59 @@
 # SectionRecommendation
 
-Renders slotted AI recommendation carousels powered by Synerise. Each slot contains one or more rows, where every row displays a category image alongside a product carousel. This layout is designed for campaigns that organize recommendations into categorized sections (e.g., "Shoes", "Accessories"), each with its own hero image and product set.
-
----
+Displays product recommendations organized by category, with pill/chip buttons that let the user switch between categories. Products are fetched from a Synerise AI campaign that returns slotted rows — each row maps to a category chip. Clicking a chip shows that category's products in a carousel. Uses the `syneriseAIRecommendations` SDK resolver for VTEX product enrichment.
 
 ## How It Works
 
-1. **CMS** provides `campaignId`, `itemsPerPage`, and `productCardConfiguration` to the component.
-2. The component reads the current product context via the `usePDP` hook from `@faststore/core`. If a product detail page is active, the product's `productGroupID` is passed as the `items` context to the recommendation API.
-3. The component calls the shared **`useRecommendations`** hook (from `RecommendationShelf/hooks/`) which executes the `SyneriseRecommendationsQuery` GraphQL query.
-4. The query hits the **SDK resolver** for `syneriseAIRecommendations` -- it does **not** use a custom resolver. The SDK connects to the Synerise AI Recommendations API using the tracker key and API host from the store configuration.
-5. The response contains two key parts:
-   - `recommendations.data` -- a flat array of `StoreProduct` objects.
-   - `recommendations.extras.slots` -- an array of slots, each with rows that reference product SKUs and carry metadata (category name, section image, etc.).
-6. The component maps slots to `<SectionRecommendationSlot>` components, which in turn map rows to `<SectionRecommendationRow>` components. Each row matches products from the flat `data` array to the row's `itemIds` by comparing against the product `sku` field, then renders a category image (via `<SectionRecommendationLoader>`) next to a `<Carousel>` of product cards.
-7. Analytics events (`recommendation_view`, `recommendation_click`) are dispatched via `@faststore/sdk`'s `sendAnalyticsEvent`.
+1. The component receives `title` and `campaignId` from CMS props
+2. The `useRecommendations` hook (shared with `RecommendationShelf`) sends a GraphQL query to the SDK's `syneriseAIRecommendations` resolver
+3. The SDK calls Synerise `/recommendations/v2/recommend/campaigns/`, gets product IDs grouped into rows (each with a `secondCategory` label), then enriches each product via the VTEX catalog
+4. The component collects rows from **all slots** (`slots[].rows[]` flattened) — each row becomes a **chip** button labeled with `metadata.secondCategory`
+5. The first chip is active by default. Clicking a chip sets that row as active.
+6. Products are filtered by `activeRow.itemIds` and rendered in a carousel
+7. Analytics events fire: `recommendation_view` on viewport entry, `recommendation_click` on card click
 
----
+### Component States
+
+| State | Condition | What the user sees |
+|---|---|---|
+| **Loading** | `loading === true` | `ProductShelfSkeleton` placeholder |
+| **Success** | Items returned, rows available | Centered title → chip row → product carousel for active category |
+| **Single category** | Only 1 row in slots | Title + products (chip row hidden — no switching needed) |
+| **Empty** | `loading === false && items.length === 0` | Component returns `null` (nothing rendered) |
+| **No cookie** | `_snrs_uuid` cookie missing | Query skipped via `doNotRun`, component returns `null` |
+
+### How the data pipeline works
+
+This component uses the `syneriseAIRecommendations` resolver provided by the `@synerise/faststore-api` SDK. The SDK handles the full product enrichment pipeline: it calls the Synerise AI recommendations endpoint to get the recommended product IDs for the current user, then looks each one up in the VTEX catalog to return fully shaped `StoreProduct` objects.
+
+What makes this component different from `RecommendationShelf` is how it uses the **slots/rows** structure in the `extras` response. While RecommendationShelf flattens all products into one carousel, SectionRecommendation collects rows from all slots and renders each row as a switchable category tab (chip). This means campaigns with multiple slots (each containing their own rows) are supported — all rows are flattened into a single chip row.
+
+### How chip filtering works
+
+The Synerise API returns `extras.slots[].rows[]` (flattened across all slots) where each row has:
+- `metadata.secondCategory` — used as the chip label (e.g., "Trousers & Shorts", "Belts")
+- `itemIds[]` — product IDs belonging to that category
+
+The filter matches row `itemIds` against three enriched product fields (`sku`, `productGroupID`, `gtin`) to handle different ID mapping conventions between Synerise and VTEX:
+
+```tsx
+items.filter((item) => {
+  const ids = activeRow.itemIds!;
+  return ids.includes(item.sku)
+    || ids.includes(item.isVariantOf.productGroupID)
+    || ids.includes(item.gtin);
+})
+```
 
 ## Props
 
-Defined in `SectionRecommendation.types.ts`:
+| Prop | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `title` | `string` | no | — | Section heading centered above the chip row (e.g., "Popular products") |
+| `campaignId` | `string` | yes | — | Synerise AI recommendation campaign ID |
+| `productCardConfiguration.showDiscountBadge` | `boolean` | no | `true` | Show discount badge on product cards |
 
-```ts
-type SectionRecommendationProps = {
-  campaignId: string;
-  itemsPerPage: number;
-  productCardConfiguration: {
-    showDiscountBadge: boolean;
-    bordered: boolean;
-  };
-};
-```
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `campaignId` | `string` | Synerise AI Recommendation campaign ID. |
-| `itemsPerPage` | `number` | Number of products visible per page in the carousel (desktop). On mobile, always 1. |
-| `productCardConfiguration.showDiscountBadge` | `boolean` | Whether to show the discount badge on product cards. |
-| `productCardConfiguration.bordered` | `boolean` | Whether product cards have a visible border. |
-
----
+Props are configured per-page in the VTEX CMS (Headless CMS).
 
 ## Dependencies
 
@@ -48,286 +61,163 @@ type SectionRecommendationProps = {
 
 | Package | Usage |
 |---------|-------|
-| `js-cookie` | Reads `_snrs_uuid` cookie to pass as `clientUUID` to the recommendation API. |
-| `react-intersection-observer` | Detects when the component enters the viewport to fire the `recommendation_view` analytics event. |
-| `@faststore/ui` | Provides `ProductShelf`, `Carousel`, and `Skeleton` UI components. |
-| `@faststore/sdk` | `sendAnalyticsEvent` for dispatching analytics events. |
-| `@faststore/core` | `usePDP` hook for reading the current product detail page context. |
+| `@faststore/ui` | `Carousel`, `ProductShelf`, `ProductCard`, `ProductCardImage`, `ProductCardContent` |
+| `@faststore/core` | `usePDP` — for PDP product context |
+| `@faststore/sdk` | `sendAnalyticsEvent` — fires `recommendation_view` and `recommendation_click` |
+| `@synerise/faststore-api` | Provides the `syneriseAIRecommendations` SDK resolver |
+| `react-intersection-observer` | `useInView` — triggers view analytics when section enters viewport |
+| `js-cookie` | Reading `_snrs_uuid` cookie |
 
-### Hooks
+### Shared hooks
 
-| Hook | Location | Description |
-|------|----------|-------------|
-| `useRecommendations` | `src/components/sections/RecommendationShelf/hooks/useRecommendations.ts` | Shared hook that executes the `SyneriseRecommendationsQuery` GraphQL query. Also used by `RecommendationShelf`. |
-| `useScreenResize` | `src/sdk/ui/useScreenResize` | Detects mobile vs desktop viewport. |
+| Hook | File | Purpose |
+|------|------|---------|
+| `useRecommendations` | `src/components/sections/RecommendationShelf/hooks/useRecommendations.ts` | GraphQL query — shared with RecommendationShelf |
 
-### Types
+### Shared components
 
-| Type | Location | Description |
-|------|----------|-------------|
-| `RecommendationViewEvent` | `src/types/recommendationEvents.ts` | Analytics event fired when recommendations enter the viewport. |
-| `RecommendationClickEvent` | `src/types/recommendationEvents.ts` | Analytics event fired when a user clicks a recommended product. |
+| Component | File | Purpose |
+|---|---|---|
+| `RecommendationItem` | `src/components/shared/RecommendationItem.tsx` | Product card (image, title, price) — shared with RecommendationShelf |
 
-### GraphQL files
+### Shared types
 
-| File | Description |
-|------|-------------|
-| `src/graphql/thirdParty/typeDefs/recommendations.graphql` | Type definitions for `SyneriseRecommendationsResponse`, `Slot`, `Row`, `Metadata`, etc. |
-| `src/graphql/thirdParty/typeDefs/query.graphql` | Root `Query` type that exposes the `syneriseAIRecommendations` field. |
+| Export | File | Purpose |
+|--------|------|---------|
+| `RecommendationViewEvent` | `src/types/recommendationEvents.ts` | Analytics event on viewport entry |
+| `RecommendationClickEvent` | `src/types/recommendationEvents.ts` | Analytics event on card click |
 
----
+### GraphQL — Query
+
+| File | Purpose |
+|------|---------|
+| `@synerise/faststore-api` (SDK) | `syneriseAIRecommendations` resolver — calls Synerise, enriches products via VTEX catalog |
+| `src/graphql/thirdParty/typeDefs/recommendations.graphql` | Extended types for `Row`, `Slot`, `Metadata` |
 
 ## GraphQL Operations
 
-The full query executed by `useRecommendations`:
+Uses the same `SyneriseRecommendationsQuery` as `RecommendationShelf` — see that component's README for the full query. The key difference is that this component reads `extras.slots[0].rows[]` for the chip navigation, while RecommendationShelf only reads `data[]`.
 
-```graphql
-query SyneriseRecommendationsQuery(
-  $apiHost: String,
-  $trackerKey: String
-  $campaignId: String,
-  $clientUUID: String,
-  $items: [String],
-  $itemsSource: ItemsSourceInput,
-  $itemsExcluded: [String],
-  $additionalFilters: String,
-  $filtersJoiner: FilterJoiner,
-  $additionalElasticFilters: String,
-  $elasticFiltersJoiner: FilterJoiner,
-  $displayAttributes: [String],
-  $includeContextItems: Boolean
-) {
-  syneriseAIRecommendations(campaignId: $campaignId, apiHost: $apiHost, trackerKey: $trackerKey) {
-    recommendations(
-      campaignId: $campaignId,
-      clientUUID: $clientUUID,
-      items: $items,
-      itemsSource: $itemsSource,
-      itemsExcluded: $itemsExcluded,
-      additionalFilters: $additionalFilters,
-      filtersJoiner: $filtersJoiner,
-      additionalElasticFilters: $additionalElasticFilters,
-      elasticFiltersJoiner: $elasticFiltersJoiner,
-      displayAttributes: $displayAttributes,
-      includeContextItems: $includeContextItems
-    ) {
-      data {
-        id: productID
-        slug
-        sku
-        brand {
-          brandName: name
-        }
-        name
-        gtin
-        isVariantOf {
-          productGroupID
-          name
-        }
-        image {
-          url
-          alternateName
-        }
-        brand {
-          name
-        }
-        offers {
-          lowPrice
-          lowPriceWithTaxes
-          offers {
-            availability
-            price
-            listPrice
-            listPriceWithTaxes
-            quantity
-            seller {
-              identifier
-            }
-          }
-        }
-        additionalProperty {
-          propertyID
-          name
-          value
-          valueReference
-        }
-      }
-      extras {
-        correlationId
-        contextItems {
-          itemId
-          additionalData
-        }
-        slots {
-          id
-          name
-          itemIds
-          error {
-            status
-            error
-            message
-          }
-          rows {
-            attributeValue
-            itemIds
-            metadata {
-              category
-              firstCategory
-              itemId
-              secondCategory
-              sectionImage
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
----
+Key fields used by this component:
+- `data[]` — enriched `StoreProduct` objects
+- `extras.correlationId` — for analytics attribution
+- `extras.slots[].rows[].metadata.secondCategory` — chip label (rows flattened across all slots)
+- `extras.slots[].rows[].itemIds[]` — which products belong to each category
 
 ## API Response Example
 
-> **Note:** This response is specific to the campaign configuration. The structure of `extras.slots` and the metadata fields depend on how the Synerise AI campaign is set up.
+*This response is specific to the campaign configuration used in this implementation. Your campaign may return different categories and products.*
 
-```jsonc
+Raw Synerise response (trimmed to 2 items per row for brevity):
+
+```json
 {
-  "syneriseAIRecommendations": {
-    "recommendations": {
-      "data": [
-        {
-          "id": "12345",
-          "slug": "blue-sneakers-12345",
-          "sku": "SKU-001",
-          "brand": { "brandName": "BrandX" },
-          "name": "Blue Sneakers",
-          "gtin": "0012345678901",
-          "isVariantOf": { "productGroupID": "PG-100", "name": "Sneakers" },
-          "image": [{ "url": "https://cdn.example.com/img/blue-sneakers.jpg", "alternateName": "Blue Sneakers" }],
-          "offers": {
-            "lowPrice": 79.99,
-            "lowPriceWithTaxes": 95.99,
-            "offers": [{
-              "availability": "https://schema.org/InStock",
-              "price": 79.99,
-              "listPrice": 99.99,
-              "listPriceWithTaxes": 119.99,
-              "quantity": 50,
-              "seller": { "identifier": "seller-1" }
-            }]
-          },
-          "additionalProperty": []
-        }
-        // ... more products
-      ],
-      "extras": {
-        "correlationId": "abc-123-def-456",
-        "contextItems": [],
-        "slots": [
+  "data": [
+    {
+      "itemId": "2285",
+      "title": "Styleline - Elmont Smart Trousers",
+      "category": "Men > Trousers & Shorts",
+      "salePrice": 429,
+      "imageLink": "https://synerisedemostore.vtexassets.com/arquivos/ids/157683/..."
+    },
+    {
+      "itemId": "1746",
+      "title": "Stylela - Sachary Classic Belt",
+      "category": "Men > Belts",
+      "salePrice": 789,
+      "imageLink": "https://synerisedemostore.vtexassets.com/arquivos/ids/157142/..."
+    }
+  ],
+  "extras": {
+    "campaignId": "9wNIinhiI95c",
+    "correlationId": "e15b46ec-72ee-45e6-a26a-bd5c656086e3",
+    "slots": [
+      {
+        "id": 0,
+        "name": "Unnamed slot",
+        "rows": [
           {
-            "id": 1,
-            "name": "Footwear",
-            "itemIds": ["SKU-001", "SKU-002", "SKU-003"],
-            "error": null,
-            "rows": [
-              {
-                "attributeValue": "sneakers",
-                "itemIds": ["SKU-001", "SKU-002"],
-                "metadata": {
-                  "category": "Sneakers",
-                  "firstCategory": "Footwear",
-                  "itemId": "cat-sneakers",
-                  "secondCategory": "Casual",
-                  "sectionImage": "https://cdn.example.com/img/sneakers-category.jpg"
-                }
-              },
-              {
-                "attributeValue": "boots",
-                "itemIds": ["SKU-003"],
-                "metadata": {
-                  "category": "Boots",
-                  "firstCategory": "Footwear",
-                  "itemId": "cat-boots",
-                  "secondCategory": "Outdoor",
-                  "sectionImage": "https://cdn.example.com/img/boots-category.jpg"
-                }
-              }
-            ]
+            "attributeValue": "men>trousers & shorts",
+            "itemIds": ["2285", "2321", "2339", "..."],
+            "metadata": {
+              "category": "men>trousers & shorts",
+              "firstCategory": "men",
+              "secondCategory": "trousers & shorts",
+              "sectionImage": "https://upload.azu.snrcdn.net/.../ec3ecfac52ac42699cac0f993310edf8.png"
+            }
+          },
+          {
+            "attributeValue": "men>belts",
+            "itemIds": ["1746", "1823", "..."],
+            "metadata": {
+              "category": "men>belts",
+              "firstCategory": "men",
+              "secondCategory": "belts",
+              "sectionImage": "https://upload.azu.snrcdn.net/.../bb5a77d8cd914393b99fdf7d5a11d480.png"
+            }
+          },
+          {
+            "attributeValue": "grocery",
+            "itemIds": ["4764", "4651", "..."],
+            "metadata": {
+              "category": "grocery",
+              "firstCategory": "grocery",
+              "secondCategory": "grocery",
+              "sectionImage": "https://upload.azu.snrcdn.net/.../2a5b2f688d7147d48a67b52cccfd7bc4.png"
+            }
           }
         ]
       }
-    }
+    ]
   }
 }
 ```
 
----
-
-## Authentication
-
-Authentication is handled entirely by the **FastStore SDK resolver**. The SDK reads the `apiHost` and `trackerKey` from the store configuration and passes them as query variables. On the client side, the component reads the Synerise client UUID from the `_snrs_uuid` cookie (via `js-cookie`) and sends it as `clientUUID`.
-
-No custom authentication logic is required in the component itself.
-
----
+Key points:
+- Each `rows[]` entry maps to a **chip** — `metadata.secondCategory` is the label
+- `rows[].itemIds[]` filters which enriched products to show for that chip
+- The SDK enriches `data[]` items into VTEX `StoreProduct` objects — the raw Synerise fields above are replaced by full product data
+- `metadata.sectionImage` is available but not used in the current chip-based design (was used by the old side-by-side layout)
 
 ## Data Mapping
 
-| API Response Path | Usage in Component |
-|---|---|
-| `recommendations.data[]` | Flat list of `StoreProduct` objects rendered as product cards via `<RecommendationItem>`. |
-| `recommendations.data[].sku` | Used to match products against row `itemIds` in `SectionRecommendationRow`. |
-| `extras.slots[]` | Each slot maps to a `<SectionRecommendationSlot>`. |
-| `extras.slots[].rows[]` | Each row maps to a `<SectionRecommendationRow>` (category image + carousel). |
-| `extras.slots[].rows[].itemIds` | Iterated in `SectionRecommendationRow`; each ID is matched against `items.find((i) => i.sku === itemId)` to resolve the corresponding `StoreProduct`. Unmatched IDs are skipped (returns `null`). |
-| `extras.slots[].rows[].metadata.sectionImage` | URL for the category image displayed next to the carousel. |
-| `extras.slots[].rows[].metadata.category` | Used as the `alt` text for the category image. |
-| `extras.correlationId` | Passed in analytics events for tracking. |
+*This mapping reflects the current implementation. When adapting for a different campaign or store, update the component to match your campaign's response fields and your design requirements.*
 
-Product matching in `SectionRecommendationRow` is a single SKU-based lookup: `items.find((i) => i.sku === itemId)`. There is no fallback matching by `id` or `productGroupID`.
+| API field | Component usage | Rendered as |
+|---|---|---|
+| `extras.slots[].rows[].metadata.secondCategory` | Chip label text | `<button>` pill — e.g., "Trousers & Shorts" |
+| `extras.slots[].rows[].itemIds[]` | Filters `items` array for active row | Determines which products appear in the carousel |
+| `extras.correlationId` | Analytics events | `recommendation_view` / `recommendation_click` payload |
+| `data[].image[0].url` | `RecommendationItem` | Product image (1:1, 16px radius) |
+| `data[].isVariantOf.name` | `ProductCardContent` title | Product name (16px bold) |
+| `data[].offers.offers[0].price` | `ProductCardContent` price | Current price (24px bold) |
+| `data[].offers.offers[0].listPrice` | `ProductCardContent` listPrice | Old price (14px strikethrough, if different) |
+| `data[].slug` | `ProductCardContent` link | `/[slug]/p` |
 
----
+## Authentication
+
+Handled by the SDK — reads `apiHost` and `trackerKey` from `discovery.config.synerise.*` and `clientUUID` from the `_snrs_uuid` cookie. No CMS configuration needed for authentication.
 
 ## CMS Configuration
 
-The component is registered in the FastStore CMS under the name `SectionRecommendation`. Here is the JSON schema from `cms/faststore/sections.json`:
+Section name in `cms/faststore/sections.json`: **`SectionRecommendation`**
 
 ```json
 {
   "name": "SectionRecommendation",
-  "requiredScopes": [],
   "schema": {
     "title": "Section Recommendations",
     "description": "Section Recommendations - powered by Synerise",
     "type": "object",
-    "required": ["campaignId", "itemsPerPage"],
+    "required": ["campaignId"],
     "properties": {
-      "campaignId": {
-        "type": "string",
-        "title": "Campaign ID",
-        "description": "AI Recommendation Campaign ID"
-      },
-      "itemsPerPage": {
-        "type": "integer",
-        "title": "Number of items per page",
-        "default": 5,
-        "description": "Number of items to display per page in carousel"
-      },
+      "title": { "type": "string", "title": "Title", "description": "Section heading displayed above the category chips" },
+      "campaignId": { "type": "string", "title": "Campaign ID", "description": "AI Recommendation Campaign ID" },
       "productCardConfiguration": {
-        "title": "Product Card Configuration",
         "type": "object",
+        "title": "Product Card Configuration",
         "properties": {
-          "showDiscountBadge": {
-            "title": "Show discount badge?",
-            "type": "boolean",
-            "default": true
-          },
-          "bordered": {
-            "title": "Cards should be bordered?",
-            "type": "boolean",
-            "default": true
-          }
+          "showDiscountBadge": { "type": "boolean", "title": "Show discount badge?", "default": true }
         }
       }
     }
@@ -335,82 +225,84 @@ The component is registered in the FastStore CMS under the name `SectionRecommen
 }
 ```
 
-The component is also registered in `src/components/index.tsx` as:
-
-```ts
-import { SectionRecommendation } from "./sections/SectionRecommendation";
-
-export default {
-  // ...
-  SectionRecommendation,
-  // ...
-};
-```
-
----
+The component must also be registered in:
+- `src/components/index.tsx` — exported as `SectionRecommendation`
 
 ## File Structure
 
 ```
 src/components/sections/SectionRecommendation/
-  index.ts                            # Re-exports default from SectionRecommendation.tsx
-  SectionRecommendation.tsx           # Main component: fetches data, manages analytics, maps slots
-  SectionRecommendation.types.ts      # TypeScript prop types
-  SectionRecommendation.module.scss   # Scoped styles (responsive layout for image + carousel)
-  SectionRecommendationLoader.tsx     # Skeleton/image loader for the category image
-  SectionRecommendationRow.tsx        # Single row: category image + product carousel
-  SectionRecommendationSlot.tsx       # Single slot: iterates over rows
-  README.md                           # This file
+├── SectionRecommendation.tsx              # Main component — title + chips + filtered carousel
+├── SectionRecommendation.types.ts         # Props interface
+├── SectionRecommendation.module.scss      # Styles (chips, title, carousel, foxshop tokens)
+├── index.ts                               # Barrel export
+└── README.md                              # This file
+
+Shared:
+├── src/components/shared/RecommendationItem.tsx     # Product card
+├── src/components/sections/RecommendationShelf/hooks/useRecommendations.ts  # GraphQL hook
+└── src/types/recommendationEvents.ts                # Analytics event types
 ```
 
-Related files outside this directory:
+## Implementing This Component in Another VTEX FastStore App
 
-```
-src/components/sections/RecommendationShelf/hooks/useRecommendations.ts   # Shared hook (GraphQL query)
-src/components/shared/RecommendationItem.tsx                              # Shared product card component
-src/types/recommendationEvents.ts                                         # Analytics event types
-src/graphql/thirdParty/typeDefs/recommendations.graphql                   # GraphQL type definitions
-src/graphql/thirdParty/typeDefs/query.graphql                             # Root Query type
-cms/faststore/sections.json                                               # CMS section schema
-src/components/index.tsx                                                   # Component registry
+To add SectionRecommendation to a different FastStore storefront:
+
+### 1. Install the SDK
+
+```bash
+yarn add @synerise/faststore-api react-intersection-observer js-cookie
 ```
 
----
+### 2. Configure the SDK resolver
 
-## Implementing in Another Store
+The `syneriseAIRecommendations` resolver is provided by the SDK. Ensure it's registered in `src/graphql/thirdParty/resolvers/index.ts`:
 
-To reuse this component in a different FastStore project:
+```typescript
+import { Resolvers as SyneriseResolvers } from "@synerise/faststore-api";
 
-1. **Install dependencies**
-   ```bash
-   yarn add js-cookie react-intersection-observer
-   yarn add -D @types/js-cookie
-   ```
-   Ensure `@faststore/ui`, `@faststore/sdk`, and `@faststore/core` are already available (standard in FastStore projects).
+const resolvers = {
+  ...SyneriseResolvers,
+  Query: { ...SyneriseResolvers.Query },
+};
+```
 
-2. **Copy the GraphQL type definitions**
-   - `src/graphql/thirdParty/typeDefs/recommendations.graphql` -- the type definitions for slots, rows, metadata, etc.
-   - Add `syneriseAIRecommendations` to your `query.graphql` root Query type.
+### 3. Copy shared files
 
-3. **Copy the shared hook**
-   - `src/components/sections/RecommendationShelf/hooks/useRecommendations.ts`
-   - This hook uses `@generated/gql` and `@generated/graphql`, so run code generation after adding the GraphQL files.
+- `src/components/shared/RecommendationItem.tsx` — product card
+- `src/types/recommendationEvents.ts` — analytics event types
+- `src/components/sections/RecommendationShelf/hooks/useRecommendations.ts` — GraphQL query hook (if you don't have RecommendationShelf already)
 
-4. **Copy the component directory**
-   - Copy the entire `src/components/sections/SectionRecommendation/` directory.
-   - Also copy `src/components/shared/RecommendationItem.tsx` if not already present.
-   - Copy `src/types/recommendationEvents.ts` for the analytics event types.
+### 4. Add the component
 
-5. **Register in the CMS**
-   - Add the `SectionRecommendation` entry to your `cms/faststore/sections.json`.
-   - Register the component in your `src/components/index.tsx` override file.
+Copy the `SectionRecommendation/` directory to `src/components/sections/`.
 
-6. **Configure Synerise**
-   - Ensure your FastStore SDK is configured with the Synerise `apiHost` and `trackerKey` so the SDK resolver can authenticate requests.
-   - Create an AI Recommendation campaign in the Synerise panel with slots and rows configured to return `sectionImage` metadata.
+Register in `src/components/index.tsx`:
 
-7. **Run code generation**
-   ```bash
-   yarn generate
-   ```
-   This regenerates the typed GraphQL hooks and types from your schema.
+```typescript
+import { SectionRecommendation } from './sections/SectionRecommendation'
+export default { SectionRecommendation, /* ...other sections */ }
+```
+
+### 5. Add CMS schema
+
+Add the section entry to `cms/faststore/sections.json` (see CMS Configuration above).
+
+### 6. Configure your Synerise campaign
+
+The campaign must return **slotted rows** — each row needs:
+- `metadata.secondCategory` (used as the chip label)
+- `itemIds[]` (product IDs for that category)
+
+If your campaign returns a flat `data[]` without rows, the component will render all products in a single carousel with no chips.
+
+### 7. Configure
+
+- Ensure `discovery.config` has `synerise.apiHost` and `synerise.trackerKey` set
+- Add the section to a page in VTEX Headless CMS and provide `title` and `campaignId`
+
+### 8. Prerequisites
+
+- Synerise account with an AI recommendation campaign configured to return slotted rows with category metadata
+- Synerise JS SDK (tracker) installed on the storefront — sets the `_snrs_uuid` cookie
+- VTEX product catalog accessible for SDK-side product enrichment

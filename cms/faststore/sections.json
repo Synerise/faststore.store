@@ -378,18 +378,17 @@
       "title": "Section Recommendations",
       "description": "Section Recommendations - powered by Synerise",
       "type": "object",
-      "required": ["campaignId", "itemsPerPage"],
+      "required": ["campaignId"],
       "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title",
+          "description": "Section heading displayed above the category chips (e.g., Popular products)"
+        },
         "campaignId": {
           "type": "string",
           "title": "Campaign ID",
           "description": "AI Recommendation Campaign ID"
-        },
-        "itemsPerPage": {
-          "type": "integer",
-          "title": "Number of items per page",
-          "default": 5,
-          "description": "Number of items to display per page in carousel"
         },
         "productCardConfiguration": {
           "title": "Product Card Configuration",
@@ -397,11 +396,6 @@
           "properties": {
             "showDiscountBadge": {
               "title": "Show discount badge?",
-              "type": "boolean",
-              "default": true
-            },
-            "bordered": {
-              "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
             }
@@ -505,6 +499,12 @@
             "type": "string",
             "title": "Fallback image for app",
             "description": "Image displayed when the API fails or does not return data"
+          },
+          "fallbackLink": {
+            "type": "string",
+            "title": "Fallback link",
+            "default": "/",
+            "description": "URL the banner links to when falling back (API failed or no data). Default: /"
           }
       }
     }
