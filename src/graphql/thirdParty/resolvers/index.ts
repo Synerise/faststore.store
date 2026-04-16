@@ -67,12 +67,12 @@ const resolvers = {
           identifierType: identifierType ?? 'uuid',
         }),
       }
-    },    
+    },
   },
   Mutation: {
     ...orderFormResolver.Mutation,
     ...promotionsResolver.Mutation,
-  }
+  },
 };
 
 export default resolvers;

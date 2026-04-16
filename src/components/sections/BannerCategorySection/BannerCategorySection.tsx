@@ -46,7 +46,7 @@ const BannerCategorySection = ({
       className={styles.categoryBanner}
       data-fs-banner-category
     >
-      <div className={styles.wrapper}>            
+      <div className={styles.wrapper}>
         <Link href={item.link} className={styles.bannerLink}>
           <img
             src={item.imageApp}
