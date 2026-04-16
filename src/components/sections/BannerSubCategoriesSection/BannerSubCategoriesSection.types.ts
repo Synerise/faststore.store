@@ -1,4 +1,4 @@
-export type BannerItem = {
+export type SubCategoryBannerItem = {
   firstCategory: string;
   secondCategory: string;
   image: string;

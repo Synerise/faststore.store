@@ -114,11 +114,14 @@ export const useRecommendations = (
     apiHost?: string;
     trackerKey?: string;
     campaignId: string;
+    doNotRun?: boolean;
   },
 ) => {
+  const { doNotRun, ...queryPayload } = payload;
   const { data, error } = useQuery<SyneriseRecommendationsQueryQuery>(
     query,
-    payload,
+    queryPayload,
+    { doNotRun },
   );
 
   return {

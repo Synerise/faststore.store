@@ -3,7 +3,7 @@ import { SyneriseBannerSubCategoriesQueryQuery } from "@generated/graphql";
 import { useQuery } from "src/sdk/graphql/useQuery";
 import Cookies from "js-cookie";
 
-import type { BannerItem } from "../BannerSubCategoriesSection.types";
+import type { SubCategoryBannerItem } from "../BannerSubCategoriesSection.types";
 
 const query = gql(`query SyneriseBannerSubCategoriesQuery(
   $campaignId: String!,
@@ -40,7 +40,7 @@ export function useBannerSubCategories({
 
   const rawItems = data?.syneriseBanner?.getSubCategories?.data ?? [];
 
-  const items: BannerItem[] = rawItems.map((item) => {
+  const items: SubCategoryBannerItem[] = rawItems.map((item) => {
     const first = slug(item.firstCategory ?? "");
     const second = slug(item.secondCategory ?? "");
     return {

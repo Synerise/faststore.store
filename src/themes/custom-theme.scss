@@ -156,6 +156,75 @@
     // --------------------------------------------------------
     // FS UI Components
     // --------------------------------------------------------
-    // Add here the customizations for FastStore UI components.
+
+    // Product Card — foxshop styling (borderless, rounded media, bold title, 24px price)
+    [data-fs-product-card] {
+      // Typography
+      --fs-product-card-title-size: var(--fs-text-size-body);
+      --fs-product-card-title-weight: var(--fs-text-weight-bold);
+      --fs-product-card-title-color: var(--fs-color-text-display);
+      --fs-product-card-title-max-lines: 1;
+      --fs-product-card-price-size: var(--fs-text-size-4);
+      --fs-product-card-price-color: var(--fs-color-text-display);
+
+      // Media (image container) — foxshop: 16px radius, square aspect
+      --fs-product-card-border-radius: var(--fs-border-radius-medium);
+      --fs-product-card-img-radius: var(--fs-border-radius-medium);
+      --fs-product-card-img-scale-hover: 1;
+
+      // Card chrome — borderless, transparent bg, subtle hover lift
+      --fs-product-card-border-color: transparent;
+      --fs-product-card-border-color-hover: transparent;
+      --fs-product-card-bkg-color: transparent;
+      --fs-product-card-bkg-color-hover: transparent;
+      --fs-product-card-shadow: none;
+      --fs-product-card-shadow-hover: none;
+      --fs-product-card-padding: 0;
+      --fs-product-card-gap: var(--fs-spacing-2);
+
+      // Force borderless even when bordered={true} is passed from CMS
+      &[data-fs-product-card-bordered="true"] {
+        border: none;
+        background: transparent;
+      }
+
+      // foxshop: media container — neutral-1 fallback bg for transparent products
+      [data-fs-product-card-image] {
+        background: var(--fs-color-neutral-1);
+        overflow: hidden;
+      }
+
+      // foxshop: tight gap between title and price (4px)
+      [data-fs-product-card-content] {
+        row-gap: var(--fs-spacing-0);
+      }
+
+      // Extra space below title link so price sits lower (8px)
+      [data-fs-product-card-title] {
+        margin-bottom: var(--fs-spacing-1);
+      }
+
+      // foxshop: prices on same baseline, 8px gap
+      [data-fs-product-card-prices] {
+        display: flex;
+        align-items: baseline;
+        column-gap: var(--fs-spacing-1);
+      }
+    }
+
+    // foxshop: .product-card__current — 24px bold
+    [data-fs-price][data-fs-price-variant="spot"] {
+      --fs-price-spot-color: var(--fs-color-text-display);
+      --fs-price-spot-font-weight: var(--fs-text-weight-bold);
+      font-size: var(--fs-text-size-4);
+      line-height: 1.2;
+    }
+
+    // foxshop: .product-card__old — 14px bold slate-400, line-through
+    [data-fs-price][data-fs-price-variant="listing"] {
+      --fs-price-listing-text-size: var(--fs-text-size-1);
+      --fs-price-listing-color: var(--fs-color-neutral-5);
+      font-weight: var(--fs-text-weight-bold);
+    }
   }
 }

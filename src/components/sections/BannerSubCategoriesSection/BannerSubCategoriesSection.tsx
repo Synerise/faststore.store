@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Link } from "@faststore/ui";
-import type { BannerSubCategoriesSectionProps, BannerItem } from "./BannerSubCategoriesSection.types";
+import type { BannerSubCategoriesSectionProps, SubCategoryBannerItem } from "./BannerSubCategoriesSection.types";
 import { useBannerSubCategories } from "./hooks";
 import styles from "./BannerSubCategoriesSection.module.scss";
 
@@ -13,7 +13,7 @@ const BannerSubCategoriesSection = ({
     campaignId,
   });
 
-  const items: BannerItem[] = useMemo(() => {
+  const items: SubCategoryBannerItem[] = useMemo(() => {
     if (!error && apiItems.length > 0) return apiItems;
     return fallbackImages.map((image, i) => ({
       firstCategory: "",

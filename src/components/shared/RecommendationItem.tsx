@@ -25,7 +25,7 @@ export const RecommendationItem = ({
 }: RecommendationItemProps) => {
   return (
     <ProductCard bordered={bordered} onClick={onClick}>
-      <ProductCardImage aspectRatio={3 / 4}>
+      <ProductCardImage aspectRatio={1}>
         <img
           data-fs-image
           src={item.image[0].url}

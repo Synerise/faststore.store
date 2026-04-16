@@ -1,4 +1,4 @@
-export type BannerItem = {
+export type CategoryBannerItem = {
   category: string;
   image: string;
   imageApp: string;
