@@ -9,6 +9,7 @@ import { MenuCategoriesSection } from "./sections/MenuCategoriesSection";
 import { BannerCategorySection } from "./sections/BannerCategorySection";
 import { PersonalisedPromotions } from "./sections/PersonalisedPromotions";
 import { ExclusiveCollection } from "./sections/ExclusiveCollection";
+import { ClientCard } from "./sections/ClientCard";
 
 export default {
   SyneriseProductGallery: ProductGallerySection,
@@ -22,4 +23,5 @@ export default {
   BannerCategorySection,
   PersonalisedPromotions,
   ExclusiveCollection,
+  ClientCard,
 };
