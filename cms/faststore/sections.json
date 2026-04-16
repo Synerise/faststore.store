@@ -415,14 +415,14 @@
     "requiredScopes": [],
     "schema": {
       "title": "Synerise Banner",
-      "description": "Faixa horizontal no topo com textos rotativos da campanha Synerise",
+      "description": "Horizontal banner strip with rotating text titles from a Synerise campaign",
       "type": "object",
-      "required": ["fallbackText", "backgroundColor", "campaignId", "token"],
+      "required": ["fallbackText", "backgroundColor", "campaignId"],
       "properties": {
         "fallbackText": {
           "type": "string",
           "title": "Texto de fallback",
-          "description": "Exibido quando a API falha ou clientUUID não está disponível"
+          "description": "Displayed when the API fails or clientUUID is not available"
         },
         "backgroundColor": {
           "type": "string",
@@ -441,24 +441,13 @@
           "title": "Campaign ID",
           "description": "ID da campanha (ex: O5x2fJb60Omz)"
         },
-        "token": {
-          "type": "string",
-          "title": "Token API",
-          "description": "Token de autenticação da API Synerise"
-        },
-        "apiHost": {
-          "type": "string",
-          "title": "API Host",
-          "default": "https://api.azu.synerise.com",
-          "description": "Host base da API"
-        },
         "rotationIntervalSeconds": {
           "type": "integer",
           "title": "Intervalo de rotação (segundos)",
           "default": 4,
           "minimum": 3,
           "maximum": 5,
-          "description": "Intervalo entre troca de textos (3 a 5 segundos)"
+          "description": "Interval between text rotation (3 to 5 seconds)"
         }
       }
     }

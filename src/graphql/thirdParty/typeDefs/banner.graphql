@@ -1,5 +1,5 @@
 # Banner — raw recommendation campaign data (not product-enriched)
-# Used for campaigns that return metadata (images, categories) instead of product IDs
+# Used for campaigns that return metadata (images, categories, titles) instead of product IDs
 
 type BannerCategoryItem {
     banner_url: String
@@ -15,12 +15,23 @@ type SubCategoryBannerItem {
     itemId: String
 }
 
+type TextBannerItem {
+    title: String
+    category: String
+    itemId: String
+    thumbnail: String
+}
+
 type SyneriseBannerData {
     data: [BannerCategoryItem!]
 }
 
 type SyneriseBannerSubCategoryData {
     data: [SubCategoryBannerItem!]
+}
+
+type SyneriseBannerTextData {
+    data: [TextBannerItem!]
 }
 
 type SyneriseBannerResult {
@@ -33,4 +44,9 @@ type SyneriseBannerResult {
         clientUUID: String!
         campaignId: String!
     ): SyneriseBannerSubCategoryData
+
+    getTitles(
+        clientUUID: String!
+        campaignId: String!
+    ): SyneriseBannerTextData
 }
