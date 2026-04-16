@@ -1,7 +1,5 @@
 # Synerise × VTEX FastStore — Feature Overview
 
-> For the business team presenting the demo store at events. Each feature below is live on the storefront and powered by the Synerise + VTEX integration.
-
 ---
 
 ## 🔍 AI-Powered Search & Navigation
