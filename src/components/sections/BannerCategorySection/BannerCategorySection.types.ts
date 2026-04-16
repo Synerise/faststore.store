@@ -13,4 +13,6 @@ export type BannerCategorySectionProps = {
   fallbackImage?: string;
   /** URL for app image fallback if API fails or does not return data */
   fallbackImageAPP?: string;
+  /** Link used when falling back (API failed or no data). Default: "/" */
+  fallbackLink?: string;
 };
