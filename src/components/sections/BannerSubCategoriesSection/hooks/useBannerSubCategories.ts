@@ -1,96 +1,60 @@
-import { useState, useEffect, useCallback } from "react";
-import type {
-  BannerSubCategoriesApiResponse,
-  SubCategoryItem,
-} from "../BannerSubCategoriesSection.types";
+import { gql } from "@generated/gql";
+import { SyneriseBannerSubCategoriesQueryQuery } from "@generated/graphql";
+import { useQuery } from "src/sdk/graphql/useQuery";
+import Cookies from "js-cookie";
 
-const DEFAULT_API_HOST = "https://api.azu.synerise.com";
+import type { SubCategoryBannerItem } from "../BannerSubCategoriesSection.types";
 
-export type BannerItem = {
-  firstCategory: string;
-  secondCategory: string;
-  image: string;
-  link: string;
-  itemId: string;
-};
+const query = gql(`query SyneriseBannerSubCategoriesQuery(
+  $campaignId: String!,
+  $clientUUID: String!
+) {
+  syneriseBanner {
+    getSubCategories(clientUUID: $clientUUID, campaignId: $campaignId) {
+      data {
+        firstCategory
+        secondCategory
+        subCategoryImage
+        itemId
+      }
+    }
+  }
+}`);
 
 type UseBannerSubCategoriesParams = {
   campaignId: string;
-  token: string;
-  apiHost?: string;
 };
+
+const slug = (s: string) => (s ?? "").trim().replace(/\s+/g, "-");
 
 export function useBannerSubCategories({
   campaignId,
-  token,
-  apiHost = DEFAULT_API_HOST,
 }: UseBannerSubCategoriesParams) {
-  const [items, setItems] = useState<BannerItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const clientUUID = Cookies.get("_snrs_uuid") ?? "";
 
-  const fetchItems = useCallback(async () => {
-    if (typeof window === "undefined") return;
-    const getClientUUID = () =>
-      (window as unknown as { SyneriseTC?: { uuid?: string } })?.SyneriseTC?.uuid;
+  const { data, error } = useQuery<SyneriseBannerSubCategoriesQueryQuery>(
+    query,
+    { campaignId, clientUUID },
+    { doNotRun: !clientUUID },
+  );
 
-    let clientUUID = getClientUUID();
+  const rawItems = data?.syneriseBanner?.getSubCategories?.data ?? [];
 
-    // Se o clientUUID ainda não estiver disponível, aguardamos até 2s antes de cair em fallback
-    if (!clientUUID) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      clientUUID = getClientUUID();
-    }
+  const items: SubCategoryBannerItem[] = rawItems.map((item) => {
+    const first = slug(item.firstCategory ?? "");
+    const second = slug(item.secondCategory ?? "");
+    return {
+      firstCategory: item.firstCategory ?? "",
+      secondCategory: item.secondCategory ?? "",
+      image: item.subCategoryImage ?? "",
+      link: `/${first}/${second}`.replace(/\/+/g, "/"),
+      itemId: item.itemId ?? "",
+    };
+  });
 
-    if (!clientUUID) {
-      setError(true);
-      setLoading(false);
-      return;
-    }
-
-    const url = new URL(
-      `${apiHost.replace(/\/$/, "")}/recommendations/v2/recommend/campaigns/${campaignId}`,
-    );
-    url.searchParams.set("token", token);
-    url.searchParams.set("clientUUID", clientUUID);
-    url.searchParams.set("itemId", "null");
-
-    try {
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const json = (await res.json()) as BannerSubCategoriesApiResponse;
-      const data = json?.data ?? [];
-      if (!Array.isArray(data) || data.length === 0) {
-        setError(true);
-        setItems([]);
-      } else {
-        const slug = (s: string) => (s ?? "").trim().replace(/\s+/g, "-");
-        const mapped: BannerItem[] = (data as SubCategoryItem[]).map((item) => {
-          const first = slug(item.firstCategory ?? "");
-          const second = slug(item.secondCategory ?? "");
-          const path = `/${first}/${second}`.replace(/\/+/g, "/");
-          return {
-            firstCategory: item.firstCategory ?? "",
-            secondCategory: item.secondCategory ?? "",
-            image: item.subCategoryImage ?? "",
-            link: path,
-            itemId: item.itemId ?? "",
-          };
-        });
-        setItems(mapped);
-        setError(false);
-      }
-    } catch {
-      setError(true);
-      setItems([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [campaignId, token, apiHost]);
-
-  useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
-
-  return { items, loading, error };
+  return {
+    items,
+    error,
+    loading: !data?.syneriseBanner && !error,
+  };
 }

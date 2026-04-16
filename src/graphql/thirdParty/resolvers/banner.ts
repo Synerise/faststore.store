@@ -8,6 +8,13 @@ type BannerCategoryItem = {
     itemId?: string
 }
 
+type SubCategoryBannerItem = {
+    firstCategory?: string
+    secondCategory?: string
+    subCategoryImage?: string
+    itemId?: string
+}
+
 type TextBannerItem = {
     title?: string
     category?: string
@@ -43,6 +50,21 @@ const SyneriseBannerClient = () => {
         return { data: json?.data ?? [] }
     }
 
+    const getSubCategories = async ({ clientUUID, campaignId }: GetCategoryArgs): Promise<{ data: SubCategoryBannerItem[] }> => {
+        if (!clientUUID) {
+            return { data: [] }
+        }
+
+        const url = `${host.replace(/\/$/, '')}/recommendations/v2/recommend/campaigns?token=${encodeURIComponent(trackerKey)}`
+
+        const json = await fetchAPI<BannerResponse<SubCategoryBannerItem>>(url, {
+            method: 'POST',
+            body: JSON.stringify({ clientUUID, campaignId }),
+        })
+
+        return { data: json?.data ?? [] }
+    }
+
     const getTitles = async ({ clientUUID, campaignId }: GetCategoryArgs): Promise<{ data: TextBannerItem[] }> => {
         if (!clientUUID) {
             return { data: [] }
@@ -58,7 +80,7 @@ const SyneriseBannerClient = () => {
         return { data: json?.data ?? [] }
     }
 
-    return { getCategory, getTitles }
+    return { getCategory, getSubCategories, getTitles }
 }
 
 type BannerRoot = {
@@ -83,6 +105,9 @@ const Query = {
 export const SyneriseBannerResult = {
     getCategory: async (root: BannerRoot, args: GetCategoryArgs) => {
         return root.bannerClient.getCategory(args)
+    },
+    getSubCategories: async (root: BannerRoot, args: GetCategoryArgs) => {
+        return root.bannerClient.getSubCategories(args)
     },
     getTitles: async (root: BannerRoot, args: GetCategoryArgs) => {
         return root.bannerClient.getTitles(args)

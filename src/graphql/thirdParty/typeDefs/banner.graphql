@@ -8,6 +8,13 @@ type BannerCategoryItem {
     itemId: String
 }
 
+type SubCategoryBannerItem {
+    firstCategory: String
+    secondCategory: String
+    subCategoryImage: String
+    itemId: String
+}
+
 type TextBannerItem {
     title: String
     category: String
@@ -19,6 +26,10 @@ type SyneriseBannerData {
     data: [BannerCategoryItem!]
 }
 
+type SyneriseBannerSubCategoryData {
+    data: [SubCategoryBannerItem!]
+}
+
 type SyneriseBannerTextData {
     data: [TextBannerItem!]
 }
@@ -28,6 +39,11 @@ type SyneriseBannerResult {
         clientUUID: String!
         campaignId: String!
     ): SyneriseBannerData
+
+    getSubCategories(
+        clientUUID: String!
+        campaignId: String!
+    ): SyneriseBannerSubCategoryData
 
     getTitles(
         clientUUID: String!

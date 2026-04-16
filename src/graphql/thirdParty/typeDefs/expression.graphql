@@ -1,0 +1,20 @@
+scalar JSON
+
+type SyneriseExpressionResponse {
+    clientId: Int!
+    expressionId: String!
+    name: String!
+    result: JSON
+}
+
+type SyneriseExpressionResult { 
+    expression(
+        expressionId: String,
+        apiHost: String,
+        namespace: String,
+        identifierType: String,
+        identifierValue: String
+    ): SyneriseExpressionResponse
+}
+
+scalar JSONObject

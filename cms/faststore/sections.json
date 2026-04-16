@@ -340,7 +340,7 @@
       "title": "Recommendation shelf",
       "description": "Recommended items – powered by Synerise",
       "type": "object",
-      "required": ["title", "campaignId", "itemsPerPage"],
+      "required": ["title", "campaignId"],
       "properties": {
         "title": {
           "type": "string",
@@ -350,12 +350,6 @@
           "type": "string",
           "title": "Campaign ID",
           "description": "AI Recommendation Campaign ID"
-        },
-        "itemsPerPage": {
-          "type": "integer",
-          "title": "Number of items per page",
-          "default": 5,
-          "description": "Number of items to display per page in carousel"
         },
         "shouldFilterByCategory": {
           "title": "Filter by category",
@@ -369,11 +363,6 @@
           "properties": {
             "showDiscountBadge": {
               "title": "Show discount badge?",
-              "type": "boolean",
-              "default": true
-            },
-            "bordered": {
-              "title": "Cards should be bordered?",
               "type": "boolean",
               "default": true
             }
@@ -468,59 +457,27 @@
     "requiredScopes": [],
     "schema": {
       "title": "Banner SubCategories - Synerise",
-      "description": "Carrossel horizontal de banners de subcategorias (API Synerise). 4 no desktop, 2 no tablet, 1 no mobile.",
+      "description": "Responsive grid of sub-category tiles (Synerise API). 6 columns on desktop, 3 on tablet, 2 on mobile.",
       "type": "object",
-      "required": ["token", "campaignId"],
+      "required": ["campaignId"],
       "properties": {
-        "token": {
+        "title": {
           "type": "string",
-          "title": "Token API",
-          "description": "Token de autenticação da API Synerise"
+          "title": "Section title",
+          "description": "Heading displayed above the grid (e.g., Browse by popular categories)"
         },
         "campaignId": {
           "type": "string",
-          "title": "ID da recomendação",
-          "description": "ID da campanha (ex: ugXXWxq3Wpwi)"
-        },
-        "autoplay": {
-          "type": "boolean",
-          "title": "Autoplay",
-          "default": true,
-          "description": "Ativar rotação automática"
-        },
-        "interval": {
-          "type": "integer",
-          "title": "Intervalo (segundos)",
-          "default": 5,
-          "minimum": 4,
-          "maximum": 6,
-          "description": "Intervalo entre slides (4 a 6 segundos)"
-        },
-        "showArrows": {
-          "type": "boolean",
-          "title": "Exibir setas",
-          "default": true,
-          "description": "Exibir setas de navegação"
-        },
-        "showDots": {
-          "type": "boolean",
-          "title": "Exibir dots",
-          "default": true,
-          "description": "Exibir indicadores (dots)"
+          "title": "Campaign ID",
+          "description": "Synerise recommendation campaign ID (e.g., ugXXWxq3Wpwi)"
         },
         "fallbackImages": {
           "type": "array",
-          "title": "Imagens de fallback",
-          "description": "URLs de imagens exibidas quando a API falha ou não retorna dados",
+          "title": "Fallback images",
+          "description": "Image URLs displayed when the API fails or returns no data",
           "items": {
             "type": "string"
           }
-        },
-        "apiHost": {
-          "type": "string",
-          "title": "API Host",
-          "default": "https://api.azu.synerise.com",
-          "description": "Host base da API"
         }
       }
     }
@@ -620,9 +577,86 @@
         "limit": {
           "type": "integer",
           "title": "Promotions limit",
-          "description": "Token for Synerise API authentication",
+          "description": "Max number of promotions displayed to the user",
           "minimum": 1,
           "default": 100
+        }
+      }
+    }
+  },
+  {
+    "name": "ExclusiveCollection",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Exclusive Collection",
+      "description": "Exclusive Collection - powered by Synerise",
+      "type": "object",
+      "required": ["campaignId", "expressionId", "desiredValue", "itemsPerPage"],
+      "properties": {
+        "campaignId": {
+          "type": "string",
+          "title": "Campaign ID",
+          "description": "AI Recommendation Campaign ID"
+        },
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "expressionId": {
+          "type": "string",
+          "title": "Expression ID",
+          "description": "Expression ID used to recognize premium user"
+        },
+        "desiredValue": {
+          "type": "string",
+          "title": "Target value",
+          "description": "Value of the expression result that will recognize premium user"
+        },
+        "itemsPerPage": {
+          "type": "integer",
+          "title": "Number of items per page",
+          "default": 5,
+          "description": "Number of items to display per page in carousel"
+        },
+        "productCardConfiguration": {
+          "title": "Product Card Configuration",
+          "type": "object",
+          "properties": {
+            "showDiscountBadge": {
+              "title": "Show discount badge?",
+              "type": "boolean",
+              "default": true
+            },
+            "bordered": {
+              "title": "Cards should be bordered?",
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "ClientCard",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Client Card",
+      "description": "Client Card - powered by Synerise",
+      "type": "object",
+      "required": [],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title"
+        },
+        "schemaIdentifier": {
+          "type": "string",
+          "title": "Brickworks schema identifier"
+        },
+        "recordIdentifier": {
+          "type": "string",
+          "title": "Brickworks record identifier"
         }
       }
     }

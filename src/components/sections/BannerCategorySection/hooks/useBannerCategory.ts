@@ -3,7 +3,7 @@ import { SyneriseBannerCategoryQueryQuery } from "@generated/graphql";
 import { useQuery } from "src/sdk/graphql/useQuery";
 import Cookies from "js-cookie";
 
-import type { BannerItem } from "../BannerCategorySection.types";
+import type { CategoryBannerItem } from "../BannerCategorySection.types";
 
 const query = gql(`query SyneriseBannerCategoryQuery(
   $campaignId: String!,
@@ -38,7 +38,7 @@ export function useBannerCategory({
 
   const raw = data?.syneriseBanner?.getCategory?.data?.[0] ?? null;
 
-  const item: BannerItem | null = raw
+  const item: CategoryBannerItem | null = raw
     ? {
         category: raw.category ?? "",
         image: raw.banner_url ?? "",
@@ -49,7 +49,7 @@ export function useBannerCategory({
     : null;
 
   return {
-    item,
+    data: item,
     error,
     loading: !data?.syneriseBanner && !error,
   };
