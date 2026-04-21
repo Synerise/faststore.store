@@ -45,10 +45,10 @@ module.exports = {
   },
 
   // Production URLs
-  storeUrl: "https://demovtexfaststore.synerise.com",
-  checkoutUrl: "https://demovtexfaststore.synerise.com/checkout",
-  loginUrl: "https://demovtexfaststore.synerise.com/api/io/login",
-  accountUrl: "https://demovtexfaststore.synerise.com/api/io/account",
+  storeUrl: "https://www.demovtexfaststore.synerise.com",
+  checkoutUrl: "https://www.demovtexfaststore.synerise.com/checkout",
+  loginUrl: "https://www.demovtexfaststore.synerise.com/api/io/login",
+  accountUrl: "https://www.demovtexfaststore.synerise.com/api/io/account",
 
   previewRedirects: {
     home: "/",
