@@ -47,8 +47,8 @@ module.exports = {
   // Production URLs
   storeUrl: "https://demovtexfaststore.synerise.com",
   checkoutUrl: "https://synerisedemofaststore.myvtex.com/checkout",
-  loginUrl: "https://synerisedemofaststore.myvtex.com/login",
-  accountUrl: "https://synerisedemofaststore.myvtex.com/account",
+  loginUrl: "https://synerisedemofaststore.myvtex.com/api/io/login",
+  accountUrl: "https://synerisedemofaststore.myvtex.com/api/io/account",
 
   previewRedirects: {
     home: "/",
