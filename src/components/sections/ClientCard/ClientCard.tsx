@@ -7,6 +7,7 @@ import { AccountOverview } from "./AccountOverview";
 import { History } from "./History";
 import { Offers } from "./Offers";
 import { useBrickworks } from "./hooks";
+import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
 const ClientCard = ({
   title = "My Account",
@@ -23,17 +24,19 @@ const ClientCard = ({
   const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as Record<string, unknown> | undefined;
 
   return (
-    <section className={`${styles.clientCard} section layout__section`}>
-      <div className={styles.header}>
-        <h2 className="text__title-section layout__content">{title}</h2>
-      </div>
+    <ProfileChallenge>
+      <section className={`${styles.clientCard} section layout__section`}>
+        <div className={styles.header}>
+          <h2 className="text__title-section layout__content">{title}</h2>
+        </div>
 
-      <AccountOverview data={brickworksData} error={error} />
+        <AccountOverview data={brickworksData} error={error} />
 
-      <History data={brickworksData} error={error} />
+        <History data={brickworksData} error={error} />
 
-      <Offers data={brickworksData} error={error} />
-    </section>
+        <Offers data={brickworksData} error={error} />
+      </section>
+    </ProfileChallenge>
   );
 };
 

@@ -48,7 +48,7 @@ module.exports = {
   storeUrl: "https://www.demovtexfaststore.synerise.com",
   checkoutUrl: "https://www.demovtexfaststore.synerise.com/checkout",
   loginUrl: "https://www.demovtexfaststore.synerise.com/api/io/login",
-  accountUrl: "https://www.demovtexfaststore.synerise.com/api/io/account",
+  accountUrl: "https://www.demovtexfaststore.synerise.com/account",
 
   previewRedirects: {
     home: "/",

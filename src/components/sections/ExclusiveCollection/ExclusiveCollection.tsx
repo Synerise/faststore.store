@@ -21,6 +21,7 @@ import {
 } from '../../../types/recommendationEvents'
 import { useRecommendations } from "../RecommendationShelf/hooks";
 import { useExpression } from "./hooks";
+import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
 const ExclusiveCollection = ({
     itemsPerPage,
@@ -101,32 +102,34 @@ const ExclusiveCollection = ({
     }
 
     return (
-        <section
-            ref={ref}
-            className={`${styles.recommendationShelf} section-product-shelf layout__section section`}
-        >
-            <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
-                <h2 className="text__title-section layout__content">{title}</h2>
-                <ProductShelf>
-                <Carousel
-                    id={id}
-                    itemsPerPage={isMobile ? 1 : itemsPerPage}
-                    variant="scroll"
-                    infiniteMode={false}
-                >
-                    {items.map((item) => (
-                    <RecommendationItem
-                        key={item.isVariantOf.productGroupID}
-                        item={item as unknown as StoreProduct}
-                        bordered={bordered}
-                        showDiscountBadge={showDiscountBadge}
-                        onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
-                    />
-                    ))}
-                </Carousel>
-                </ProductShelf>
-            </ProductShelfSkeleton>
-        </section>
+        <ProfileChallenge>
+            <section
+                ref={ref}
+                className={`${styles.recommendationShelf} section-product-shelf layout__section section`}
+            >
+                <ProductShelfSkeleton loading={loading} itemsPerPage={itemsPerPage}>
+                    <h2 className="text__title-section layout__content">{title}</h2>
+                    <ProductShelf>
+                    <Carousel
+                        id={id}
+                        itemsPerPage={isMobile ? 1 : itemsPerPage}
+                        variant="scroll"
+                        infiniteMode={false}
+                    >
+                        {items.map((item) => (
+                        <RecommendationItem
+                            key={item.isVariantOf.productGroupID}
+                            item={item as unknown as StoreProduct}
+                            bordered={bordered}
+                            showDiscountBadge={showDiscountBadge}
+                            onClick={() => handleItemClick(item.isVariantOf.productGroupID)}
+                        />
+                        ))}
+                    </Carousel>
+                    </ProductShelf>
+                </ProductShelfSkeleton>
+            </section>
+        </ProfileChallenge>
     );
 };
 
