@@ -7,21 +7,42 @@ import { AccountOverview } from "./AccountOverview";
 import { History } from "./History";
 import { Offers } from "./Offers";
 import { useBrickworks } from "./hooks";
+import { useExpression } from "../ExclusiveCollection/hooks";
 import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
 const ClientCard = ({
   title = "My Account",
   schemaIdentifier,
   recordIdentifier,
+  loyaltyExpressionId,
+  loyaltyDesiredValue,
 }: ClientCardProps) => {
+  const identifierValue = Cookies.get("_snrs_uuid")!;
+
+  const loyaltyResponse = useExpression({
+    namespace: "profiles",
+    identifierType: "uuid",
+    expressionId: loyaltyExpressionId,
+    identifierValue,
+  });
+
+  const loyaltyResult = String(
+    loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? ""
+  );
+  const isLoyaltyMember = loyaltyResult === loyaltyDesiredValue;
+
   const { data, error } = useBrickworks({
     schemaIdentifier,
     recordIdentifier,
     identifierType: "uuid",
-    identifierValue: Cookies.get("_snrs_uuid")!
+    identifierValue,
   });
 
   const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as Record<string, unknown> | undefined;
+
+  if (!isLoyaltyMember) {
+    return null;
+  }
 
   return (
     <ProfileChallenge>

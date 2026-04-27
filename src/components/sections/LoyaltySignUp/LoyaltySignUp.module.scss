@@ -1,0 +1,78 @@
+@layer components {
+  .loyaltySignUp {
+    @include layout-content;
+
+    padding: var(--fs-spacing-5) 0;
+
+    .card {
+      background: var(--fs-color-body-bkg);
+      border: 1px solid var(--fs-border-color-default);
+      border-radius: var(--fs-border-radius);
+      padding: var(--fs-spacing-5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--fs-spacing-3);
+    }
+
+    h2 {
+      font-size: var(--fs-text-size-title-section);
+      font-weight: var(--fs-text-weight-bold);
+      margin: 0;
+    }
+
+    p {
+      font-size: var(--fs-text-size-body);
+      color: var(--fs-color-text-light);
+      margin: 0;
+      max-width: 640px;
+    }
+
+    .button {
+      padding: var(--fs-spacing-2) var(--fs-spacing-5);
+      border-radius: var(--fs-border-radius);
+      background-color: var(--fs-color-main-2);
+      color: var(--fs-color-text-inverse);
+      font-weight: var(--fs-text-weight-bold);
+      font-size: var(--fs-text-size-body);
+      border: none;
+      cursor: pointer;
+      transition: opacity var(--fs-transition-timing) var(--fs-transition-function);
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .confirmation {
+      color: var(--fs-color-success-text);
+      font-weight: var(--fs-text-weight-bold);
+    }
+
+    .terms {
+      display: flex;
+      align-items: center;
+      gap: var(--fs-spacing-2);
+      font-size: var(--fs-text-size-body);
+      color: var(--fs-color-text);
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        cursor: pointer;
+      }
+
+      a {
+        color: var(--fs-color-main-2);
+        text-decoration: underline;
+      }
+    }
+  }
+}

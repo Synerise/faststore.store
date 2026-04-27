@@ -591,7 +591,7 @@
       "title": "Exclusive Collection",
       "description": "Exclusive Collection - powered by Synerise",
       "type": "object",
-      "required": ["campaignId", "expressionId", "desiredValue", "itemsPerPage"],
+      "required": ["campaignId", "expressionId", "desiredValue", "itemsPerPage", "loyaltyExpressionId", "loyaltyDesiredValue"],
       "properties": {
         "campaignId": {
           "type": "string",
@@ -611,6 +611,16 @@
           "type": "string",
           "title": "Target value",
           "description": "Value of the expression result that will recognize premium user"
+        },
+        "loyaltyExpressionId": {
+          "type": "string",
+          "title": "Loyalty Expression ID",
+          "description": "Expression ID used to check if user is a loyalty program member"
+        },
+        "loyaltyDesiredValue": {
+          "type": "string",
+          "title": "Loyalty target value",
+          "description": "Value of the loyalty expression result that indicates loyalty membership"
         },
         "itemsPerPage": {
           "type": "integer",
@@ -644,7 +654,7 @@
       "title": "Client Card",
       "description": "Client Card - powered by Synerise",
       "type": "object",
-      "required": [],
+      "required": ["schemaIdentifier", "recordIdentifier", "loyaltyExpressionId", "loyaltyDesiredValue"],
       "properties": {
         "title": {
           "type": "string",
@@ -657,6 +667,68 @@
         "recordIdentifier": {
           "type": "string",
           "title": "Brickworks record identifier"
+        },
+        "loyaltyExpressionId": {
+          "type": "string",
+          "title": "Loyalty Expression ID",
+          "description": "Expression ID used to check if user is a loyalty program member"
+        },
+        "loyaltyDesiredValue": {
+          "type": "string",
+          "title": "Loyalty target value",
+          "description": "Value of the loyalty expression result that indicates loyalty membership"
+        }
+      }
+    }
+  },
+  {
+    "name": "LoyaltySignUp",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Loyalty Sign Up",
+      "description": "Prompts logged-in users to join the loyalty program - powered by Synerise",
+      "type": "object",
+      "required": ["title", "buttonLabel", "formTag", "loyaltyExpressionId", "desiredValue", "termsLabel"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title",
+          "default": "Join our Loyalty Program"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description"
+        },
+        "buttonLabel": {
+          "type": "string",
+          "title": "Button label",
+          "default": "Sign up"
+        },
+        "formTag": {
+          "type": "string",
+          "title": "Form tag",
+          "description": "Tag sent via SR.event.sendFormData to register the user in the loyalty program"
+        },
+        "loyaltyExpressionId": {
+          "type": "string",
+          "title": "Loyalty Expression ID",
+          "description": "Expression ID used to check if user is already a loyalty program member"
+        },
+        "desiredValue": {
+          "type": "string",
+          "title": "Loyalty target value",
+          "description": "Value of the expression result that indicates loyalty membership (component is hidden when this matches)"
+        },
+        "termsLabel": {
+          "type": "string",
+          "title": "Terms checkbox label",
+          "description": "Text shown next to the required terms-of-service checkbox",
+          "default": "I accept the terms and conditions"
+        },
+        "termsUrl": {
+          "type": "string",
+          "title": "Terms URL",
+          "description": "Optional link for the terms label. If provided, the label becomes a clickable link."
         }
       }
     }
