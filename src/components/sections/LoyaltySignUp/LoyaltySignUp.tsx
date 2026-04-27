@@ -7,16 +7,6 @@ import styles from "./LoyaltySignUp.module.scss";
 import type { LoyaltySignUpProps } from "./LoyaltySignUp.types";
 import { useExpression } from "../ExclusiveCollection/hooks";
 
-declare global {
-  interface Window {
-    SR?: {
-      event?: {
-        sendFormData?: (tag: string, data: Record<string, unknown>) => void;
-      };
-    };
-  }
-}
-
 const LoyaltySignUp = ({
   title,
   description,
