@@ -45,7 +45,7 @@ const LoyaltySignUp = ({
   }
 
   return (
-    // <ProfileChallenge>
+    <ProfileChallenge>
       <section className={`${styles.loyaltySignUp} section layout__section`}>
         <div className={styles.card}>
           <h2>{title}</h2>
@@ -82,7 +82,7 @@ const LoyaltySignUp = ({
           )}
         </div>
       </section>
-    // </ProfileChallenge>
+    </ProfileChallenge>
   );
 };
 
