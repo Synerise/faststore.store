@@ -9,6 +9,7 @@ interface Window {
       recommendationView: (
         args: Record<string, unknown>
       ) => Record<string, unknown>;
+      sendFormData?: (tag: string, data: Record<string, unknown>) => void;
     };
   };
 }

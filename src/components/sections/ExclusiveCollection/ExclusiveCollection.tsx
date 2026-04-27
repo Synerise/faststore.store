@@ -29,6 +29,8 @@ const ExclusiveCollection = ({
     campaignId,
     title,
     desiredValue,
+    loyaltyExpressionId,
+    loyaltyDesiredValue,
     productCardConfiguration: { bordered, showDiscountBadge },
 }: ExclusiveCollectionProps) => {
     const id = useId();
@@ -45,20 +47,34 @@ const ExclusiveCollection = ({
     const landingContext =
         productLandingPage?.collection?.meta?.selectedFacets[0]?.value;
 
+    const identifierValue = Cookies.get('_snrs_uuid')!;
+
     const expressionResponse = useExpression({
         namespace: "profiles",
         identifierType: "uuid",
         expressionId: expressionId,
-        identifierValue: Cookies.get('_snrs_uuid')!
+        identifierValue,
+    });
+
+    const loyaltyResponse = useExpression({
+        namespace: "profiles",
+        identifierType: "uuid",
+        expressionId: loyaltyExpressionId,
+        identifierValue,
     });
 
     const expressionResult = String(expressionResponse?.data?.syneriseExpressionResult?.expression?.result ?? '');
     const expressionMatches = expressionResult === desiredValue;
 
+    const loyaltyResult = String(loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? '');
+    const isLoyaltyMember = loyaltyResult === loyaltyDesiredValue;
+
+    const shouldRender = expressionMatches && isLoyaltyMember;
+
     const { data, loading } = useRecommendations({
         campaignId: campaignId,
-        clientUUID: Cookies.get('_snrs_uuid')!,
-        doNotRun: !expressionMatches,
+        clientUUID: identifierValue,
+        doNotRun: !shouldRender,
         ...(productContext ? { items: [productContext] } : {})
     });
 
@@ -97,7 +113,7 @@ const ExclusiveCollection = ({
         });
     };
 
-    if (!expressionMatches) {
+    if (!shouldRender) {
         return null;
     }
 
