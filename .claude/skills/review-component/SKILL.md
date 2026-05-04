@@ -1,6 +1,33 @@
-Review the component at: $ARGUMENTS
+---
+name: review-component
+description: >
+  Use this skill when the user asks to review a component, audit a section
+  component, check a component path, run a code review on a FastStore section,
+  or wants feedback on a specific component in a FastStore + Synerise project.
+  Reviews against 5 architectural rules and produces a structured report with
+  priority fixes. Component path is the skill argument.
+metadata:
+  author: synerise
+  version: "1.0.0"
+  lastUpdated: 2026-05-04
+---
 
-Perform a structured code review against this project's 5 architectural rules. Follow each step precisely.
+# Review Single Section Component (FastStore + Synerise)
+
+Review the component at the path provided as the skill argument.
+
+Perform a structured code review against this project's 5 architectural rules (defined canonically in `CLAUDE.md`). Follow each step precisely.
+
+## Step 0: Verify project context
+
+This skill is only valid in a FastStore + Synerise project. Before running, confirm at least one of these signals:
+
+- `package.json` lists `@synerise/faststore-api` as a dependency (strongest signal), OR
+- `src/components/sections/` directory exists, OR
+- `discovery.config.js` file exists at the repo root.
+
+If none are present, stop and tell the user:
+> This doesn't look like a FastStore + Synerise project (no `@synerise/faststore-api` dep, no `src/components/sections/`, no `discovery.config.js`). Skipping review.
 
 ## Step 1: Inventory
 
@@ -19,8 +46,9 @@ For each import in the component files:
 1. If it references a hook in `src/hooks/` or a local `hooks/` directory — read that hook file
 2. If the hook uses `useQuery` with a `gql` query — identify which thirdParty resolver handles it
 3. Read the corresponding resolver in `src/graphql/thirdParty/resolvers/`
-4. Read the corresponding typeDef in `src/graphql/thirdParty/typeDefs/`
-5. Check if types come from `src/types/` or local `.types.ts` files
+4. If the resolver imports from `../clients` — follow the import and read the client factory in `src/graphql/thirdParty/clients/[feature]/`. This is where the factory function and the actual HTTP call live for features with dedicated client modules.
+5. Read the corresponding typeDef in `src/graphql/thirdParty/typeDefs/`
+6. Check if types come from `src/types/`, local `.types.ts` files, or `src/graphql/thirdParty/clients/[feature]/[feature].types.ts`
 
 ## Step 3: Check Rules
 
@@ -48,9 +76,9 @@ Before reviewing custom resolver code, determine if the component's data source 
 
 If the component calls an API endpoint already handled by an SDK resolver but does NOT use that resolver (e.g., calls fetch directly or creates a custom resolver for the same endpoint), flag it as a **Rule 2 violation: SDK resolver not reused**.
 
-**Fix guidance for recommendation-based components:** Refactor the hook to use the existing `syneriseAIRecommendations` query via `useQuery`, following the pattern in `RecommendationShelf/hooks/useRecommendations.ts`. Read the appropriate fields from the response (`data` for products, `extras.slots[].rows[].metadata` for category/image metadata).
+**Fix guidance for recommendation-based components:** Refactor the hook to use the existing `syneriseAIRecommendations` query via `useQuery`. The hook should call `gql()` from `@generated/gql` with a query selecting `recommendations(clientUUID, items, ...)` and read the appropriate fields from the response — `data` for products, `extras.slots[].rows[].metadata` for category/image metadata. If a working recommendation hook already exists elsewhere in this repo (search `src/` for `syneriseAIRecommendations`), use it as a local reference.
 
-**Fix guidance for search-based components:** Refactor the hook to use the existing `syneriseAISearch` query via `useQuery`, following the patterns in `SyneriseNavbarSection/hooks/useAutocomplete.ts` (autocomplete) or `ProductGallerySection/hooks/useSearchQuery.ts` (search/listing).
+**Fix guidance for search-based components:** Refactor the hook to use the existing `syneriseAISearch` query via `useQuery`. Pick the method that matches the use case: `autocomplete(query, ...)` for typeahead suggestions, `search(query, page, limit, sortBy, ...)` for full-text search results, `listing(page, limit, ...)` for browsing without a query. All return `{ data: StoreProduct[], extras, meta }`. If a working search hook already exists elsewhere in this repo (search `src/` for `syneriseAISearch`), use it as a local reference.
 
 **Step 2b — Hook checklist:**
 - Uses `gql()` from `@generated/gql` for typed queries?
@@ -70,8 +98,10 @@ If the component calls an API endpoint already handled by an SDK resolver but do
 - Referenced in `query.graphql`?
 
 **Client checklist (only for custom resolvers):**
+Client code lives either inline in the resolver file or in `src/graphql/thirdParty/clients/[feature]/` (imported via `../clients`). Check whichever location applies:
 - Factory function pattern (not class)?
 - Uses `fetchAPI` or `fetchWithAuth` (not raw `fetch`)?
+- If in `clients/`: types exported from `[feature].types.ts` in the same directory?
 
 If the component makes direct API calls instead of going through GraphQL, flag this as a Rule 2 violation and describe what refactoring would look like — either reuse an existing SDK resolver or build the custom resolver + typeDef + hook pipeline.
 
@@ -85,12 +115,12 @@ If the component makes direct API calls instead of going through GraphQL, flag t
 
 ### Rule 4 — README.md
 
-First, read the shared README rules at `.claude/commands/readme-rules.md`.
+First, consult the `readme-rules` skill.
 
 Then check:
 - Does the component directory contain a `README.md`?
-- If no, flag as FAIL and suggest running `/create-readme [component-path]`
-- If yes, verify it against the required sections from readme-rules.md:
+- If no, flag as FAIL and suggest invoking the `create-readme` skill with the component path
+- If yes, verify it against the required sections from readme-rules:
   1. Title + Description
   2. How It Works (numbered flow, error/loading/empty states)
   3. Props table
@@ -104,40 +134,54 @@ Then check:
   11. Implementing in Another Store (step-by-step guide)
 - Verify accuracy: do props match types file? Does query match hook code? Does CMS JSON match sections.json?
 - Flag any missing or inaccurate sections
+- Verify the **Project README Index** in the root `README.md`:
+  - The component appears as a row in the **Available Section Components** table
+  - The link points to `./src/components/sections/<Name>/README.md` and resolves
+  - The one-sentence description matches the component README's current intro
+  - Flag a missing/stale row as a Rule 4 issue and suggest the exact row to add or update
 
 ### Rule 5 — SCSS Design Tokens
 
-Read the component's `.module.scss` file and check for hardcoded values that should use design tokens from `docs/design-tokens.md`. Read the design tokens doc if needed.
+**Step 5a — Load the canonical token list:**
 
-**Colors** — flag any hardcoded hex (`#xxx`, `#xxxxxx`) or `rgb()`/`rgba()` values (except inside `linear-gradient` for skeleton animations which are acceptable). Should use:
-- `var(--fs-color-text)`, `var(--fs-color-text-inverse)`, `var(--fs-color-text-light)` for text
-- `var(--fs-color-neutral-bkg)`, `var(--fs-color-neutral-0)` through `var(--fs-color-neutral-7)` for backgrounds/surfaces
-- `var(--fs-color-primary-bkg)`, `var(--fs-color-secondary-bkg)`, etc. for themed backgrounds
-- `var(--fs-color-success-*)`, `var(--fs-color-danger-*)`, `var(--fs-color-warning-*)` for states
+Consult the `design-tokens` skill. It returns the **merged** list of FastStore tokens from two sources: the VTEX cache at `docs/design-tokens.md` and the project overrides in `src/themes/custom-theme.scss`. Each token is annotated with `[vtex]` or `[project]`. Use that merged list as the canonical reference for what tokens exist — do NOT rely on memory or a hardcoded subset, and do NOT flag a token as missing just because it's only in the project overrides.
 
-**Spacing** — flag hardcoded `px`/`rem` values used for `padding`, `margin`, `gap`. Should use `var(--fs-spacing-0)` (0.25rem) through `var(--fs-spacing-13)` (6rem).
+In the final report, include the VTEX cache's `Last refreshed` date so the reader knows how fresh that half of the list is. If the cache is over 6 months old, suggest running the `refresh-design-tokens` skill before relying on the audit. The project-overrides half is read live from the working tree, so freshness is not a concern there.
 
-**Typography** — flag hardcoded `font-size`, `font-weight`, `font-family` values. Should use:
-- `var(--fs-text-size-0)` through `var(--fs-text-size-9)` or semantic sizes like `var(--fs-text-size-body)`, `var(--fs-text-size-title-section)`
-- `var(--fs-text-weight-bold)`, `var(--fs-text-weight-regular)`, etc.
-- `var(--fs-text-face-body)`, `var(--fs-text-face-title)`
+**Step 5b — Audit the component's `.module.scss`:**
 
-**Borders** — flag hardcoded `border-radius`, `border-width`, `border-color`. Should use:
-- `var(--fs-border-radius)`, `var(--fs-border-radius-medium)`, `var(--fs-border-radius-pill)`, etc.
-- `var(--fs-border-width)`, `var(--fs-border-width-thick)`
-- `var(--fs-border-color)`, `var(--fs-border-color-hover)`, etc.
+Read the component's `.module.scss` file and flag hardcoded values that have a token equivalent in the loaded list:
 
-**Transitions** — flag hardcoded `transition` timing/easing. Should use `var(--fs-transition-timing)`, `var(--fs-transition-property)`, `var(--fs-transition-function)`.
+- **Hardcoded hex (`#xxx`, `#xxxxxx`) or `rgb()`/`rgba()`** → must use a `--fs-color-*` token.
+- **Hardcoded `px`/`rem` for `padding`, `margin`, `gap`** → must use a `--fs-spacing-*` token.
+- **Hardcoded `font-size`, `font-weight`, `font-family`** → must use a `--fs-text-size-*`, `--fs-text-weight-*`, or `--fs-text-face-*` token.
+- **Hardcoded `border-radius`, `border-width`, `border-color`** → must use a `--fs-border-*` token.
+- **Hardcoded `transition` timing/easing** → must use a `--fs-transition-*` token.
 
 **Structure** — check that styles are wrapped in `@layer components { }` (matching sibling section pattern).
 
 **Acceptable exceptions:**
-- `width: 100%`, `max-width: 100%`, `display:`, `position:`, `object-fit:` and similar layout properties that have no token equivalent
+- `width: 100%`, `max-width: 100%`, `display:`, `position:`, `object-fit:` and similar layout properties with no token equivalent
 - Breakpoint media queries using raw `768px` etc. (mirrors sibling pattern)
 - `linear-gradient` with `rgba()` for skeleton/shimmer animations
 - `0` values (e.g., `margin: 0`, `padding: 0`)
 
+When flagging a violation, suggest the **specific token name** from the loaded list (e.g., "Replace `padding: 12px` with `var(--fs-spacing-2)`"), not a generic "use a token" message. If no exact match exists in the loaded list, say so — do not invent a token name.
+
 ## Step 4: Report
+
+### Status semantics (canonical — also used by `review-all`)
+
+Use exactly these four statuses. Per-rule applicability:
+
+| Status | Meaning | Applies to |
+|---|---|---|
+| **PASS** | Rule fully satisfied. | All rules. |
+| **FAIL** | Rule violated — must fix. | All rules. |
+| **WARN** | Rule satisfied in spirit but with minor issues a maintainer should clean up. | Rule 3 (e.g., a type that could be shared but isn't critical), Rule 4 (README present but missing optional sections like API Response Example or Data Mapping; or root README index row stale). |
+| **N/A** | Rule does not apply to this component. | Rule 2 (component does not fetch data — static UI, tracking scripts), Rule 5 (component has no `.module.scss` file). |
+
+Rules 1, 3, 4 always apply (every component has files to scan, files to organize, and a directory that should contain a README). Rule 1 is binary: PASS or FAIL — never WARN/N/A.
 
 Output the review in this exact format:
 
@@ -158,7 +202,7 @@ Date: [today's date]
 > **VIOLATION** `[file]:[line]` — [description]
 > **Fix:** [specific suggestion]
 
-## Rule 2: SDK Patterns [PASS/FAIL]
+## Rule 2: SDK Patterns [PASS/FAIL/N/A]
 - [ ] Existing SDK resolver reused where available (recommendations → syneriseAIRecommendations, search → syneriseAISearch)
 - [ ] Hook uses gql() from @generated/gql
 - [ ] Hook uses useQuery<GeneratedType>()
@@ -176,7 +220,7 @@ Date: [today's date]
 > **VIOLATION** [description]
 > **Fix:** [specific suggestion]
 
-## Rule 3: Code Organization [PASS/FAIL]
+## Rule 3: Code Organization [PASS/FAIL/WARN]
 - [ ] Types properly located (shared vs component-specific)
 - [ ] Hooks properly located (shared vs component-specific)
 - [ ] No duplicate type definitions found
@@ -186,7 +230,7 @@ Date: [today's date]
 > **VIOLATION** [description]
 > **Fix:** [specific suggestion]
 
-## Rule 4: README.md [PASS/FAIL]
+## Rule 4: README.md [PASS/FAIL/WARN]
 - [ ] README.md exists in component directory
 - [ ] Title + Description
 - [ ] How It Works (flow, error/loading/empty states)
@@ -199,10 +243,11 @@ Date: [today's date]
 - [ ] CMS Configuration (JSON schema, matches sections.json)
 - [ ] File Structure (matches actual directory)
 - [ ] Implementing in Another Store (step-by-step)
+- [ ] Listed in root README.md "Available Section Components" table with correct link and current description
 
-[If FAIL, list missing sections. If no README exists, suggest: `/create-readme [path]`]
+[If FAIL, list missing sections. If no README exists, suggest invoking the `create-readme` skill with the component path.]
 
-## Rule 5: SCSS Design Tokens [PASS/FAIL]
+## Rule 5: SCSS Design Tokens [PASS/FAIL/N/A]
 - [ ] No hardcoded hex colors (use --fs-color-* tokens)
 - [ ] No hardcoded spacing values (use --fs-spacing-* tokens)
 - [ ] No hardcoded font sizes/weights (use --fs-text-* tokens)

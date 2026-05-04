@@ -139,7 +139,11 @@ src/components/sections/[FeatureName]/
 src/hooks/use[FeatureName].ts      # Shared hook (useQuery + gql)
 src/types/[featureName].ts         # Shared types (re-exported from index.ts)
 src/graphql/thirdParty/
-├── resolvers/[featureName].ts     # Client factory + nested resolver
+├── resolvers/[featureName].ts     # Nested resolver (imports client, or inline for simple cases)
+├── clients/[featureName]/         # Client factory — separate module for complex clients (optional)
+│   ├── index.ts                   # Barrel export
+│   ├── [featureName].ts           # Factory function + HTTP calls
+│   └── [featureName].types.ts     # Request/response types
 └── typeDefs/[featureName].graphql # GraphQL schema types
 ```
 
