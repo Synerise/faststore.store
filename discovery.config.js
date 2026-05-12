@@ -88,7 +88,7 @@ module.exports = {
   experimental: {
     nodeVersion: 18,
     cypressVersion: 12,
-    enableFaststoreMyAccount: true,
+    enableFaststoreMyAccount: false,
   },
 
   vtexHeadlessCms: {
