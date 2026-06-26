@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 
 import styles from "./ClientCard.module.scss";
@@ -8,6 +8,7 @@ import { History } from "./History";
 import { Offers } from "./Offers";
 import { useBrickworks } from "./hooks";
 import { useExpression } from "../ExclusiveCollection/hooks";
+import { useLoyaltyMembership } from "../../../hooks";
 import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
 const ClientCard = ({
@@ -19,6 +20,8 @@ const ClientCard = ({
 }: ClientCardProps) => {
   const identifierValue = Cookies.get("_snrs_uuid")!;
 
+  const { isMember: flagMember, setMember } = useLoyaltyMembership();
+
   const loyaltyResponse = useExpression({
     namespace: "profiles",
     identifierType: "uuid",
@@ -29,7 +32,19 @@ const ClientCard = ({
   const loyaltyResult = String(
     loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? ""
   );
-  const isLoyaltyMember = loyaltyResult === loyaltyDesiredValue;
+  const isExpressionMember = loyaltyResult === loyaltyDesiredValue;
+
+  // Show the card when the Synerise expression confirms membership OR the shared
+  // flag is set (sign-up in LoyaltySignUp, another tab, or an external system).
+  const isLoyaltyMember = isExpressionMember || flagMember;
+
+  // Keep the shared flag in sync so the navbar button reflects expression-based
+  // membership too.
+  useEffect(() => {
+    if (isExpressionMember && !flagMember) {
+      setMember(true);
+    }
+  }, [isExpressionMember, flagMember, setMember]);
 
   const { data, error } = useBrickworks({
     schemaIdentifier,

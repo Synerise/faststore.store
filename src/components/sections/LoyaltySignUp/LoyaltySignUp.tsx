@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
@@ -6,6 +6,7 @@ import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/e
 import styles from "./LoyaltySignUp.module.scss";
 import type { LoyaltySignUpProps } from "./LoyaltySignUp.types";
 import { useExpression } from "../ExclusiveCollection/hooks";
+import { useLoyaltyMembership } from "../../../hooks";
 
 const LoyaltySignUp = ({
   title,
@@ -20,6 +21,8 @@ const LoyaltySignUp = ({
   const [submitted, setSubmitted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  const { isMember: flagMember, setMember } = useLoyaltyMembership();
+
   const { data } = useExpression({
     namespace: "profiles",
     identifierType: "uuid",
@@ -30,17 +33,31 @@ const LoyaltySignUp = ({
   const expressionResult = String(
     data?.syneriseExpressionResult?.expression?.result ?? ""
   );
-  const isMember = expressionResult === desiredValue;
+  const isExpressionMember = expressionResult === desiredValue;
+
+  // Membership is true if the Synerise expression says so OR the shared flag is
+  // set (by a sign-up here, in another tab, or an external system).
+  const isMember = isExpressionMember || flagMember;
+
+  // Feed an expression-confirmed membership into the shared flag so the navbar
+  // button (and any other reader) reflects it.
+  useEffect(() => {
+    if (isExpressionMember && !flagMember) {
+      setMember(true);
+    }
+  }, [isExpressionMember, flagMember, setMember]);
 
   const handleSignUp = () => {
     if (!termsAccepted) return;
     if (typeof window !== "undefined" && window.SR?.event?.sendFormData) {
-      window.SR.event.sendFormData(formTag, { isLoyalty: 'true' });
+      window.SR.event.sendFormData(formTag, { isLoyalty: 'true', termsAccepted: termsAccepted });
       setSubmitted(true);
+      // Reflect the sign-up everywhere immediately (navbar button, client card).
+      setMember(true);
     }
   };
 
-  if (isMember) {
+  if (isMember && !submitted) {
     return null;
   }
 

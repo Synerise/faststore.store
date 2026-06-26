@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import {
     Icon as UIIcon,
     IconButton as UIIconButton,
+    LinkButton as UILinkButton,
     Navbar as NavbarWrapper,
     NavbarButtons as UINavbarButtons,
     NavbarHeader as UINavbarHeader,
@@ -16,6 +17,7 @@ import CartToggle from 'src/components/cart/CartToggle'
 import Link from 'src/components/ui/Link'
 import Logo from 'src/components/ui/Logo'
 import useScreenResize from 'src/sdk/ui/useScreenResize'
+import { useLoyaltyMembership } from '../../../../hooks'
 
 import type {NavbarProps as SectionNavbarProps} from '../SyneriseNavbarSection'
 import SearchInput, {SearchInputRef} from './SearchInput'
@@ -102,6 +104,7 @@ function SyneriseNavbar({
     const scrollDirection = useScrollDirection()
     const {openNavbar, navbar: displayNavbar} = useUI()
     const {isDesktop, isMobile} = useScreenResize()
+    const { isMember: isLoyaltyMember } = useLoyaltyMembership()
 
     const searchMobileRef = useRef<SearchInputRef>(null)
     const [searchExpanded, setSearchExpanded] = useState(false)
@@ -191,6 +194,17 @@ function SyneriseNavbar({
                                 hidden={!searchExpanded}
                                 aria-hidden={!searchExpanded}
                             />
+                        )}
+
+                        {!isMobile && isLoyaltyMember && (
+                            <UILinkButton
+                                data-fs-navbar-loyalty-link
+                                href="/member-control-panel"
+                                className="text__title-mini"
+                                variant="tertiary"
+                            >
+                                Loyalty Program
+                            </UILinkButton>
                         )}
 
                         {!isMobile && <ButtonSignIn {...signInButton} />}
