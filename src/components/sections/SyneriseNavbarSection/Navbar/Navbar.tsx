@@ -1,4 +1,5 @@
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useRef, useState, useEffect} from 'react'
+import { useSession } from 'src/sdk/session'
 import dynamic from 'next/dynamic'
 import {
     Icon as UIIcon,
@@ -114,6 +115,31 @@ function SyneriseNavbar({
         setSearchExpanded(false)
         searchMobileRef.current?.resetSearchInput()
     }, [])
+
+    const HANDLED_KEY = 'post_login_handled_for'
+
+    function runAfterLogin(email: string) {
+        if (typeof window !== "undefined" && window.SR?.event?.sendFormData) {
+            window.SR.event.sendFormData('', {email: email});
+        }
+    }
+
+    const { person } = useSession()
+    const email = person?.email ?? null
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+
+        if (!email) {
+            window.localStorage.removeItem(HANDLED_KEY)
+            return
+        }
+
+        if (window.localStorage.getItem(HANDLED_KEY) === email) return
+
+        window.localStorage.setItem(HANDLED_KEY, email)
+        runAfterLogin(email)
+    }, [email])
 
     return (
         <NavbarWrapper scrollDirection={scrollDirection}>

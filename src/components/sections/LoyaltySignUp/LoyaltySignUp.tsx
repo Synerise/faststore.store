@@ -35,7 +35,7 @@ const LoyaltySignUp = ({
   const handleSignUp = () => {
     if (!termsAccepted) return;
     if (typeof window !== "undefined" && window.SR?.event?.sendFormData) {
-      window.SR.event.sendFormData(formTag, { termsAccepted: true });
+      window.SR.event.sendFormData(formTag, { isLoyalty: 'true' });
       setSubmitted(true);
     }
   };
