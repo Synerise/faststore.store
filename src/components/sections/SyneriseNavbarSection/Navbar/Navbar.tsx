@@ -17,7 +17,6 @@ import CartToggle from 'src/components/cart/CartToggle'
 import Link from 'src/components/ui/Link'
 import Logo from 'src/components/ui/Logo'
 import useScreenResize from 'src/sdk/ui/useScreenResize'
-import { useLoyaltyMembership } from '../../../../hooks'
 
 import type {NavbarProps as SectionNavbarProps} from '../SyneriseNavbarSection'
 import SearchInput, {SearchInputRef} from './SearchInput'
@@ -104,7 +103,6 @@ function SyneriseNavbar({
     const scrollDirection = useScrollDirection()
     const {openNavbar, navbar: displayNavbar} = useUI()
     const {isDesktop, isMobile} = useScreenResize()
-    const { isMember: isLoyaltyMember } = useLoyaltyMembership()
 
     const searchMobileRef = useRef<SearchInputRef>(null)
     const [searchExpanded, setSearchExpanded] = useState(false)
@@ -196,12 +194,14 @@ function SyneriseNavbar({
                             />
                         )}
 
-                        {!isMobile && isLoyaltyMember && (
+                        {!isMobile && (
                             <UILinkButton
                                 data-fs-navbar-loyalty-link
                                 href="/member-control-panel"
                                 className="text__title-mini"
                                 variant="tertiary"
+                                icon={<UIIcon name="Medal" width={18} height={18} weight="bold" />}
+                                iconPosition="left"
                             >
                                 Loyalty Program
                             </UILinkButton>

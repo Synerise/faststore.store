@@ -35,12 +35,8 @@ const LoyaltySignUp = ({
   );
   const isExpressionMember = expressionResult === desiredValue;
 
-  // Membership is true if the Synerise expression says so OR the shared flag is
-  // set (by a sign-up here, in another tab, or an external system).
   const isMember = isExpressionMember || flagMember;
 
-  // Feed an expression-confirmed membership into the shared flag so the navbar
-  // button (and any other reader) reflects it.
   useEffect(() => {
     if (isExpressionMember && !flagMember) {
       setMember(true);
@@ -52,7 +48,6 @@ const LoyaltySignUp = ({
     if (typeof window !== "undefined" && window.SR?.event?.sendFormData) {
       window.SR.event.sendFormData(formTag, { isLoyalty: 'true', termsAccepted: termsAccepted });
       setSubmitted(true);
-      // Reflect the sign-up everywhere immediately (navbar button, client card).
       setMember(true);
     }
   };
