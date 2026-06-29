@@ -194,7 +194,7 @@ function SyneriseNavbar({
                             />
                         )}
 
-                        {!isMobile && (
+                        {!isMobile && person?.id && (
                             <UILinkButton
                                 data-fs-navbar-loyalty-link
                                 href="/member-control-panel"
