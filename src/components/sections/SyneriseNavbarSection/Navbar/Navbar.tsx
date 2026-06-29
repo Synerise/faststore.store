@@ -198,7 +198,7 @@ function SyneriseNavbar({
                             <UILinkButton
                                 data-fs-navbar-loyalty-link
                                 href="/member-control-panel"
-                                className="text__title-mini"
+                                className="text__title-mini loyaltyButton"
                                 variant="tertiary"
                                 icon={<UIIcon name="Medal" width={18} height={18} weight="bold" />}
                                 iconPosition="left"
