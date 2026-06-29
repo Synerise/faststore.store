@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Cookies from "js-cookie";
+
+import { useSession } from "src/sdk/session";
 
 import styles from "./ClientCard.module.scss";
 import type { ClientCardProps } from "./ClientCard.types";
@@ -11,7 +13,10 @@ import { useExpression } from "../ExclusiveCollection/hooks";
 import { useLoyaltyMembership } from "../../../hooks";
 import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
-const ClientCard = ({
+// Only mounts for authenticated users (wrapped in ProfileChallenge below), so
+// logged-out visitors never run the membership queries and never see the card —
+// they are always treated as non-members.
+const ClientCardContent = ({
   title = "My Account",
   schemaIdentifier,
   recordIdentifier,
@@ -20,7 +25,7 @@ const ClientCard = ({
 }: ClientCardProps) => {
   const identifierValue = Cookies.get("_snrs_uuid")!;
 
-  const { isMember: flagMember, setMember } = useLoyaltyMembership();
+  const { person } = useSession();
 
   const loyaltyResponse = useExpression({
     namespace: "profiles",
@@ -32,19 +37,20 @@ const ClientCard = ({
   const loyaltyResult = String(
     loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? ""
   );
+
+  // The Synerise expression is the authoritative, server-side source of truth.
   const isExpressionMember = loyaltyResult === loyaltyDesiredValue;
+  const expressionLoaded = loyaltyResponse?.data !== undefined;
 
-  // Show the card when the Synerise expression confirms membership OR the shared
-  // flag is set (sign-up in LoyaltySignUp, another tab, or an external system).
-  const isLoyaltyMember = isExpressionMember || flagMember;
+  // The optimistic flag (scoped to this logged-in user) bridges the delay
+  // between signing up and the expression catching up; it self-clears after the
+  // grace period if the expression has loaded and still says non-member.
+  const { isMember: optimisticMember } = useLoyaltyMembership(person?.id, {
+    loaded: expressionLoaded,
+    isMember: isExpressionMember,
+  });
 
-  // Keep the shared flag in sync so the navbar button reflects expression-based
-  // membership too.
-  useEffect(() => {
-    if (isExpressionMember && !flagMember) {
-      setMember(true);
-    }
-  }, [isExpressionMember, flagMember, setMember]);
+  const isLoyaltyMember = isExpressionMember || optimisticMember;
 
   const { data, error } = useBrickworks({
     schemaIdentifier,
@@ -53,27 +59,33 @@ const ClientCard = ({
     identifierValue,
   });
 
-  const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as Record<string, unknown> | undefined;
+  const brickworksData = data?.syneriseBrickworksResult?.brickworks?.data as
+    | Record<string, unknown>
+    | undefined;
 
   if (!isLoyaltyMember) {
     return null;
   }
 
   return (
-    <ProfileChallenge>
-      <section className={`${styles.clientCard} section layout__section`}>
-        <div className={styles.header}>
-          <h2 className="text__title-section layout__content">{title}</h2>
-        </div>
+    <section className={`${styles.clientCard} section layout__section`}>
+      <div className={styles.header}>
+        <h2 className="text__title-section layout__content">{title}</h2>
+      </div>
 
-        <AccountOverview data={brickworksData} error={error} />
+      <AccountOverview data={brickworksData} error={error} />
 
-        <History data={brickworksData} error={error} />
+      <History data={brickworksData} error={error} />
 
-        <Offers data={brickworksData} error={error} />
-      </section>
-    </ProfileChallenge>
+      <Offers data={brickworksData} error={error} />
+    </section>
   );
 };
+
+const ClientCard = (props: ClientCardProps) => (
+  <ProfileChallenge>
+    <ClientCardContent {...props} />
+  </ProfileChallenge>
+);
 
 export default ClientCard;

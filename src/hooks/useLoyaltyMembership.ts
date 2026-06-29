@@ -1,53 +1,76 @@
 import { useCallback, useEffect, useState } from "react";
 
 /**
- * Shared loyalty-membership signal.
+ * Optimistic loyalty-membership signal, scoped to a single user identity.
  *
- * A single client-side flag that any part of the app can read and write, so a
- * loyalty sign-up (or an external system) is reflected everywhere immediately
- * without a page reload:
+ * After a sign-up the Synerise expression can take a while to report the new
+ * membership. This bridges that gap: `setMember()` records membership for the
+ * given `identity` so the UI (client card, sign-up form) reflects it instantly.
  *
- *  - `LoyaltySignUp` sets it on a successful sign-up.
- *  - `LoyaltySignUp` / `ClientCard` set it when the Synerise expression marks
- *    the profile as a member (so both paths feed the same signal).
- *  - The navbar reads it to show the "Loyalty Program" button.
- *  - `ClientCard` reads it to render the card.
+ * The optimistic flag is trusted for a grace period (`LOYALTY_OPTIMISTIC_GRACE_MS`).
+ * After that, if the authoritative Synerise expression has loaded and says the
+ * user is NOT a member, the flag self-clears. If the expression confirms
+ * membership first, the flag is simply superseded (no clear needed).
  *
- * It is intentionally writable from outside React. To flip it from any other
- * script (Synerise automation, console, etc.):
+ * The persisted value records *which identity* it belongs to plus *when* it was
+ * set — never a bare boolean — so it can't leak to a different logged-in user
+ * or to a logged-out visitor (their identity won't match). Consumers should
+ * still render inside ProfileChallenge so logged-out users are treated as
+ * non-members.
  *
- *   localStorage.setItem("snrs_loyalty_member", "true");
+ * External systems may drive it too, by writing the target user's identity
+ * (a bare id string is accepted and treated as "set just now"):
+ *   localStorage.setItem("snrs_loyalty_member", "<the user's id>");
  *   window.dispatchEvent(new Event("snrs:loyalty-membership-change"));
- *
- * Changes made in another tab are picked up automatically via the native
- * `storage` event.
+ * Changes made in another tab are picked up automatically via `storage`.
  */
 
 export const LOYALTY_MEMBERSHIP_STORAGE_KEY = "snrs_loyalty_member";
 export const LOYALTY_MEMBERSHIP_EVENT = "snrs:loyalty-membership-change";
+export const LOYALTY_OPTIMISTIC_GRACE_MS = 30_000;
 
-const readMembership = (): boolean => {
-  if (typeof window === "undefined") return false;
+type StoredMembership = { id: string; ts: number };
+
+const readStored = (): StoredMembership | null => {
+  if (typeof window === "undefined") return null;
   try {
-    return window.localStorage.getItem(LOYALTY_MEMBERSHIP_STORAGE_KEY) === "true";
+    const raw = window.localStorage.getItem(LOYALTY_MEMBERSHIP_STORAGE_KEY);
+    if (!raw) return null;
+    // A bare identity string (e.g. an external write) is treated as set now.
+    if (raw[0] !== "{") return { id: raw, ts: Date.now() };
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed.id === "string") {
+      return { id: parsed.id, ts: Number(parsed.ts) || Date.now() };
+    }
+    return null;
   } catch {
-    return false;
+    return null;
   }
 };
 
-export const useLoyaltyMembership = () => {
-  // Always start false so server and first client render match; the real value
-  // is read from localStorage after mount in the effect below.
-  const [isMember, setIsMember] = useState(false);
+type ExpressionStatus = {
+  /** Whether the authoritative expression result has loaded. */
+  loaded: boolean;
+  /** Whether that result says the user is a member. */
+  isMember: boolean;
+};
+
+export const useLoyaltyMembership = (
+  identity?: string | null,
+  expression?: ExpressionStatus
+) => {
+  // The membership currently persisted (null = unset). Starts null so
+  // server/first-client render match; the real value is read on mount.
+  const [stored, setStored] = useState<StoredMembership | null>(null);
 
   useEffect(() => {
-    const sync = () => setIsMember(readMembership());
+    const sync = () => setStored(readStored());
 
     sync();
 
-    // `storage` fires for changes made in other tabs (and external writes there);
-    // the custom event covers same-tab updates (storage doesn't fire in the
-    // tab that made the change).
+    // `storage` fires for changes from other tabs (and external writes there);
+    // the custom event covers same-tab updates (storage doesn't fire in the tab
+    // that made the change).
     window.addEventListener("storage", sync);
     window.addEventListener(LOYALTY_MEMBERSHIP_EVENT, sync);
 
@@ -57,20 +80,52 @@ export const useLoyaltyMembership = () => {
     };
   }, []);
 
-  const setMember = useCallback((value: boolean = true) => {
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(
-        LOYALTY_MEMBERSHIP_STORAGE_KEY,
-        value ? "true" : "false"
-      );
-    } catch {
-      // localStorage may be unavailable (private mode / disabled) — still
-      // update in-memory state and notify listeners.
+  // Only honored when the flag was set for the *current* identity.
+  const isMember = !!identity && stored?.id === identity;
+
+  const setMember = useCallback(
+    (value: boolean = true) => {
+      if (typeof window === "undefined") return;
+      const next: StoredMembership | null =
+        value && identity ? { id: identity, ts: Date.now() } : null;
+      try {
+        if (next) {
+          window.localStorage.setItem(
+            LOYALTY_MEMBERSHIP_STORAGE_KEY,
+            JSON.stringify(next)
+          );
+        } else {
+          window.localStorage.removeItem(LOYALTY_MEMBERSHIP_STORAGE_KEY);
+        }
+      } catch {
+        // localStorage unavailable — still update in-memory + notify listeners.
+      }
+      setStored(next);
+      window.dispatchEvent(new Event(LOYALTY_MEMBERSHIP_EVENT));
+    },
+    [identity]
+  );
+
+  // Grace-period reconciliation: once the authoritative expression has loaded
+  // and reports the user is NOT a member, clear the optimistic flag — but only
+  // after the grace window has elapsed since it was set.
+  const expressionLoaded = expression?.loaded ?? false;
+  const expressionMember = expression?.isMember ?? false;
+
+  useEffect(() => {
+    if (!isMember || !stored) return;
+    if (!expressionLoaded || expressionMember) return;
+
+    const remaining = LOYALTY_OPTIMISTIC_GRACE_MS - (Date.now() - stored.ts);
+
+    if (remaining <= 0) {
+      setMember(false);
+      return;
     }
-    setIsMember(value);
-    window.dispatchEvent(new Event(LOYALTY_MEMBERSHIP_EVENT));
-  }, []);
+
+    const timer = setTimeout(() => setMember(false), remaining);
+    return () => clearTimeout(timer);
+  }, [isMember, stored, expressionLoaded, expressionMember, setMember]);
 
   return { isMember, setMember };
 };

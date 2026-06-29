@@ -4,6 +4,7 @@ import {
   useLoyaltyMembership,
   LOYALTY_MEMBERSHIP_STORAGE_KEY,
   LOYALTY_MEMBERSHIP_EVENT,
+  LOYALTY_OPTIMISTIC_GRACE_MS,
 } from "./useLoyaltyMembership";
 
 export {
@@ -12,4 +13,5 @@ export {
   useLoyaltyMembership,
   LOYALTY_MEMBERSHIP_STORAGE_KEY,
   LOYALTY_MEMBERSHIP_EVENT,
+  LOYALTY_OPTIMISTIC_GRACE_MS,
 };
