@@ -17,7 +17,6 @@ module.exports = {
     storeId: "synerisedemofaststore",
     workspace: "master",
     environment: "vtexcommercestable",
-    subDomainPrefix: ['www'],
     hideUnavailableItems: true,
     incrementAddress: false,
   },
