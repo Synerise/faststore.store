@@ -1,17 +1,33 @@
 import React from "react";
+import Cookies from "js-cookie";
 
 import { useSession } from "src/sdk/session";
 
 import styles from "./AuthBanner.module.scss";
 import type { AuthBannerProps } from "./AuthBanner.types";
+import { useExpression } from "../ExclusiveCollection/hooks";
 
-const AuthBanner = ({ loggedIn, loggedOut }: AuthBannerProps) => {
+const AuthBanner = ({ loggedIn, loggedOut, loyalty }: AuthBannerProps) => {
   const { person } = useSession();
 
-  // Pick the copy for the current auth state. Before hydration `person` is
-  // undefined, so logged-out copy renders first and swaps in once the session
-  // resolves.
-  const content = person?.id ? loggedIn : loggedOut;
+  // Loyalty membership from the Synerise expression, keyed on the anonymous
+  // _snrs_uuid so it resolves even when signed out.
+  const loyaltyResponse = useExpression({
+    namespace: "profiles",
+    identifierType: "uuid",
+    expressionId: loyalty?.expressionId ?? "",
+    identifierValue: Cookies.get("_snrs_uuid") ?? "",
+  });
+  const loyaltyResult = String(
+    loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? ""
+  );
+  const isLoyaltyMember =
+    !!loyalty?.desiredValue && loyaltyResult === loyalty.desiredValue;
+
+  // The expression takes precedence over login: a loyalty member sees the
+  // logged-in copy even when signed out. Before hydration `person` is undefined
+  // so logged-out copy renders first, then swaps once the session resolves.
+  const content = person?.id || isLoyaltyMember ? loggedIn : loggedOut;
 
   return (
     <section className={`${styles.authBanner} section layout__section`}>

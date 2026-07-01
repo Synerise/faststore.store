@@ -6,12 +6,12 @@ A simple banner section with a **header**, optional **caption**, and optional **
 
 ## How It Works
 
-1. The CMS provides two content groups: `loggedIn` and `loggedOut`, each with `header`, `caption`, `ctaLabel`, and `ctaUrl`.
-2. The component reads the current session via `useSession()` (`src/sdk/session`).
-3. If `person?.id` is present (signed in) it renders the `loggedIn` copy; otherwise it renders the `loggedOut` copy.
+1. The CMS provides two content groups: `loggedIn` and `loggedOut`, each with `header`, `caption`, `ctaLabel`, and `ctaUrl`. An optional `loyalty` group supplies a Synerise expression to check membership.
+2. The component reads the current session via `useSession()` (`src/sdk/session`) and, when `loyalty` is configured, evaluates the expression via `useExpression` (keyed on the `_snrs_uuid` cookie).
+3. It renders the `loggedIn` copy when the visitor is signed in **or** is a loyalty member per the expression (expression takes precedence over login, so a signed-out member still sees the logged-in copy); otherwise it renders the `loggedOut` copy.
 4. The caption renders only when provided; the CTA renders only when both `ctaLabel` and `ctaUrl` are set.
 
-> **Note on hydration:** before the session resolves on the client, `person` is `undefined`, so the `loggedOut` copy renders first and swaps to `loggedIn` once the session is known. This mirrors how the navbar's sign-in button behaves.
+> **Note on hydration:** before the session resolves on the client, `person` is `undefined`, so the `loggedOut` copy renders first and swaps to `loggedIn` once the session (or expression) resolves. This mirrors how the navbar's sign-in button behaves.
 
 ---
 
@@ -21,8 +21,9 @@ Defined in `AuthBanner.types.ts`. Props come from the VTEX Headless CMS.
 
 | Prop        | Type                | Required | Description                              |
 |-------------|---------------------|----------|------------------------------------------|
-| `loggedOut` | `AuthBannerContent` | Yes      | Content shown to visitors who are not signed in |
-| `loggedIn`  | `AuthBannerContent` | Yes      | Content shown to signed-in users         |
+| `loggedOut` | `AuthBannerContent` | Yes      | Content shown to visitors who are neither signed in nor loyalty members |
+| `loggedIn`  | `AuthBannerContent` | Yes      | Content shown to signed-in users (and loyalty members, even when signed out) |
+| `loyalty`   | `{ expressionId, desiredValue }` | No | Optional Synerise expression check; when set, members see the `loggedIn` copy even when signed out |
 
 `AuthBannerContent`:
 
@@ -39,11 +40,12 @@ Defined in `AuthBanner.types.ts`. Props come from the VTEX Headless CMS.
 
 ### Hooks
 
-| Hook         | Source              | Purpose                          |
-|--------------|---------------------|----------------------------------|
-| `useSession` | `src/sdk/session`   | Determines the current auth state |
+| Hook            | Source                                      | Purpose                                             |
+|-----------------|---------------------------------------------|-----------------------------------------------------|
+| `useSession`    | `src/sdk/session`                           | Determines the current auth state                    |
+| `useExpression` | `../ExclusiveCollection/hooks`              | Evaluates loyalty membership (only when `loyalty` is configured) |
 
-No GraphQL, resolvers, or external API calls — this is a purely presentational, session-aware section.
+When `loyalty` is set, the component runs the shared `SyneriseExpressionQuery` (via `useExpression`) to check membership. Otherwise it is purely session-aware with no API calls.
 
 ---
 

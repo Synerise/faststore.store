@@ -738,10 +738,27 @@
     "requiredScopes": [],
     "schema": {
       "title": "Auth Banner",
-      "description": "Simple banner (header, caption, CTA) with separate copy for logged-in and logged-out users",
+      "description": "Simple banner (header, caption, CTA) with separate copy for logged-in and logged-out users. Loyalty members (per the expression) see the logged-in copy even when signed out.",
       "type": "object",
       "required": ["loggedOut", "loggedIn"],
       "properties": {
+        "loyalty": {
+          "type": "object",
+          "title": "Loyalty check (optional)",
+          "description": "When set, a profile the Synerise expression marks as a member sees the logged-in copy even when signed out",
+          "properties": {
+            "expressionId": {
+              "type": "string",
+              "title": "Loyalty Expression ID",
+              "description": "Expression ID used to check if the current profile is a loyalty member"
+            },
+            "desiredValue": {
+              "type": "string",
+              "title": "Loyalty target value",
+              "description": "Expression result value that indicates loyalty membership"
+            }
+          }
+        },
         "loggedOut": {
           "type": "object",
           "title": "Logged-out content",
