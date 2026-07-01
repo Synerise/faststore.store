@@ -15,8 +15,6 @@ const AuthBanner = ({
 }: AuthBannerProps) => {
   const { person } = useSession();
 
-  // Loyalty membership from the Synerise expression, keyed on the anonymous
-  // _snrs_uuid so it resolves even when signed out.
   const loyaltyResponse = useExpression({
     namespace: "profiles",
     identifierType: "uuid",
@@ -29,12 +27,10 @@ const AuthBanner = ({
   const isLoyaltyMember =
     !!loyalty?.desiredValue && loyaltyResult === loyalty.desiredValue;
 
-  // Three states:
-  //  - signed in            -> loggedIn
-  //  - signed out + member  -> loggedOutMember (falls back to loggedOut)
-  //  - signed out + guest   -> loggedOut
-  // Before hydration `person` is undefined so the signed-out branch renders
-  // first, then swaps once the session (or expression) resolves.
+  if (person?.id && isLoyaltyMember) {
+    return null;
+  }
+
   let content = loggedOut;
   if (person?.id) {
     content = loggedIn;

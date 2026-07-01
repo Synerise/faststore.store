@@ -8,8 +8,9 @@ A simple banner section with a **header**, optional **caption**, and optional **
 
 1. The CMS provides up to three content groups — `loggedIn`, `loggedOut`, and (optional) `loggedOutMember` — each with `header`, `caption`, `ctaLabel`, and `ctaUrl`. An optional `loyalty` group supplies a Synerise expression to check membership.
 2. The component reads the current session via `useSession()` (`src/sdk/session`) and, when `loyalty` is configured, evaluates the expression via `useExpression` (keyed on the `_snrs_uuid` cookie).
-3. It selects copy across three states:
-   - **signed in** → `loggedIn`
+3. It selects copy across these states:
+   - **signed in + loyalty member** → nothing (the banner is hidden)
+   - **signed in (non-member)** → `loggedIn`
    - **signed out + loyalty member** → `loggedOutMember` (falls back to `loggedOut` if not configured)
    - **signed out + guest** → `loggedOut`
 4. The caption renders only when provided; the CTA renders only when both `ctaLabel` and `ctaUrl` are set.
