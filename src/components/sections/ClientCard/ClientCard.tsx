@@ -37,7 +37,7 @@ const ClientCard = ({
   const isExpressionMember = loyaltyResult === loyaltyDesiredValue;
   const expressionLoaded = loyaltyResponse?.data !== undefined;
 
-  const { isMember: optimisticMember } = useLoyaltyMembership(person?.id, {
+  const { isMember: optimisticMember } = useLoyaltyMembership(identifierValue, {
     loaded: expressionLoaded,
     isMember: isExpressionMember,
   });
@@ -55,8 +55,6 @@ const ClientCard = ({
     | Record<string, unknown>
     | undefined;
 
-  // The card requires being logged in — loyalty membership no longer takes
-  // precedence over login, so a signed-out member does not see it.
   if (!person?.id || !isLoyaltyMember) {
     return null;
   }

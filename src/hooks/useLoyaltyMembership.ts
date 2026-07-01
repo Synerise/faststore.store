@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 /**
- * Optimistic loyalty-membership signal, scoped to a single user identity.
+ * Optimistic loyalty-membership signal, scoped to a single identity.
+ *
+ * `identity` is the Synerise profile uuid (the `_snrs_uuid` cookie) — the same
+ * identifier the loyalty expression is evaluated against.
  *
  * After a sign-up the Synerise expression can take a while to report the new
  * membership. This bridges that gap: `setMember()` records membership for the
@@ -9,18 +12,17 @@ import { useCallback, useEffect, useState } from "react";
  *
  * The optimistic flag is trusted for a grace period (`LOYALTY_OPTIMISTIC_GRACE_MS`).
  * After that, if the authoritative Synerise expression has loaded and says the
- * user is NOT a member, the flag self-clears. If the expression confirms
+ * profile is NOT a member, the flag self-clears. If the expression confirms
  * membership first, the flag is simply superseded (no clear needed).
  *
- * The persisted value records *which identity* it belongs to plus *when* it was
- * set — never a bare boolean — so it can't leak to a different logged-in user
- * or to a logged-out visitor (their identity won't match). Consumers should
- * still render inside ProfileChallenge so logged-out users are treated as
- * non-members.
+ * The persisted value records *which uuid* it belongs to plus *when* it was set
+ * — never a bare boolean — so it can't leak to a different profile (a mismatched
+ * uuid won't match). Consumers that should be login-gated must check the session
+ * separately (e.g. `person?.id`); this hook only concerns the uuid-scoped flag.
  *
- * External systems may drive it too, by writing the target user's identity
- * (a bare id string is accepted and treated as "set just now"):
- *   localStorage.setItem("snrs_loyalty_member", "<the user's id>");
+ * External systems may drive it too, by writing the target profile's uuid
+ * (a bare uuid string is accepted and treated as "set just now"):
+ *   localStorage.setItem("snrs_loyalty_member", "<the _snrs_uuid value>");
  *   window.dispatchEvent(new Event("snrs:loyalty-membership-change"));
  * Changes made in another tab are picked up automatically via `storage`.
  */

@@ -26,11 +26,13 @@ const LoyaltySignUp = ({
   const { person } = useSession();
   const isLoggedIn = !!person?.id;
 
+  const identifierValue = Cookies.get("_snrs_uuid")!;
+
   const { data } = useExpression({
     namespace: "profiles",
     identifierType: "uuid",
     expressionId: loyaltyExpressionId,
-    identifierValue: Cookies.get("_snrs_uuid")!,
+    identifierValue,
   });
 
   const expressionResult = String(
@@ -40,9 +42,8 @@ const LoyaltySignUp = ({
   const isExpressionMember = expressionResult === desiredValue;
   const expressionLoaded = data !== undefined;
 
-  // The optimistic flag is login-scoped, so it only ever applies while signed in.
   const { isMember: optimisticMember, setMember } = useLoyaltyMembership(
-    person?.id,
+    identifierValue,
     { loaded: expressionLoaded, isMember: isExpressionMember }
   );
 
@@ -60,8 +61,6 @@ const LoyaltySignUp = ({
     }
   };
 
-  // Signed-out visitors don't get the form (sign-up stays a logged-in action) —
-  // they see a configurable message instead, different for members vs guests.
   if (!isLoggedIn) {
     const message = isExpressionMember
       ? loggedOutMemberMessage
@@ -80,8 +79,6 @@ const LoyaltySignUp = ({
     );
   }
 
-  // Logged-in members don't see the form, but a fresh sign-up in this session
-  // still shows its confirmation.
   if (isMember && !submitted) {
     return null;
   }
