@@ -46,7 +46,6 @@ module.exports = {
 
   // Production URLs
   storeUrl: "https://www.demovtexfaststore.synerise.com",
-  secureSubdomain: "https://www.demovtexfaststore.synerise.com",
   checkoutUrl: "https://www.demovtexfaststore.synerise.com/checkout",
   loginUrl: "https://www.demovtexfaststore.synerise.com/api/io/login",
   accountUrl: "https://www.demovtexfaststore.synerise.com/api/io/account",
