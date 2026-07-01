@@ -1,0 +1,48 @@
+@layer components {
+  .authBanner {
+    @include layout-content;
+
+    padding: var(--fs-spacing-5) 0;
+
+    .card {
+      background: var(--fs-color-body-bkg);
+      border: 1px solid var(--fs-border-color-default);
+      border-radius: var(--fs-border-radius);
+      padding: var(--fs-spacing-6) var(--fs-spacing-5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--fs-spacing-3);
+    }
+
+    .header {
+      font-size: var(--fs-text-size-title-section);
+      font-weight: var(--fs-text-weight-bold);
+      margin: 0;
+    }
+
+    .caption {
+      font-size: var(--fs-text-size-body);
+      color: var(--fs-color-text-light);
+      margin: 0;
+      max-width: 640px;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: var(--fs-spacing-2) var(--fs-spacing-5);
+      border-radius: var(--fs-border-radius);
+      background-color: var(--fs-color-main-2);
+      color: var(--fs-color-text-inverse);
+      font-weight: var(--fs-text-weight-bold);
+      font-size: var(--fs-text-size-body);
+      text-decoration: none;
+      transition: opacity var(--fs-transition-timing) var(--fs-transition-function);
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+}

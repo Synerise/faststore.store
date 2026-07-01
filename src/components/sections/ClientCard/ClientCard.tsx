@@ -11,12 +11,8 @@ import { Offers } from "./Offers";
 import { useBrickworks } from "./hooks";
 import { useExpression } from "../ExclusiveCollection/hooks";
 import { useLoyaltyMembership } from "../../../hooks";
-import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 
-// Only mounts for authenticated users (wrapped in ProfileChallenge below), so
-// logged-out visitors never run the membership queries and never see the card —
-// they are always treated as non-members.
-const ClientCardContent = ({
+const ClientCard = ({
   title = "My Account",
   schemaIdentifier,
   recordIdentifier,
@@ -38,13 +34,9 @@ const ClientCardContent = ({
     loyaltyResponse?.data?.syneriseExpressionResult?.expression?.result ?? ""
   );
 
-  // The Synerise expression is the authoritative, server-side source of truth.
   const isExpressionMember = loyaltyResult === loyaltyDesiredValue;
   const expressionLoaded = loyaltyResponse?.data !== undefined;
 
-  // The optimistic flag (scoped to this logged-in user) bridges the delay
-  // between signing up and the expression catching up; it self-clears after the
-  // grace period if the expression has loaded and still says non-member.
   const { isMember: optimisticMember } = useLoyaltyMembership(person?.id, {
     loaded: expressionLoaded,
     isMember: isExpressionMember,
@@ -81,11 +73,5 @@ const ClientCardContent = ({
     </section>
   );
 };
-
-const ClientCard = (props: ClientCardProps) => (
-  <ProfileChallenge>
-    <ClientCardContent {...props} />
-  </ProfileChallenge>
-);
 
 export default ClientCard;

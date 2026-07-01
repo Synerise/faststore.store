@@ -11,6 +11,7 @@ import { PersonalisedPromotions } from "./sections/PersonalisedPromotions";
 import { ExclusiveCollection } from "./sections/ExclusiveCollection";
 import { ClientCard } from "./sections/ClientCard";
 import { LoyaltySignUp } from "./sections/LoyaltySignUp";
+import { AuthBanner } from "./sections/AuthBanner";
 
 export default {
   SyneriseProductGallery: ProductGallerySection,
@@ -26,4 +27,5 @@ export default {
   ExclusiveCollection,
   ClientCard,
   LoyaltySignUp,
+  AuthBanner,
 };

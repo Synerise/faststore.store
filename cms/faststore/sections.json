@@ -734,6 +734,72 @@
     }
   },
   {
+    "name": "AuthBanner",
+    "requiredScopes": [],
+    "schema": {
+      "title": "Auth Banner",
+      "description": "Simple banner (header, caption, CTA) with separate copy for logged-in and logged-out users",
+      "type": "object",
+      "required": ["loggedOut", "loggedIn"],
+      "properties": {
+        "loggedOut": {
+          "type": "object",
+          "title": "Logged-out content",
+          "description": "Shown to visitors who are not signed in",
+          "required": ["header"],
+          "properties": {
+            "header": {
+              "type": "string",
+              "title": "Header",
+              "default": "Welcome to our store"
+            },
+            "caption": {
+              "type": "string",
+              "title": "Caption"
+            },
+            "ctaLabel": {
+              "type": "string",
+              "title": "CTA button label",
+              "default": "Sign in"
+            },
+            "ctaUrl": {
+              "type": "string",
+              "title": "CTA button link",
+              "default": "/login"
+            }
+          }
+        },
+        "loggedIn": {
+          "type": "object",
+          "title": "Logged-in content",
+          "description": "Shown to signed-in users",
+          "required": ["header"],
+          "properties": {
+            "header": {
+              "type": "string",
+              "title": "Header",
+              "default": "Welcome back"
+            },
+            "caption": {
+              "type": "string",
+              "title": "Caption"
+            },
+            "ctaLabel": {
+              "type": "string",
+              "title": "CTA button label",
+              "default": "My account"
+            },
+            "ctaUrl": {
+              "type": "string",
+              "title": "CTA button link",
+              "default": "/account"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
     "name": "GlobalTracker",
     "requiredScopes": [],
     "schema": {
