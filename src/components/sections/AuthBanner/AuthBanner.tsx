@@ -7,7 +7,12 @@ import styles from "./AuthBanner.module.scss";
 import type { AuthBannerProps } from "./AuthBanner.types";
 import { useExpression } from "../ExclusiveCollection/hooks";
 
-const AuthBanner = ({ loggedIn, loggedOut, loyalty }: AuthBannerProps) => {
+const AuthBanner = ({
+  loggedIn,
+  loggedOut,
+  loggedOutMember,
+  loyalty,
+}: AuthBannerProps) => {
   const { person } = useSession();
 
   // Loyalty membership from the Synerise expression, keyed on the anonymous
@@ -24,10 +29,18 @@ const AuthBanner = ({ loggedIn, loggedOut, loyalty }: AuthBannerProps) => {
   const isLoyaltyMember =
     !!loyalty?.desiredValue && loyaltyResult === loyalty.desiredValue;
 
-  // The expression takes precedence over login: a loyalty member sees the
-  // logged-in copy even when signed out. Before hydration `person` is undefined
-  // so logged-out copy renders first, then swaps once the session resolves.
-  const content = person?.id || isLoyaltyMember ? loggedIn : loggedOut;
+  // Three states:
+  //  - signed in            -> loggedIn
+  //  - signed out + member  -> loggedOutMember (falls back to loggedOut)
+  //  - signed out + guest   -> loggedOut
+  // Before hydration `person` is undefined so the signed-out branch renders
+  // first, then swaps once the session (or expression) resolves.
+  let content = loggedOut;
+  if (person?.id) {
+    content = loggedIn;
+  } else if (isLoyaltyMember) {
+    content = loggedOutMember ?? loggedOut;
+  }
 
   return (
     <section className={`${styles.authBanner} section layout__section`}>

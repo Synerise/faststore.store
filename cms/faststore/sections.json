@@ -729,6 +729,16 @@
           "type": "string",
           "title": "Terms URL",
           "description": "Optional link for the terms label. If provided, the label becomes a clickable link."
+        },
+        "loggedOutMessage": {
+          "type": "string",
+          "title": "Signed-out guest message",
+          "description": "Shown in place of the form to visitors who are not signed in and not loyalty members. Leave empty to show nothing."
+        },
+        "loggedOutMemberMessage": {
+          "type": "string",
+          "title": "Signed-out member message",
+          "description": "Shown in place of the form to loyalty members who are not signed in. Leave empty to show nothing."
         }
       }
     }
@@ -810,6 +820,32 @@
               "type": "string",
               "title": "CTA button link",
               "default": "/account"
+            }
+          }
+        },
+        "loggedOutMember": {
+          "type": "object",
+          "title": "Logged-out loyalty member content",
+          "description": "Shown to loyalty members who are not signed in (requires the Loyalty check above). Falls back to the logged-out content when left empty.",
+          "properties": {
+            "header": {
+              "type": "string",
+              "title": "Header",
+              "default": "Welcome back — sign in to use your rewards"
+            },
+            "caption": {
+              "type": "string",
+              "title": "Caption"
+            },
+            "ctaLabel": {
+              "type": "string",
+              "title": "CTA button label",
+              "default": "Sign in"
+            },
+            "ctaUrl": {
+              "type": "string",
+              "title": "CTA button link",
+              "default": "/login"
             }
           }
         }

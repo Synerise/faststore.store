@@ -55,7 +55,9 @@ const ClientCard = ({
     | Record<string, unknown>
     | undefined;
 
-  if (!isLoyaltyMember) {
+  // The card requires being logged in — loyalty membership no longer takes
+  // precedence over login, so a signed-out member does not see it.
+  if (!person?.id || !isLoyaltyMember) {
     return null;
   }
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 
-import { ProfileChallenge_unstable as ProfileChallenge } from "@faststore/core/experimental";
 import { useSession } from "src/sdk/session";
 
 import styles from "./LoyaltySignUp.module.scss";
@@ -9,9 +8,7 @@ import type { LoyaltySignUpProps } from "./LoyaltySignUp.types";
 import { useExpression } from "../ExclusiveCollection/hooks";
 import { useLoyaltyMembership } from "../../../hooks";
 
-// Only mounts for authenticated users (wrapped in ProfileChallenge below), so
-// logged-out visitors are always treated as non-members and never see the form.
-const LoyaltySignUpContent = ({
+const LoyaltySignUp = ({
   title,
   description,
   buttonLabel,
@@ -20,11 +17,14 @@ const LoyaltySignUpContent = ({
   desiredValue,
   termsLabel,
   termsUrl,
+  loggedOutMessage,
+  loggedOutMemberMessage,
 }: LoyaltySignUpProps) => {
   const [submitted, setSubmitted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   const { person } = useSession();
+  const isLoggedIn = !!person?.id;
 
   const { data } = useExpression({
     namespace: "profiles",
@@ -37,13 +37,10 @@ const LoyaltySignUpContent = ({
     data?.syneriseExpressionResult?.expression?.result ?? ""
   );
 
-  // The Synerise expression is the authoritative, server-side source of truth.
   const isExpressionMember = expressionResult === desiredValue;
   const expressionLoaded = data !== undefined;
 
-  // The optimistic flag (scoped to this logged-in user) reflects a sign-up
-  // immediately; it self-clears after the grace period if the expression has
-  // loaded and still says non-member.
+  // The optimistic flag is login-scoped, so it only ever applies while signed in.
   const { isMember: optimisticMember, setMember } = useLoyaltyMembership(
     person?.id,
     { loaded: expressionLoaded, isMember: isExpressionMember }
@@ -59,13 +56,31 @@ const LoyaltySignUpContent = ({
         termsAccepted: termsAccepted,
       });
       setSubmitted(true);
-      // Reflect membership immediately (this user only) while the expression
-      // catches up; also surfaces the client card on the same page at once.
       setMember(true);
     }
   };
 
-  // Existing members don't see the form, but a fresh sign-up in this session
+  // Signed-out visitors don't get the form (sign-up stays a logged-in action) —
+  // they see a configurable message instead, different for members vs guests.
+  if (!isLoggedIn) {
+    const message = isExpressionMember
+      ? loggedOutMemberMessage
+      : loggedOutMessage;
+
+    if (!message) {
+      return null;
+    }
+
+    return (
+      <section className={`${styles.loyaltySignUp} section layout__section`}>
+        <div className={styles.card}>
+          <p>{message}</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Logged-in members don't see the form, but a fresh sign-up in this session
   // still shows its confirmation.
   if (isMember && !submitted) {
     return null;
@@ -110,11 +125,5 @@ const LoyaltySignUpContent = ({
     </section>
   );
 };
-
-const LoyaltySignUp = (props: LoyaltySignUpProps) => (
-  <ProfileChallenge>
-    <LoyaltySignUpContent {...props} />
-  </ProfileChallenge>
-);
 
 export default LoyaltySignUp;
